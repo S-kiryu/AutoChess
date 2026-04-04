@@ -17,13 +17,12 @@ public class UnitModel
 
     private BaseStatus _baseStatus;
 
-    public UnitModel(BaseStatus baseStatus,TeamType team)
+    public UnitModel(BaseStatus baseStatus)
     {
         _baseStatus = baseStatus;
         CurrentHp = baseStatus.Hp;
         CurentMp = baseStatus.Mp;
         Level = baseStatus.Level;
-        Team = team;
     }
 
     public enum TeamType
@@ -38,9 +37,9 @@ public class UnitModel
     public float MagicDefense => _baseStatus.MagicDefense * magicDefenseBuff;
     public float CriticalRate => _baseStatus.CriticalRate + criticalRateBuff;
     public float CriticalDamage => _baseStatus.CriticalDamage + criticalDamageBuff;
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
-        CurrentHp = Mathf.Max(0, CurrentHp - damage);
+        CurrentHp = Mathf.Max(0, Mathf.RoundToInt(CurrentHp - damage));
     }
     #region//ƒoƒtŒn
     public void AttackBuff(float buff)

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AttackData : MonoBehaviour
+public class AttackData
 {
     public float Power;
     public DamageType Type;

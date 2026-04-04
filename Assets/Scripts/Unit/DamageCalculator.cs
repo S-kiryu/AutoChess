@@ -4,22 +4,24 @@ using UnityEngine;
 /// </summary>
 public static class DamageCalculator
 {
-    public static float  CalculateDamage(AttackData attack, UnitModel target) 
+    public static float CalculateDamage(UnitModel attacker, AttackData attack, UnitModel target)
     {
-        float defense = (attack.Type == DamageType.Physical) 
-            ? target.Defense 
-            : target.MagicDefense;
-        if(Random.value <  target.CriticalRate) // クリティカルヒットの判定
+        float power = attack.Power;
+
+        // クリティカル
+        if (Random.value < attacker.CriticalRate)
         {
-            attack.Power *= 1.5f; // クリティカルヒットは1.5倍のダメージ
+            power *= attacker.CriticalDamage;
         }
 
+        // 防御判定
+        float defense = (attack.Type == DamageType.Physical)
+            ? target.Defense
+            : target.MagicDefense;
 
-        float finalDamage = attack.Power - defense;
+        float finalDamage = power - defense;
         finalDamage = Mathf.Max(1, finalDamage);
 
         return finalDamage;
     }
-
-    
 }

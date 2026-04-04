@@ -11,6 +11,8 @@ public class UnitModel
     public float defenseBuff = 1.0f;
     public float magicAttackBuff = 1.0f;
     public float magicDefenseBuff = 1.0f;
+    public float criticalRateBuff = 1.0f;
+    public float criticalDamageBuff = 1.0f;
 
     private BaseStatus _baseStatus;
 
@@ -25,8 +27,9 @@ public class UnitModel
     public float Attack => _baseStatus.Attack * attackBuff;
     public float Defense => _baseStatus.Defense * defenseBuff;
     public float MagicAttack => (_baseStatus.MagicAttack * magicAttackBuff);
-    public float MagicDefense => _baseStatus.MagicDefense;
-
+    public float MagicDefense => _baseStatus.MagicDefense * magicDefenseBuff;
+    public float CriticalRate => _baseStatus.CriticalRate + criticalRateBuff;
+    public float CriticalDamage => _baseStatus.CriticalDamage + criticalDamageBuff;
     public void TakeDamage(int damage)
     {
         CurrentHp = Mathf.Max(0, CurrentHp - damage);
@@ -50,6 +53,14 @@ public class UnitModel
     public void MagicDefenseBuff(float buff)
     {
         magicDefenseBuff += buff;
+    }
+    public void CriticalRateBuff(float buff)
+    {
+        criticalRateBuff += buff;
+    }
+    public void CriticalDamageBuff(float buff)
+    {
+        criticalDamageBuff += buff;
     }
     #endregion
 }

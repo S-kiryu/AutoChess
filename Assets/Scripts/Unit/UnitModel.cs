@@ -6,22 +6,30 @@ public class UnitModel
     public int CurrentHp { get; private set; }
     public int CurentMp { get; private set; }
     public int Level { get; private set; }
+    public TeamType Team { get; private set; }
 
     public float attackBuff = 1.0f;
     public float defenseBuff = 1.0f;
     public float magicAttackBuff = 1.0f;
     public float magicDefenseBuff = 1.0f;
-    public float criticalRateBuff = 1.0f;
-    public float criticalDamageBuff = 1.0f;
+    public float criticalRateBuff = 0f;
+    public float criticalDamageBuff = 0f;
 
     private BaseStatus _baseStatus;
 
-    public UnitModel(BaseStatus baseStatus)
+    public UnitModel(BaseStatus baseStatus,TeamType team)
     {
         _baseStatus = baseStatus;
         CurrentHp = baseStatus.Hp;
         CurentMp = baseStatus.Mp;
         Level = baseStatus.Level;
+        Team = team;
+    }
+
+    public enum TeamType
+    {
+        Player,
+        Enemy
     }
 
     public float Attack => _baseStatus.Attack * attackBuff;

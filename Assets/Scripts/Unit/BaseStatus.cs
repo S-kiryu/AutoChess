@@ -7,20 +7,31 @@ public class BaseStatus : ScriptableObject
     public int Mp;
     public int Level;
 
-    public int Attack;
-    public int MagicAttack;
-    public int Defense;
-    public int MagicDefense;
+    public float Attack;
+    public float MagicAttack;
+    public float Defense;
+    public float MagicDefense;
     public int AttackSpeed;
 
-    public int CriticalRate;
-    public int CriticalDamage;
+    public float CriticalRate;
+    public float CriticalDamage;
 
     public int AttackRange;
-    public int Speed;
-    public int Evasion;
+    public float Speed;
+    //‰ñ”ð—¦
+    public float dodgeRate;
 
     public int Cost;
     public int Rarity;
-    //Œã‚ÅEnum‚ÅŽí‘°‚ð‚«‚ß‚ê‚é‚æ‚¤‚É‚·‚é
+    public UnitType[] Type;
+}
+
+
+public enum UnitType
+{
+    Human,
+    Elf,
+    Orc,
+    Undead,
+    Beast
 }

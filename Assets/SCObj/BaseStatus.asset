@@ -17,13 +17,13 @@ MonoBehaviour:
   Level: 0
   Attack: 5
   MagicAttack: 0
-  Defense: 0
-  MagicDefense: 0
   AttackSpeed: 0
+  AttackRange: 0
   CriticalRate: 100
   CriticalDamage: 2
-  AttackRange: 0
-  Speed: 0
+  Defense: 0
+  MagicDefense: 0
+  MoveSpeed: 0
   dodgeRate: 0
   Cost: 0
   Rarity: 0

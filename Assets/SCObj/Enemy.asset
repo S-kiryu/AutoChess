@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8c258a92b285444c934a756d502887f, type: 3}
+  m_Name: Enemy
+  m_EditorClassIdentifier: Assembly-CSharp::BaseStatus
+  Hp: 100
+  Mp: 0
+  Level: 0
+  Attack: 4
+  MagicAttack: 0
+  Defense: 4
+  MagicDefense: 0
+  AttackSpeed: 0
+  CriticalRate: 0
+  CriticalDamage: 0
+  AttackRange: 0
+  Speed: 0
+  dodgeRate: 0
+  Cost: 0
+  Rarity: 0
+  Type: 

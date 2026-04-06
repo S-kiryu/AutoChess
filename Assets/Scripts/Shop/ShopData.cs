@@ -4,7 +4,7 @@ using UnityEngine;
 public class ShopData : ScriptableObject
 {
     [Header("コストごとのユニット")]
-    [SerializeField] private CostGroup[] unitsByCost = new CostGroup[7];
+    public CostGroup[] _costGroup = new CostGroup[7];
     [Header("レベルごとの排出率")]
-    public ShopLevelData[] levelData = new ShopLevelData[10];
+    public ShopLevelData[] _levelData = new ShopLevelData[10];
 }

@@ -12,7 +12,7 @@ public class ShopView : MonoBehaviour
         {
             if (i < units.Length)
             {
-                _unitIcons[i].sprite = units[i].icon;
+                _unitIcons[i].sprite = units[i].Icon;
                 _unitIcons[i].gameObject.SetActive(true);
             }
             else
@@ -20,5 +20,6 @@ public class ShopView : MonoBehaviour
                 _unitIcons[i].gameObject.SetActive(false);
             }
         }
+        Debug.Log("XV");
     }
 }

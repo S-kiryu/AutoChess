@@ -13,7 +13,7 @@ public class ShopModel
     // レベルに応じたユニットをランダムに取得
     public UnitData GetRandomUnit(int level)
     {
-        var rates = _shopData._levelData[level].costRates;
+        var rates = _shopData._levelData[level-1].costRates;
 
         int cost = GetRandomCost(rates);
 

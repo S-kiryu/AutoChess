@@ -13,15 +13,24 @@ MonoBehaviour:
   m_Name: ShopData
   m_EditorClassIdentifier: Assembly-CSharp::ShopData
   _costGroup:
-  - Units: []
-  - Units: []
-  - Units: []
+  - Units:
+    - baseStatus: {fileID: 0}
+      prefab: {fileID: 0}
+      Icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  - Units:
+    - baseStatus: {fileID: 0}
+      prefab: {fileID: 0}
+      Icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  - Units:
+    - baseStatus: {fileID: 0}
+      prefab: {fileID: 0}
+      Icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
   - Units: []
   - Units: []
   - Units: []
   - Units: []
   _levelData:
-  - costRates: 00000000000000000000000000000000000000000000000000000000
+  - costRates: 32000000320000000a00000000000000000000000000000000000000
   - costRates: 00000000000000000000000000000000000000000000000000000000
   - costRates: 00000000000000000000000000000000000000000000000000000000
   - costRates: 00000000000000000000000000000000000000000000000000000000

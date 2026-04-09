@@ -7,14 +7,17 @@ public class BaseStatus : ScriptableObject
     public int Hp;
     public int Mp;
     public int Level;
+
     [Header("攻撃ステータス")]
     public float Attack;
     public float MagicAttack;
     public int AttackSpeed;
     public int AttackRange;
+
     [Header("クリティカル率")]
     public float CriticalRate;
     public float CriticalDamage;
+
     [Header("防御ステータス")]
     public float Defense;
     public float MagicDefense;
@@ -22,6 +25,7 @@ public class BaseStatus : ScriptableObject
     [Header("サブステータス")]
     public float MoveSpeed;
     public float dodgeRate;
+
     [Header("コストとレアリティ")]
     public int Cost;
     public int Rarity;

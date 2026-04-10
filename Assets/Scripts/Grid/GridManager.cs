@@ -27,7 +27,7 @@ public class GridManager: MonoBehaviour
     /// <param name="unit"></param>
     /// <param name="pos"></param>
     /// <returns></returns>
-    public bool TryMoveUnit(Unit unit, Vector2Int pos) 
+    public bool TryMoveUnit(UnitRuntimeData unit, Vector2Int pos) 
     {
         //ˆÚ“®æ‚ª”Õ–ÊŠO‚È‚ç¸”s
         if (!IsInRange(pos))

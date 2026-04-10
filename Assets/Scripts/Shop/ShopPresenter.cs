@@ -13,7 +13,7 @@ public class ShopPresenter
         Roll();
     }
 
-    // プレイヤーレベルに応じてショップのユニットを更新するメソッド
+    // ショップのユニットを更新するメソッド
     public void Roll()
     {
             currentUnits = _model.GetRandomUnit();

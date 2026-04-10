@@ -12,41 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e264eeb579a80c74e80db3975ef2b4b9, type: 3}
   m_Name: ShopData
   m_EditorClassIdentifier: Assembly-CSharp::ShopData
-  _costGroup:
-  - Units:
-    - baseStatus: {fileID: 0}
-      prefab: {fileID: 0}
-      Icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  - Units:
-    - baseStatus: {fileID: 0}
-      prefab: {fileID: 0}
-      Icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  - Units:
-    - baseStatus: {fileID: 0}
-      prefab: {fileID: 0}
-      Icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
-  - Units: []
-  - Units: []
-  - Units: []
-  - Units: []
-  _levelData:
-  - costRates: 32000000280000000a00000000000000000000000000000000000000
-    requiredExp: 0
-  - costRates: 00000000000000000000000000000000000000000000000000000000
-    requiredExp: 100
-  - costRates: 00000000000000000000000000000000000000000000000000000000
-    requiredExp: 100
-  - costRates: 00000000000000000000000000000000000000000000000000000000
-    requiredExp: 0
-  - costRates: 00000000000000000000000000000000000000000000000000000000
-    requiredExp: 0
-  - costRates: 00000000000000000000000000000000000000000000000000000000
-    requiredExp: 0
-  - costRates: 00000000000000000000000000000000000000000000000000000000
-    requiredExp: 0
-  - costRates: 00000000000000000000000000000000000000000000000000000000
-    requiredExp: 0
-  - costRates: 00000000000000000000000000000000000000000000000000000000
-    requiredExp: 0
-  - costRates: 00000000000000000000000000000000000000000000000000000000
-    requiredExp: 0
+  Units:
+  - baseStatus: {fileID: 0}
+    prefab: {fileID: 0}
+    Icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  - baseStatus: {fileID: 0}
+    prefab: {fileID: 0}
+    Icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  - baseStatus: {fileID: 0}
+    prefab: {fileID: 0}
+    Icon: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  - baseStatus: {fileID: 0}
+    prefab: {fileID: 0}
+    Icon: {fileID: 0}
+  - baseStatus: {fileID: 0}
+    prefab: {fileID: 0}
+    Icon: {fileID: 0}
+  LevelUpCost: 640000000a000000

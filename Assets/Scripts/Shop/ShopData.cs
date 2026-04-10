@@ -3,8 +3,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ShopData", menuName = "ScriptableObjects/ShopData")]
 public class ShopData : ScriptableObject
 {
-    [Header("コストごとのユニット")]
-    public CostGroup[] _costGroup = new CostGroup[7];
-    [Header("レベルごとの排出率")]
-    public ShopLevelData[] _levelData = new ShopLevelData[10];
+    public UnitData[] Units = new UnitData[5];
+    public int[] LevelUpCost;
+
+    public UnitData GetRandom()
+    {
+        int index = Random.Range(0, Units.Length);
+        return Units[index];
+    }
 }

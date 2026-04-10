@@ -26,7 +26,7 @@ public class ShopManager : MonoBehaviour
     {
         Debug.Log("クリックされた");
         
-        _shopPresenter.Roll(_playerLevel);
+        _shopPresenter.Roll();
     }
 
     private void OnClickLevelUp()
@@ -36,13 +36,17 @@ public class ShopManager : MonoBehaviour
             Debug.Log("これ以上レベルアップできません");
             return;
         }
-        if (_shopData._levelData[_playerLevel].requiredExp > _money)
+
+        int costIndex = Mathf.Clamp(_playerLevel-1, 0, _shopData.LevelUpCost.Length - 1);
+        int cost = _shopData.LevelUpCost[costIndex];
+
+        if (cost > _money)
         {
             Debug.Log("お金が足りません");
             return;
         }
         _playerLevel = Mathf.Min(_playerLevel + _minLevel, _maxPlayerLevel);
-        _money -= _shopData._levelData[_playerLevel - 1].requiredExp; 
+        _money -= cost; 
         Debug.Log("レベルアップ！現在のレベル: " + _playerLevel);
     }
 }

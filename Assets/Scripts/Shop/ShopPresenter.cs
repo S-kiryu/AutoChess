@@ -3,26 +3,20 @@ public class ShopPresenter
     private ShopModel _model;
     private ShopView _view;
 
-    private UnitData[] currentUnits;
+    private UnitData currentUnits;
 
     public ShopPresenter(ShopModel model, ShopView view)
     {
         this._model = model;
         this._view = view;
 
-        Roll(1);//仮で1Lvを入れてる
+        Roll();
     }
 
     // プレイヤーレベルに応じてショップのユニットを更新するメソッド
-    public void Roll(int playerLevel)
+    public void Roll()
     {
-        currentUnits = new UnitData[5];
-
-        for (int i = 0; i < 5; i++)
-        {
-            currentUnits[i] = _model.GetRandomUnit(playerLevel);
-        }
-
+            currentUnits = _model.GetRandomUnit();
         _view.UpdateUnitIcons(currentUnits);
     }
 }

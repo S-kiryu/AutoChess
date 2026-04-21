@@ -1,13 +1,58 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class GridManager: MonoBehaviour
 {
     [SerializeField] private int width = 8;
     [SerializeField] private int height = 4;
+    [SerializeField] private GameManager gameManager;
+    public int Width => width;
+    public int Height => height;
 
     private GridCell[,] _cells;
 
     private void Awake()
+    {
+        GenerateGrid();
+    }
+
+
+    /// <summary>
+    /// ç§»å‹•ã§ãã‚‹ã‹ã©ã†ã‹ã‚’boolã§åˆ¤æ–­ã™ã‚‹
+    /// </summary>
+    /// <param name="unit"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public bool TryMoveUnit(UnitModel unit, Vector2Int pos) 
+    {
+        if (!IsInRange(pos))
+            return false;
+
+        var targetCell = _cells[pos.x, pos.y];
+        if (!targetCell.IsEmpty) return false;
+
+        var oldPos = unit.GridPos;
+        var oldCell = _cells[oldPos.x, oldPos.y];
+
+        // å…ƒã®ãƒã‚¹ã‚’ç©ºã«ã™ã‚‹
+        oldCell.unit = null;
+
+        // æ–°ã—ã„ãƒã‚¹ã«é…ç½®
+        targetCell.unit = unit;
+
+        // Unitå´æ›´æ–°
+        unit.SetGridPos(pos);
+
+        return true;
+    }
+
+    //ç›¤é¢å¤–ã‹ã©ã†ã‹
+    private bool IsInRange(Vector2Int pos)
+    {
+        return pos.x >= 0 && pos.x < width &&
+               pos.y >= 0 && pos.y < height;
+    }
+
+    private void GenerateGrid() 
     {
         _cells = new GridCell[width, height];
 
@@ -20,33 +65,4 @@ public class GridManager: MonoBehaviour
                 };
             }
     }
-
-    /// <summary>
-    /// ˆÚ“®‚Å‚«‚é‚©‚Ç‚¤‚©‚ğbool‚Å”»’f‚·‚é
-    /// </summary>
-    /// <param name="unit"></param>
-    /// <param name="pos"></param>
-    /// <returns></returns>
-    public bool TryMoveUnit(Unit unit, Vector2Int pos) 
-    {
-        //ˆÚ“®æ‚ª”Õ–ÊŠO‚È‚ç¸”s
-        if (!IsInRange(pos))
-            return false;
-
-        var cell = _cells[pos.x, pos.y];
-        if (!cell.IsEmpty) return false;
-
-        cell.unit = unit;
-        unit.SetGridPos(pos);
-
-        return true;
-    }
-
-    //”Õ–ÊŠO‚©‚Ç‚¤‚©
-    private bool IsInRange(Vector2Int pos)
-    {
-        return pos.x >= 0 && pos.x < width &&
-               pos.y >= 0 && pos.y < height;
-    }
-
 }

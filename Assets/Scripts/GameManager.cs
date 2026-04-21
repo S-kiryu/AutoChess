@@ -1,28 +1,73 @@
 using UnityEngine;
 
+public interface IGameState
+{
+    void Enter();
+    void Update();
+    void Exit();
+}
+
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private BaseStatus playerData;
+    public static GameManager Instance { get; private set; }
 
-    [SerializeField] private BaseStatus enemyData;
+    private IGameState currentState;
 
-
-
-    [SerializeField] private UnitView playerView;
-    [SerializeField] private UnitView enemyView;
-
-    private BattlePresenter presenter;
-
-    void Start()
+    public void ChangeState(IGameState newState)
     {
-        var player = new UnitModel(playerData);
-        var enemy = new UnitModel(enemyData);
+        currentState?.Exit();   // 前の状態を終了
 
-        presenter = new BattlePresenter(player, enemy, playerView, enemyView);
+        currentState = newState;
+
+        currentState.Enter();   // 新しい状態開始
     }
 
-    public void OnAttackButton()
+    void Awake()
     {
-        presenter.Attack();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
+
+    void Update()
+    {
+        currentState?.Update();
+    }
+
+
+    //#region //バトルシステム
+    //[SerializeField] private BaseStatus playerData;
+
+    //[SerializeField] private BaseStatus enemyData;
+
+
+
+    //[SerializeField] private UnitView playerView;
+
+    //[SerializeField] private UnitView enemyView;
+
+
+    //private BattlePresenter presenter;
+
+    //void Start()
+    //{
+    //    var player = new UnitModel(playerData, UnitModel.TeamType.Player);
+    //    var enemy = new UnitModel(enemyData, UnitModel.TeamType.Enemy);
+
+    //    presenter = new BattlePresenter(player, enemy, playerView, enemyView);
+    //}
+
+    //public void OnAttackButton()
+    //{
+    //    presenter.Attack();
+    //}
+    //#endregion
+
 }
+

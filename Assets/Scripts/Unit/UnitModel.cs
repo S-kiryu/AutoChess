@@ -7,6 +7,7 @@ public class UnitModel
     public int CurentMp { get; private set; }
     public int Level { get; private set; }
     public TeamType Team { get; private set; }
+    public Vector2Int GridPos { get; private set; }
 
     public float attackBuff = 1.0f;
     public float defenseBuff = 1.0f;
@@ -17,12 +18,19 @@ public class UnitModel
 
     private BaseStatus _baseStatus;
 
-    public UnitModel(BaseStatus baseStatus)
+    public UnitModel(BaseStatus baseStatus, TeamType team)
     {
         _baseStatus = baseStatus;
+        Team = team;
+
         CurrentHp = baseStatus.Hp;
         CurentMp = baseStatus.Mp;
         Level = baseStatus.Level;
+    }
+
+    public void MoveTo(Vector2Int pos)
+    {
+        GridPos = pos;
     }
 
     public enum TeamType
@@ -41,6 +49,12 @@ public class UnitModel
     {
         CurrentHp = Mathf.Max(0, Mathf.RoundToInt(CurrentHp - damage));
     }
+
+    public void SetGridPos(Vector2Int pos)
+    {
+        GridPos = pos;
+    }
+
     #region//ƒoƒtŒn
     public void AttackBuff(float buff)
     {

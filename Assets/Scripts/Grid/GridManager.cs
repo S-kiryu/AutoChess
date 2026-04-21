@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 ï»¿using UnityEngine;
+=======
+using System.Collections.Generic;
+using UnityEngine;
+using static UnitModel;
+>>>>>>> a074e9d56bed1d9b257ee15a8f711283f6fb7015
 
 public class GridManager: MonoBehaviour
 {
@@ -65,4 +71,66 @@ public class GridManager: MonoBehaviour
                 };
             }
     }
+<<<<<<< HEAD
+=======
+
+    public void MoveUnit(Unit unit, Vector2Int newPos)
+    {
+        // ”O‚Ì‚½‚ßƒ`ƒFƒbƒN
+        if (!CanPlace(newPos)) return;
+
+        var oldPos = unit.GridPos;
+
+        // Œ³‚Ìƒ}ƒX‚ð‹ó‚É‚·‚é
+        _cells[oldPos.x, oldPos.y].unit = null;
+
+        // V‚µ‚¢ƒ}ƒX‚É’u‚­
+        _cells[newPos.x, newPos.y].unit = unit;
+
+        // Unit‘¤‚àXV
+        unit.SetGridPos(newPos);
+    }
+
+    /// <summary>
+    /// ˆÚ“®‚Å‚«‚é‚©‚Ç‚¤‚©‚ðbool‚Å”»’f‚·‚é
+    /// </summary>
+    /// <param name="unit"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public bool TryMoveUnit(Unit unit, Vector2Int pos)
+    {
+        if (!CanPlace(pos)) return false;
+
+        MoveUnit(unit, pos);
+        return true;
+    }
+
+    public IEnumerable<GridCell> AllCells
+    {
+        get
+        {
+            for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
+                {
+                    yield return _cells[x, y];
+                }
+        }
+    }
+
+    public bool CanPlace(Vector2Int pos)
+    {
+        if (!IsInRange(pos)) return false;
+
+        return _cells[pos.x, pos.y].IsEmpty;
+    }
+
+    //”Õ–ÊŠO‚©‚Ç‚¤‚©
+    private bool IsInRange(Vector2Int pos)
+    {
+        return pos.x >= 0 && pos.x < width &&
+               pos.y >= 0 && pos.y < height;
+    }
+
+
+>>>>>>> a074e9d56bed1d9b257ee15a8f711283f6fb7015
 }

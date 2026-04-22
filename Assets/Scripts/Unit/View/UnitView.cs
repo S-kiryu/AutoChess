@@ -9,4 +9,9 @@ public class UnitView : MonoBehaviour
     {
         hpText.text = hp.ToString();
     }
+
+    public void SetPosition(Vector3 worldPos)
+    {
+        transform.position = worldPos;
+    }
 }

@@ -1,5 +1,4 @@
-using System.Threading.Tasks;
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 public class UnitModel
 {
@@ -40,6 +39,9 @@ public class UnitModel
     }
 
     public float Attack => _baseStatus.Attack * attackBuff;
+    public int AttackSpeed => _baseStatus.AttackSpeed;
+    public int AttackRange => _baseStatus.AttackRange;
+    public float MoveSpeed => _baseStatus.MoveSpeed;
     public float Defense => _baseStatus.Defense * defenseBuff;
     public float MagicAttack => (_baseStatus.MagicAttack * magicAttackBuff);
     public float MagicDefense => _baseStatus.MagicDefense * magicDefenseBuff;
@@ -55,7 +57,7 @@ public class UnitModel
         GridPos = pos;
     }
 
-    #region//ÉoÉtån
+    #region//„Éê„ÉïÁ≥ª
     public void AttackBuff(float buff)
     {
         attackBuff += buff;
@@ -85,3 +87,4 @@ public class UnitModel
     }
     #endregion
 }
+

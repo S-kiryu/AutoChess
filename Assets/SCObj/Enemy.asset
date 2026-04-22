@@ -17,14 +17,14 @@ MonoBehaviour:
   Level: 0
   Attack: 4
   MagicAttack: 0
+  AttackSpeed: 1
+  AttackRange: 1
+  CriticalRate: 1
+  CriticalDamage: 1
   Defense: 4
   MagicDefense: 0
-  AttackSpeed: 0
-  CriticalRate: 0
-  CriticalDamage: 0
-  AttackRange: 0
-  Speed: 0
-  dodgeRate: 0
+  MoveSpeed: 1
+  dodgeRate: 1
   Cost: 0
   Rarity: 0
   Type: 

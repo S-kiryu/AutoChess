@@ -6,6 +6,7 @@ using UnityEngine;
 public class BattleSystem : MonoBehaviour
 {
     [SerializeField] private UnitManager unitManager;
+    [SerializeField] private UnitPresenter unitPresenter;
     [SerializeField] private float thinkInterval = 0.4f;
 
     private readonly Dictionary<UnitModel, float> _nextAttackTimes = new Dictionary<UnitModel, float>();
@@ -72,6 +73,8 @@ public class BattleSystem : MonoBehaviour
         AttackData attackData = new AttackData(attacker.Attack, DamageType.Physical);
         float damage = DamageCalculator.CalculateDamage(attacker, attackData, target);
         target.TakeDamage(damage);
+        unitPresenter.SyncUnitHP(target);
+
 
         float attackInterval = attacker.AttackSpeed <= 0 ? 1.0f : 1.0f / attacker.AttackSpeed;
         _nextAttackTimes[attacker] = Time.time + attackInterval;
@@ -86,6 +89,7 @@ public class BattleSystem : MonoBehaviour
         {
             if (unitManager.MoveUnit(unit, nextPos))
             {
+                unitPresenter.SyncUnitPosition(unit);
                 return;
             }
         }

@@ -596,6 +596,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 846018860331089962, guid: 953964b6a8396e94d8562236b455c971, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2483868645147856163, guid: 953964b6a8396e94d8562236b455c971, type: 3}
       propertyPath: m_Name
       value: Triangle
@@ -2055,9 +2059,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5036016999969418969, guid: 7c588036321f94946b6397dbc0d64b87, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7134558670301466147, guid: 7c588036321f94946b6397dbc0d64b87, type: 3}
       propertyPath: m_Name
       value: Square
+      objectReference: {fileID: 0}
+    - target: {fileID: 8713032424595624059, guid: 7c588036321f94946b6397dbc0d64b87, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8900653857211208342, guid: 7c588036321f94946b6397dbc0d64b87, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2542,10 +2554,6 @@ SceneRoots:
   - {fileID: 993913541}
   - {fileID: 759085296}
   - {fileID: 140957976}
-<<<<<<< HEAD
-  - {fileID: 309371487}
-=======
   - {fileID: 2013826159}
   - {fileID: 546753870}
   - {fileID: 1772845992}
->>>>>>> 4798e0a0b73c17640c6beb34da5a833e8d20d46d

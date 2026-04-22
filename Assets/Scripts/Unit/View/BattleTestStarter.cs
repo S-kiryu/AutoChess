@@ -14,6 +14,6 @@ public class BattleTestStarter : MonoBehaviour
         UnitModel enemy = new UnitModel(enemyStatus, UnitModel.TeamType.Enemy);
 
         unitPresenter.RegisterUnit(ally, allyView, new Vector2Int(0, 0));
-        unitPresenter.RegisterUnit(enemy, enemyView, new Vector2Int(4, 0));
+        unitPresenter.RegisterUnit(enemy, enemyView, new Vector2Int(7, 0));
     }
 }

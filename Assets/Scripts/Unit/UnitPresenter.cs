@@ -7,7 +7,9 @@ public class UnitPresenter : MonoBehaviour
 
     private Dictionary<UnitModel, UnitView> _views = new Dictionary<UnitModel, UnitView>();
 
-    // ユニットを登録して、モデルとビューを紐づける
+    /// <summary>
+    /// ユニットを登録する。モデルとビューを紐づけて管理する。
+    /// </summary>
     public void RegisterUnit(UnitModel model, UnitView view, Vector2Int gridPos)
     {
         if (model == null || view == null) return;
@@ -53,6 +55,6 @@ public class UnitPresenter : MonoBehaviour
     //ユニットをグリッド座標からワールド座標に変換する
     private Vector3 GridToWorld(Vector2Int gridPos)
     {
-        return new Vector3(gridPos.x, 0f, gridPos.y);
+        return new Vector3(gridPos.x, gridPos.y,0f );
     }
 }

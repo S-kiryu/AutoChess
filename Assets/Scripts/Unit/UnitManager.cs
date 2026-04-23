@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class UnitManager : MonoBehaviour
 {
+    [SerializeField] private NewGridManager gridManager;
     //全てのユニットを管理するリスト
     private List<UnitModel> _units = new List<UnitModel>();
 
@@ -11,11 +12,16 @@ public class UnitManager : MonoBehaviour
 
     public IReadOnlyList<UnitModel> Units => _units;
 
+
+    
+
+
     //指定した座標にユニットを配置する
     public bool AddUnit(UnitModel unit, Vector2Int pos)
     {
         if (unit == null) return false;
         if (_unitPositions.ContainsKey(pos)) return false;
+        if (HasTile(pos) == false) return false;
 
         _units.Add(unit);
         _unitPositions[pos] = unit;
@@ -109,6 +115,11 @@ public class UnitManager : MonoBehaviour
         }
 
         return nearest;
+    }
+
+    private bool HasTile(Vector2Int pos)
+    {
+        return gridManager != null && gridManager.GetTileAtPosition(pos) != null;
     }
 }
 

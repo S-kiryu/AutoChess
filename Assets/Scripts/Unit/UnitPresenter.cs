@@ -8,8 +8,11 @@ public class UnitPresenter : MonoBehaviour
     private Dictionary<UnitModel, UnitView> _views = new Dictionary<UnitModel, UnitView>();
 
     /// <summary>
-    /// ユニットを登録する。モデルとビューを紐づけて管理する。
+    /// モデルとビューを登録する。
     /// </summary>
+    /// <param name="model">ユニットのモデルを入れる</param>
+    /// <param name="view">ユニットのイメージを入れる</param>
+    /// <param name="gridPos">置く座標</param>
     public void RegisterUnit(UnitModel model, UnitView view, Vector2Int gridPos)
     {
         if (model == null || view == null) return;

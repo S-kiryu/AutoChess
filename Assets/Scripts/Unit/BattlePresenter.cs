@@ -1,5 +1,9 @@
+using UnityEngine;
+
 public class BattlePresenter
 {
+    [SerializeField] private DragData dragData;
+
     private UnitModel attacker;
     private UnitModel target;
 

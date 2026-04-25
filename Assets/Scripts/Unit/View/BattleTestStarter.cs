@@ -10,8 +10,8 @@ public class BattleTestStarter : MonoBehaviour
 
     private void Start()
     {
-        UnitModel ally = new UnitModel(allyStatus, UnitModel.TeamType.Player);
-        UnitModel enemy = new UnitModel(enemyStatus, UnitModel.TeamType.Enemy);
+        UnitModel ally = new UnitModel(allyStatus, TeamType.Player);
+        UnitModel enemy = new UnitModel(enemyStatus, TeamType.Enemy);
 
         unitPresenter.RegisterUnit(ally, allyView, new Vector2Int(0, 0));
         unitPresenter.RegisterUnit(enemy, enemyView, new Vector2Int(5,9));

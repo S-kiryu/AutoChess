@@ -47,18 +47,25 @@ public class UnitManager : MonoBehaviour
     public bool MoveUnit(UnitModel unit, Vector2Int newPos)
     {
         if (unit == null) return false;
-        if (_unitPositions.ContainsKey(newPos)) return false;
+        if (HasTile(newPos) == false) return false;
 
-        if (_unitPositions.ContainsKey(unit.GridPos))
+        if (unit.GridPos == newPos) return true;
+
+        if (_unitPositions.TryGetValue(newPos, out UnitModel otherUnit) && otherUnit != unit)
         {
-            _unitPositions.Remove(unit.GridPos);
+            return false;
         }
+
+        _unitPositions.Remove(unit.GridPos);
 
         unit.SetGridPos(newPos);
         _unitPositions[newPos] = unit;
 
         return true;
     }
+
+
+
 
     //指定した座標にユニットがいるか見て返す
     //クリック時にユニットの情報を表示するためなどに
@@ -75,7 +82,7 @@ public class UnitManager : MonoBehaviour
     }
 
     //指定したチームのユニットを全て返す
-    public List<UnitModel> GetUnitsByTeam(UnitModel.TeamType team)
+    public List<UnitModel> GetUnitsByTeam(TeamType team)
     {
         List<UnitModel> result = new List<UnitModel>();
 

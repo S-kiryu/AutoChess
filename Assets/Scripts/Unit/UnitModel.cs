@@ -32,12 +32,6 @@ public class UnitModel
         GridPos = pos;
     }
 
-    public enum TeamType
-    {
-        Player,
-        Enemy
-    }
-
     public float Attack => _baseStatus.Attack * attackBuff;
     public int AttackSpeed => _baseStatus.AttackSpeed;
     public int AttackRange => _baseStatus.AttackRange;
@@ -86,5 +80,11 @@ public class UnitModel
         criticalDamageBuff += buff;
     }
     #endregion
+}
+
+public enum TeamType
+{
+    Player,
+    Enemy
 }
 

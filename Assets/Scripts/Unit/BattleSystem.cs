@@ -7,6 +7,7 @@ public class BattleSystem : MonoBehaviour
 {
     [SerializeField] private UnitManager unitManager;
     [SerializeField] private UnitPresenter unitPresenter;
+    [SerializeField] private DragData dragData;
     [SerializeField] private float thinkInterval = 0.4f;
 
     private readonly Dictionary<UnitModel, float> _nextAttackTimes = new Dictionary<UnitModel, float>();
@@ -25,6 +26,14 @@ public class BattleSystem : MonoBehaviour
             foreach (UnitModel unit in snapshot)
             {
                 if (unit == null || unit.CurrentHp <= 0)
+                {
+                    continue;
+                }
+
+                if (dragData != null &&
+                    dragData.IsDragging &&
+                    dragData.CurrentView != null &&
+                    dragData.CurrentView.Model == unit)
                 {
                     continue;
                 }
@@ -55,17 +64,16 @@ public class BattleSystem : MonoBehaviour
         MoveToward(unit, enemy);
     }
 
-    //攻撃範囲内にいるか
     private bool IsInRange(UnitModel attacker, UnitModel target)
     {
         int distance = GetGridDistance(attacker.GridPos, target.GridPos);
         return distance <= attacker.AttackRange;
     }
 
-    //攻撃できるか確認して攻撃する
     private void TryAttack(UnitModel attacker, UnitModel target)
     {
-        if (_nextAttackTimes.TryGetValue(attacker, out float nextAttackTime) && Time.time < nextAttackTime)
+        if (_nextAttackTimes.TryGetValue(attacker, out float nextAttackTime) &&
+            Time.time < nextAttackTime)
         {
             return;
         }
@@ -74,7 +82,6 @@ public class BattleSystem : MonoBehaviour
         float damage = DamageCalculator.CalculateDamage(attacker, attackData, target);
         target.TakeDamage(damage);
         unitPresenter.SyncUnitHP(target);
-
 
         float attackInterval = attacker.AttackSpeed <= 0 ? 1.0f : 1.0f / attacker.AttackSpeed;
         _nextAttackTimes[attacker] = Time.time + attackInterval;
@@ -95,7 +102,6 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    //ターゲットに近づくための候補の座標を取得する
     private List<Vector2Int> GetCandidateSteps(Vector2Int currentPos, Vector2Int targetPos)
     {
         List<Vector2Int> candidates = new List<Vector2Int>();
@@ -119,13 +125,11 @@ public class BattleSystem : MonoBehaviour
         return candidates.Distinct().ToList();
     }
 
-    //敵との距離をマンハッタン距離で計算
     private int GetGridDistance(Vector2Int a, Vector2Int b)
     {
         return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
     }
 
-    //死んだユニットを削除する
     private void CleanupDeadUnits(List<UnitModel> units)
     {
         foreach (UnitModel unit in units)
@@ -135,9 +139,8 @@ public class BattleSystem : MonoBehaviour
                 continue;
             }
 
-            unitManager.RemoveUnit(unit);
+            unitPresenter.RemoveUnit(unit);
             _nextAttackTimes.Remove(unit);
         }
     }
 }
-

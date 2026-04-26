@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AttackData
+public record AttackData
 {
     public float Power;
     public DamageType Type;

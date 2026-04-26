@@ -1,9 +1,7 @@
-using UnityEngine;
-
-public record AttackData
+public class AttackData
 {
-    public float Power;
-    public DamageType Type;
+    public float Power { get; }
+    public DamageType Type { get; }
 
     public AttackData(float power, DamageType type)
     {

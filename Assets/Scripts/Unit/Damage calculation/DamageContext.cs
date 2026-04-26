@@ -5,7 +5,9 @@ public class DamageContext
     public UnitModel Target;
     public AttackData Attack;
 
-    public float Power;
+    public float BaseDamage;
+    public float ModifiedDamage;
+    public float ReducedDamage;
     public float FinalDamage;
 
     public bool IsCritical;

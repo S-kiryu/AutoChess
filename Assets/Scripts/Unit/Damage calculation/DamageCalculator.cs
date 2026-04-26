@@ -16,7 +16,10 @@ public static class DamageCalculator
             Attacker = attacker,
             Target = target,
             Attack = attack,
-            Power = attack.Power
+            BaseDamage = attack.Power,
+            ModifiedDamage = attack.Power,
+            ReducedDamage = attack.Power,
+            FinalDamage = attack.Power
         };
 
         foreach (var modifier in modifiers)

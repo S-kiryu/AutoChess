@@ -10,7 +10,6 @@ public class ShopModel
         _shopData = shopData;
     }
 
-    // レベルに応じたユニットをランダムに取得
     public UnitData GetRandomUnit()
     {
         return _shopData.GetRandom();

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class DragData : MonoBehaviour
 {
-    [SerializeField] private NewGridManager gridManager;
+    [SerializeField] private GridManager gridManager;
     [SerializeField] private UnitManager unitManager;
     [SerializeField] private UnitPresenter unitPresenter;
 

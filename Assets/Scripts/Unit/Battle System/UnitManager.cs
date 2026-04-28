@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class UnitManager : MonoBehaviour
 {
-    [SerializeField] private NewGridManager gridManager;
+    [SerializeField] private GridManager gridManager;
     //全てのユニットを管理するリスト
     private List<UnitModel> _units = new List<UnitModel>();
 

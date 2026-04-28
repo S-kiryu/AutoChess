@@ -82,9 +82,9 @@ public class UnitModel
     #endregion
 }
 
-public enum TeamType
-{
-    Player,
-    Enemy
-}
+    public enum TeamType
+    {
+        Player,
+        Enemy
+    }
 

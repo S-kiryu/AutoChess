@@ -20,6 +20,13 @@ public class UnitPresenter : MonoBehaviour
         Instance = this;
     }
 
+    /// <summary>
+    /// 指定したところにユニットを登録する。成功したらtrue、失敗したらfalseを返す。
+    /// </summary>
+    /// <param name="model">ユニットのデータ</param>
+    /// <param name="view">表記させるUI</param>
+    /// <param name="gridPos">置く場所</param>
+    /// <returns>おけるかどうかのブール値が返って来る</returns>
     public bool RegisterUnit(UnitModel model, UnitView view, Vector2Int gridPos)
     {
         if (model == null || view == null || unitManager == null)

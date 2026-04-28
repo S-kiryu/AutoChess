@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnitModel;
 
 public class Unit : MonoBehaviour
 {

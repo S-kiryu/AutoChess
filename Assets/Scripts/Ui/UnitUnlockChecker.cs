@@ -7,14 +7,22 @@ public class UnitUnlockChecker
     public UnitUnlockChecker Instance { get; private set; }
 
     Dictionary<UnitData, bool> UnlockChecker = new Dictionary<UnitData, bool>();
+
+    //ユニットが解放済みかどうかを判定
     public UnitUnlockChecker(UnitData[] unitData)
     {
-        foreach (var data in unitData)
+        for (int i = 0; i < unitData.GetLength(0); i++)
         {
-            UnlockChecker.Add(data, false);
+
+            if (unitData[i] != null)
+            {
+                UnlockChecker[unitData[i]] = false;
+            }
+
         }
     }
 
+    //ユニットを解放する
     public void UnlockUnit(UnitData data)
     {
         if (UnlockChecker.ContainsKey(data))
@@ -23,6 +31,7 @@ public class UnitUnlockChecker
         }
     }
 
+    //ユニットが解放されているかどうかを返す,解放されていない場合はfalseを返す
     public bool IsUnitUnlocked(UnitData data)
     {
         if (UnlockChecker.ContainsKey(data))

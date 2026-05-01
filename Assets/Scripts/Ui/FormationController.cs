@@ -4,52 +4,30 @@ using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 
+/// <summary>編成の管理を行うクラス<summary>
 public class FormationController : MonoBehaviour
 {
     //何ページあるか
     [SerializeField] private int _pageCount;
     //1ページに何ユニット配置できるか
-    [SerializeField] private int _width,_height;
-    //ユニットを配置する場所
-    [SerializeField] private OrganizationUnitView organizationUnitView;
+    [SerializeField] private int _width, _height;
+    //ユニットのデータ
+    [SerializeField] private UnitData[] _unitDatas;
+    [SerializeField] private FormationBoardView _formationBoardView;
 
-    private UnitUnlockChecker _UnitUnlockChecker;
-    public List<Sprite> _unitOrganizationView = new List<Sprite>();
-    private UnitData[] _unitDatas;
+    private UnitUnlockChecker _unitUnlockChecker;
+
+    public UnitUnlockChecker UnlockChecker { get; private set; }
+
 
     public void Start()
     {
-        _UnitUnlockChecker = new UnitUnlockChecker(_unitDatas);
-
-        for(int i = 0;_unitDatas.Length > i; i++)
+        _unitUnlockChecker = new UnitUnlockChecker(_unitDatas);
+        _unitUnlockChecker.UnlockUnit(_unitDatas[0]);
+        _formationBoardView.Initialize(_width, _height);
+        for (int i = 0; _unitDatas.Length > i; i++)
         {
-            if (_UnitUnlockChecker.IsUnitUnlocked(_unitDatas[i]))
-            {
-                SetUnit(_unitDatas[i]);
-            }
+            _formationBoardView.SetUnits(_unitDatas);
         }
     }
-
-    private void  tiles() 
-    {
-        for (int i = 0; i < _pageCount; i++)
-        {
-            for (int j = 0; j < _width * _height; j++)
-            {
-                //タイルを生成する処理
-            }
-        }
-    }
-
-    private void SetUnit(UnitData unitData)
-    {
-        if (unitData == null || unitData.Icon == null)
-        {
-            Debug.LogWarning("UnitData or Icon is null.");
-            return;
-        }
-        _unitOrganizationView.Add(unitData.Icon);
-    }
-
-
 }

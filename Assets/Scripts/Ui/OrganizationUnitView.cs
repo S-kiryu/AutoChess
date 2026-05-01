@@ -4,10 +4,13 @@ using System.Collections.Generic;
 
 public class OrganizationUnitView : MonoBehaviour
 {
-    public Tile _tile;
+    [SerializeField]private FormationSlot _formationSlot;
 
-    public void makeTiles() 
+
+    public void CreateTile(Sprite icon,bool Released)
     {
-        Instantiate(_tile, transform.position, Quaternion.identity, transform);
+        var tile = Instantiate(_formationSlot, transform);
+        tile.SetSprite(icon);
+        tile.SetColor(Released ? Color.white : Color.gray); 
     }
 }

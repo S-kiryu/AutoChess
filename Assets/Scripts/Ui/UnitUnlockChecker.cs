@@ -4,40 +4,25 @@ using UnityEngine;
 /// <summary>ユニットの解放を管理するクラス<summary>
 public class UnitUnlockChecker
 {
-    public UnitUnlockChecker Instance { get; private set; }
+    Dictionary<UnitData, bool> _unlockChecker = new();
 
-    Dictionary<UnitData, bool> UnlockChecker = new Dictionary<UnitData, bool>();
-
-    //ユニットが解放済みかどうかを判定
     public UnitUnlockChecker(UnitData[] unitData)
     {
-        for (int i = 0; i < unitData.GetLength(0); i++)
+        foreach (var data in unitData)
         {
-
-            if (unitData[i] != null)
-            {
-                UnlockChecker[unitData[i]] = false;
-            }
-
+            if (data != null)
+                _unlockChecker[data] = false;
         }
     }
 
-    //ユニットを解放する
     public void UnlockUnit(UnitData data)
     {
-        if (UnlockChecker.ContainsKey(data))
-        {
-            UnlockChecker[data] = true;
-        }
+        if (_unlockChecker.ContainsKey(data))
+            _unlockChecker[data] = true;
     }
 
-    //ユニットが解放されているかどうかを返す,解放されていない場合はfalseを返す
     public bool IsUnitUnlocked(UnitData data)
     {
-        if (UnlockChecker.ContainsKey(data))
-        {
-            return UnlockChecker[data];
-        }
-        return false;
+        return _unlockChecker.TryGetValue(data, out var unlocked) && unlocked;
     }
 }

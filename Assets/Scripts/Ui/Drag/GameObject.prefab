@@ -137,3 +137,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa1e52a7284365408e151e5e9085971, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitDragItem
+  _image: {fileID: 0}
+  unitData:
+    baseStatus: {fileID: 0}
+    icon: {fileID: 0}
+  _homeParent: {fileID: 8882817721204607202}

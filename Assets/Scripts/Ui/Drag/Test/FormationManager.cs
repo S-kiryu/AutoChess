@@ -4,7 +4,14 @@ using UnityEngine;
 public class FormationManager : MonoBehaviour
 {
     [SerializeField] private FormationSlot[] _slots;
+    private List<UnitData> _OrganizationUnits;
 
+    public void OnCrick() 
+    {
+        GetBattleUnits();
+    }
+
+    // ドロップされたユニットを取得するためのメソッド
     public List<UnitData> GetBattleUnits()
     {
         List<UnitData> units = new List<UnitData>();
@@ -14,6 +21,7 @@ public class FormationManager : MonoBehaviour
             if (slot.CurrentUnitData != null)
             {
                 units.Add(slot.CurrentUnitData);
+                Debug.Log($"Slot has unit: {slot.CurrentUnitData}");
             }
         }
 

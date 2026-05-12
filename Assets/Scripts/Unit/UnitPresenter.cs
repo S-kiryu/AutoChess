@@ -48,6 +48,7 @@ public class UnitPresenter : MonoBehaviour
     }
 
 
+    //キャラのの位置を更新
     public void SyncUnitPosition(UnitModel model)
     {
         if (model == null) return;
@@ -56,6 +57,7 @@ public class UnitPresenter : MonoBehaviour
         view.SetPosition(GridToWorld(model.GridPos));
     }
 
+    //キャラのHPを更新
     public void SyncUnitHP(UnitModel model)
     {
         if (model == null) return;
@@ -64,6 +66,7 @@ public class UnitPresenter : MonoBehaviour
         view.SetHP(model.CurrentHp);
     }
 
+    //ユニットを削除する
     public void RemoveUnit(UnitModel model)
     {
         if (model == null) return;
@@ -77,6 +80,7 @@ public class UnitPresenter : MonoBehaviour
         unitManager.RemoveUnit(model);
     }
 
+    //グリッド座標をワールド座標に変換する
     private Vector3 GridToWorld(Vector2Int gridPos)
     {
         return new Vector3(gridPos.x, gridPos.y, 0f);

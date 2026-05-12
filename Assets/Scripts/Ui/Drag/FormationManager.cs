@@ -1,14 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class FormationManager : MonoBehaviour
 {
     [SerializeField] private FormationSlot[] _slots;
-    private List<UnitData> _OrganizationUnits;
+    [SerializeField] private SceneAsset _sceneAsset;
 
-    public void OnCrick() 
+    public void OnClick()
     {
-        GetBattleUnits();
+        var units = GetBattleUnits();
+        BattleDataManager.Instance.PlayerUnits = units;
+        Debug.Log($"{_sceneAsset.name}に移動");
+        UnityEngine.SceneManagement.SceneManager.LoadScene(_sceneAsset.name);
     }
 
     // ドロップされたユニットを取得するためのメソッド

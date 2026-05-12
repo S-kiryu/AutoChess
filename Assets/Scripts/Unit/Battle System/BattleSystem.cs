@@ -17,12 +17,14 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(BattleLoop());
     }
 
+    //ゲームループ
     private IEnumerator BattleLoop()
     {
         while (true)
         {
             List<UnitModel> snapshot = unitManager.Units.ToList();
 
+            //各ユニットの行動を処理
             foreach (UnitModel unit in snapshot)
             {
                 if (unit == null || unit.CurrentHp <= 0)
@@ -30,6 +32,7 @@ public class BattleSystem : MonoBehaviour
                     continue;
                 }
 
+                // ドラッグ中のユニットは行動しない
                 if (dragData != null &&
                     dragData.IsDragging &&
                     dragData.CurrentView != null &&
@@ -49,12 +52,14 @@ public class BattleSystem : MonoBehaviour
 
     private void Act(UnitModel unit)
     {
+        //最も近い敵を見つける
         UnitModel enemy = unitManager.FindNearestEnemy(unit);
         if (enemy == null)
         {
             return;
         }
 
+        //攻撃範囲内にいるか見て、いれば攻撃、いなければ近づく
         if (IsInRange(unit, enemy))
         {
             TryAttack(unit, enemy);
@@ -87,6 +92,11 @@ public class BattleSystem : MonoBehaviour
         _nextAttackTimes[attacker] = Time.time + attackInterval;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="unit">行動するユニット</param>
+    /// <param name="target">狙うユニット</param>
     private void MoveToward(UnitModel unit, UnitModel target)
     {
         Vector2Int currentPos = unit.GridPos;

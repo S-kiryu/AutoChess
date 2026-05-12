@@ -308,6 +308,51 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7273501072037559319, guid: 16f93c5d6896c1e458410c49525698d0, type: 3}
   m_PrefabInstance: {fileID: 46535413}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &169576010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 169576012}
+  - component: {fileID: 169576011}
+  m_Layer: 0
+  m_Name: BattleDataManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &169576011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169576010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fa89252da92f004faaf3442e6d82adb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleDataManager
+  PlayerUnits: []
+--- !u!4 &169576012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169576010}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 858.3477, y: 625.1812, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &208509725
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -714,6 +759,7 @@ MonoBehaviour:
   - {fileID: 1135546499}
   - {fileID: 2056832519}
   - {fileID: 1725877150}
+  _sceneAsset: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
 --- !u!114 &1135546499 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3801640445073553971, guid: 16f93c5d6896c1e458410c49525698d0, type: 3}
@@ -1330,7 +1376,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1114332152}
         m_TargetAssemblyTypeName: FormationManager, Assembly-CSharp
-        m_MethodName: OnCrick
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1642,3 +1688,4 @@ SceneRoots:
   - {fileID: 978875819}
   - {fileID: 1732567096}
   - {fileID: 1519000605}
+  - {fileID: 169576012}

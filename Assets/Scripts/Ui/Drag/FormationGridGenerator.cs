@@ -25,11 +25,15 @@ public class FormationGridGenerator : MonoBehaviour
             {
                 image.color = new UnityEngine.Color(Random.value, Random.value, Random.value);
             }
-            var data = obj.GetComponent<UnitDragItem>();
+            var data = obj.GetComponentInChildren<UnitDragItem>();
 
-            if (data != null)
+            if (i < _unitDatas.Length && _unitDatas[i].Icon != null)
             {
                 data.SetUnitData(_unitDatas[i]);
+            }
+            else 
+            {
+                data.SetUnitData(_unitDatas[0]);
             }
         }
     }

@@ -1,3 +1,4 @@
+using System.Drawing;
 using UnityEngine;
 
 // フォーメーションのグリッドを生成するクラス
@@ -18,11 +19,21 @@ public class FormationGridGenerator : MonoBehaviour
         {
 
             var obj = Instantiate(_gridPrefab, transform);
-            var data = obj.GetComponent<UnitDragItem>();
 
-            if (data != null)
+            var image = obj.GetComponentInChildren<UnityEngine.UI.Image>();
+            if (image != null)
+            {
+                image.color = new UnityEngine.Color(Random.value, Random.value, Random.value);
+            }
+            var data = obj.GetComponentInChildren<UnitDragItem>();
+
+            if (i < _unitDatas.Length && _unitDatas[i].Icon != null)
             {
                 data.SetUnitData(_unitDatas[i]);
+            }
+            else 
+            {
+                data.SetUnitData(_unitDatas[0]);
             }
         }
     }

@@ -26,7 +26,7 @@ public class BaseStatus : ScriptableObject
     [Header("サブステータス")]
     public float MoveSpeed;
     /// 回避率
-    public float dodgeRate;
+    public float DodgeRate;
 
     [Header("ユニットのタイプ")]
     public UnitType[] Type;

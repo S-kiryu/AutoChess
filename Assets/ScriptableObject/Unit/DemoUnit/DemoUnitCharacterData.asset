@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: DemoUnitCharacterData
   m_EditorClassIdentifier: Assembly-CSharp::CharacterData
   CharacterName: DemoUnit
-  Icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  Icon: {fileID: 21300000, guid: fe9218653ba1a5a4e980901c0607ae9b, type: 3}
   BaseStatus: {fileID: 11400000, guid: 2f4a8a70b7fd7ad41911e639afd9f9e0, type: 2}

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+/// キャラクターデータを格納するScriptableObject
 [CreateAssetMenu(menuName = "Character/CharacterData")]
 public class CharacterData : ScriptableObject
 { 

@@ -1,16 +1,30 @@
-﻿[System.Serializable]
-public class UnitInstance   //キャラの実態
+﻿using System;
+using UnityEngine;
+
+/// <summary>
+/// 実態クラス
+/// </summary>
+[Serializable]
+public class UnitInstance
 {
-    public string UniqueId;          // 個体ID
-    public CharacterData Data;       // ベース情報
-    private UnitStatus Status;        // ランタイムステータス
+    [SerializeField] private string uniqueId;
+    [SerializeField] private CharacterData data;
+    [SerializeField] private UnitStatus status = new UnitStatus();
 
-    public UnitInstance(CharacterData data)
+    public string UniqueId => uniqueId;
+    public CharacterData Data => data;
+    public UnitStatus Status => status;
+
+    public void Initialize(CharacterData characterData)
     {
-        UniqueId = System.Guid.NewGuid().ToString();
-        Data = data;
+        if (characterData == null)
+        {
+            Debug.LogError("CharacterData is null.");
+            return;
+        }
 
-        Status = new UnitStatus();
-        Status.Initialize(data.BaseStatus);
+        uniqueId = Guid.NewGuid().ToString();
+        data = characterData;
+        status.Initialize(characterData.BaseStatus);
     }
 }

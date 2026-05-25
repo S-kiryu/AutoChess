@@ -2,10 +2,19 @@
 
 public class UnitView : MonoBehaviour
 {
-    public UnitInstance Instance;
+    private SpriteRenderer SpriteRenderer;
 
-    public void Initialize(UnitInstance instance)
+    private void Awake()
     {
-        Instance = instance;
+        SpriteRenderer = GetComponent<SpriteRenderer>();
     }
+
+        public void UpdateView(CharacterData Data)
+        {
+            if (Data == null || SpriteRenderer == null)
+            {
+                return;
+            }
+            SpriteRenderer.sprite = Data.Icon;
+        }
 }

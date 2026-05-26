@@ -15,44 +15,44 @@ public class UnitStatus
     [SerializeField] private int _level;
 
     [Header("攻撃ステータス")]
-    [SerializeField] private float attack;
-    [SerializeField] private float magicAttack;
-    [SerializeField] private int attackSpeed;
-    [SerializeField] private int attackRange;
+    [SerializeField] private float _attack;
+    [SerializeField] private float _magicAttack;
+    [SerializeField] private int _attackSpeed;
+    [SerializeField] private int _attackRange;
 
     [Header("クリティカル率")]
-    [SerializeField] private float criticalRate;
-    [SerializeField] private float criticalDamage;
+    [SerializeField] private float _criticalRate;
+    [SerializeField] private float _criticalDamage;
 
     [Header("防御ステータス")]
-    [SerializeField] private float defense;
-    [SerializeField] private float magicDefense;
-    [SerializeField] private float criticalDefense;
+    [SerializeField] private float _defense;
+    [SerializeField] private float _magicDefense;
+    [SerializeField] private float _criticalDefense;
 
     [Header("サブステータス")]
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float dodgeRate;
+    [SerializeField] private float _moveSpeed;
+    [SerializeField] private float _dodgeRate;
 
     [Header("ユニットのタイプ")]
-    [SerializeField] private UnitType[] type;
+    [SerializeField] private UnitType[] _type;
 
     public int MaxHp => _maxHp;
     public int CurrentHp => _currentHp;
     public int MaxMp => _maxMp;
     public int CurrentMp => _currentMp;
     public int Level => _level;
-    public float Attack => attack;
-    public float MagicAttack => magicAttack;
-    public int AttackSpeed => attackSpeed;
-    public int AttackRange => attackRange;
-    public float CriticalRate => criticalRate;
-    public float CriticalDamage => criticalDamage;
-    public float Defense => defense;
-    public float MagicDefense => magicDefense;
-    public float CriticalDefense => criticalDefense;
-    public float MoveSpeed => moveSpeed;
-    public float DodgeRate => dodgeRate;
-    public UnitType[] Type => type;
+    public float Attack => _attack;
+    public float MagicAttack => _magicAttack;
+    public int AttackSpeed => _attackSpeed;
+    public int AttackRange => _attackRange;
+    public float CriticalRate => _criticalRate;
+    public float CriticalDamage => _criticalDamage;
+    public float Defense => _defense;
+    public float MagicDefense => _magicDefense;
+    public float CriticalDefense => _criticalDefense;
+    public float MoveSpeed => _moveSpeed;
+    public float DodgeRate => _dodgeRate;
+    public UnitType[] Type => _type;
 
     public void Initialize(BaseStatus baseStatus)
     {
@@ -62,17 +62,17 @@ public class UnitStatus
         _maxMp = baseStatus.Mp;
         _currentMp = 0;
         _level = baseStatus.Level;
-        attack = baseStatus.Attack;
-        magicAttack = baseStatus.MagicAttack;
-        attackSpeed = baseStatus.AttackSpeed;
-        attackRange = baseStatus.AttackRange;
-        criticalRate = baseStatus.CriticalRate;
-        criticalDamage = baseStatus.CriticalDamage;
-        defense = baseStatus.Defense;
-        magicDefense = baseStatus.MagicDefense;
-        criticalDefense = baseStatus.CriticalDefense;
-        moveSpeed = baseStatus.MoveSpeed;
-        dodgeRate = baseStatus.DodgeRate;
-        type = baseStatus.Type;
+        _attack = baseStatus.Attack;
+        _magicAttack = baseStatus.MagicAttack;
+        _attackSpeed = baseStatus.AttackSpeed;
+        _attackRange = baseStatus.AttackRange;
+        _criticalRate = baseStatus.CriticalRate;
+        _criticalDamage = baseStatus.CriticalDamage;
+        _defense = baseStatus.Defense;
+        _magicDefense = baseStatus.MagicDefense;
+        _criticalDefense = baseStatus.CriticalDefense;
+        _moveSpeed = baseStatus.MoveSpeed;
+        _dodgeRate = baseStatus.DodgeRate;
+        _type = baseStatus.Type;
     }
 }

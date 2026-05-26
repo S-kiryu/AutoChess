@@ -2,19 +2,36 @@
 
 public class UnitView : MonoBehaviour
 {
-    private SpriteRenderer SpriteRenderer;
+    [SerializeField] private UnitInstance instance;
+
+    private SpriteRenderer spriteRenderer;
+    private UnitPresenter presenter;
 
     private void Awake()
     {
-        SpriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        presenter = new UnitPresenter(instance, this);
     }
 
-        public void UpdateView(CharacterData Data)
+    private void Start()
+    {
+        presenter.RefreshView();
+    }
+
+    public void Initialize(UnitInstance unitInstance)
+    {
+        instance = unitInstance;
+        presenter = new UnitPresenter(instance, this);
+        presenter.RefreshView();
+    }
+
+    public void UpdateView(CharacterData data)
+    {
+        if (data == null || spriteRenderer == null)
         {
-            if (Data == null || SpriteRenderer == null)
-            {
-                return;
-            }
-            SpriteRenderer.sprite = Data.Icon;
+            return;
         }
+
+        spriteRenderer.sprite = data.Icon;
+    }
 }

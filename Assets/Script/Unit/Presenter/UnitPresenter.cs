@@ -1,22 +1,21 @@
-using UnityEngine;
-
-public class UnitPresenter: MonoBehaviour
+public class UnitPresenter
 {
-    [SerializeField]private UnitInstance Instance;
-    [SerializeField]private UnitView View;
+    private readonly UnitInstance instance;
+    private readonly UnitView view;
 
-    public void Start()
+    public UnitPresenter(UnitInstance instance, UnitView view)
     {
-        RefreshView();
+        this.instance = instance;
+        this.view = view;
     }
 
-    // Viewを更新するためのメソッド
     public void RefreshView()
     {
-        if (Instance == null || View == null)
+        if (instance == null || view == null)
         {
             return;
         }
-        View.UpdateView(Instance.Data);
+
+        view.UpdateView(instance.Data);
     }
 }

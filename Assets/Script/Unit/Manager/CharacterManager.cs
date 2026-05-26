@@ -21,8 +21,7 @@ public class CharacterManager : MonoBehaviour
 
     public UnitInstance CreateCharacter(CharacterData data)
     {
-        var unit = new UnitInstance();
-        unit.Initialize(data);
+        var unit = UnitFactory.Create(data);
         characters.Add(unit);
         return unit;
     }

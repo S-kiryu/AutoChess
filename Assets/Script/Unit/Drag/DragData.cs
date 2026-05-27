@@ -1,3 +1,4 @@
+//ドラック中のデータを保持するクラス
 public static class DragData
 {
     public static UnitInstance Unit { get; private set; }

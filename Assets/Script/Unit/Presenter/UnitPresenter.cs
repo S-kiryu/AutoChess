@@ -1,3 +1,6 @@
+/// <summary>
+/// ユニットのPresenterクラス
+/// </summary>
 public class UnitPresenter
 {
     private readonly UnitInstance instance;

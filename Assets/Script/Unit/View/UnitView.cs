@@ -25,6 +25,10 @@ public class UnitView : MonoBehaviour
         presenter.RefreshView();
     }
 
+    /// <summary>
+    /// 見た目を更新するためのメソッド
+    /// </summary>
+    /// <param name="data"></param>
     public void UpdateView(CharacterData data)
     {
         if (data == null || spriteRenderer == null)

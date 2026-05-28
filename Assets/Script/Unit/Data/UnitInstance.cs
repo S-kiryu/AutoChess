@@ -19,7 +19,7 @@ public class UnitInstance
     {
         if (characterData == null)
         {
-            Debug.LogError("CharacterData is null.");
+            Debug.LogError("CharacterDataがないよ");
             return;
         }
 

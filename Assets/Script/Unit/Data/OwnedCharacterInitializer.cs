@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// ここにシリアライズされたキャラクターをキャラクターリストに追加するためのクラス
+/// </summary>
 public class OwnedCharacterInitializer : MonoBehaviour
 {
     [SerializeField] private CharacterData[] initialCharacters;

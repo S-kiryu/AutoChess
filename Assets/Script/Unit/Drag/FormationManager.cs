@@ -36,12 +36,19 @@ public class FormationManager : MonoBehaviour
             return true;
         }
 
+        //同じユニットが他のスロットに配置されている場合は、元のスロットを空にする
         slots[slotIndex] = unit;
         OnFormationChanged?.Invoke();
         return true;
     }
 
-    //編成中のユニットを取得するためのメソッド
+    //編成しているユニットを取得するためのメソッド
+    public UnitInstance[] GetUnits()
+    {
+        return slots;
+    }
+
+    //指定したスロットに配置されているユニットを取得するためのメソッド
     public UnitInstance GetUnit(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= slots.Length)

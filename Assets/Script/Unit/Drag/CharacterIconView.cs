@@ -12,7 +12,8 @@ public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
-    private Transform originalParent;
+    private Transform originalParent;// ドラック開始時の親オブジェクトを保存するための変数
+    private Transform setParent;// ドラック終了時に配置する親オブジェクトを保存するための変数
     private Vector2 originalAnchoredPosition;
     private bool isAssigned;
 
@@ -41,22 +42,38 @@ public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler,
         SetAssigned(false);
     }
 
-    //編成に配置されているキャラクターのアイコンをグレーアウトするためのメソッド
+    /// <summary>
+    /// 編成に配置されているかを確認して色を変える
+    /// </summary>
+    /// <param name="assigned"></param>
     public void SetAssigned(bool assigned)
     {
         isAssigned = assigned;
-        iconImage.color = assigned ? new Color(0.4f, 0.4f, 0.4f, 1f) : Color.white;
+        if (assigned)
+        {
+            iconImage.color = new Color(0.4f, 0.4f, 0.4f, 1f);
+        }
+        else 
+        {
+            iconImage.color = Color.white;
+        }
     }
 
-    //ドラック開始時の処理
+    /// <summary>
+    /// ドラック開始時の処理
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (Unit == null || isAssigned || canvas == null)
-        {
-            return;
-        }
+        //if (Unit == null || isAssigned || canvas == null)
+        //{
+        //    return;
+        //}
 
+        // ドラック開始時に親をCanvasに変更して、アイコンが他のUI要素の上に表示されるようにする
         originalParent = transform.parent;
+
+        // ドラック開始時の位置を保存
         originalAnchoredPosition = rectTransform.anchoredPosition;
 
         transform.SetParent(canvas.transform, true);
@@ -66,28 +83,46 @@ public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler,
         canvasGroup.blocksRaycasts = false;
     }
 
-    //ドラック中の処理
+    /// <summary>
+    /// ドラック中の処理
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnDrag(PointerEventData eventData)
     {
-        if (Unit == null || isAssigned)
-        {
-            return;
-        }
+        //if (Unit == null || isAssigned)
+        //{
+        //    return;
+        //}
 
         rectTransform.position = eventData.position;
     }
 
-    //ドラック終了時の処理
+    /// <summary>
+    /// ドラック終了時の処理
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (Unit == null || isAssigned)
-        {
-            return;
-        }
-
-        //元に戻した
+        //if (Unit == null || isAssigned)
+        //{
+        //    return;
+        //}
+    
+        //キャストを有効に戻した
         canvasGroup.blocksRaycasts = true;
+        if (isAssigned)
+        {
+
+        }
+        else 
+            Returnposition();
+    }
+
+    public void Returnposition() 
+    {
+        // ドラック終了時に元の親に戻す
         transform.SetParent(originalParent, false);
+        //元の位置に戻す
         rectTransform.anchoredPosition = originalAnchoredPosition;
     }
 }

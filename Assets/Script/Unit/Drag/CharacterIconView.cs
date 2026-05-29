@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -13,9 +14,12 @@ public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Transform originalParent;// ドラック開始時の親オブジェクトを保存するための変数
-    private Transform setParent;// ドラック終了時に配置する親オブジェクトを保存するための変数
+    private FormationSlotView currentSlotView ;
+    private Transform homeParent;
+    private Vector2 homeAnchoredPosition;// ドラック終了時に配置する親オブジェクトを保存するための変数
     private Vector2 originalAnchoredPosition;
     private bool isAssigned;
+    private bool droppedToSlot;
 
     public UnitInstance Unit { get; private set; }
 
@@ -39,6 +43,9 @@ public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler,
     {
         Unit = unit;
         iconImage.sprite = unit.Data.Icon;
+
+        homeParent = transform.parent;
+        homeAnchoredPosition = rectTransform.anchoredPosition;
         SetAssigned(false);
     }
 
@@ -53,7 +60,7 @@ public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler,
         {
             iconImage.color = new Color(0.4f, 0.4f, 0.4f, 1f);
         }
-        else 
+        else
         {
             iconImage.color = Color.white;
         }
@@ -69,6 +76,7 @@ public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler,
         //{
         //    return;
         //}
+        droppedToSlot = false;
 
         // ドラック開始時に親をCanvasに変更して、アイコンが他のUI要素の上に表示されるようにする
         originalParent = transform.parent;
@@ -103,26 +111,47 @@ public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler,
     /// <param name="eventData"></param>
     public void OnEndDrag(PointerEventData eventData)
     {
-        //if (Unit == null || isAssigned)
-        //{
-        //    return;
-        //}
-    
-        //キャストを有効に戻した
         canvasGroup.blocksRaycasts = true;
-        if (isAssigned)
-        {
 
+        if (Unit == null)
+        {
+            return;
         }
-        else 
-            Returnposition();
+
+        if (!droppedToSlot)
+        {
+            if (currentSlotView != null)
+            {
+                currentSlotView.RemoveIcon(this);
+                currentSlotView = null;
+            }
+
+            ReturnHomePosition();
+        }
     }
 
-    public void Returnposition() 
+    public void Returnposition()
     {
         // ドラック終了時に元の親に戻す
         transform.SetParent(originalParent, false);
         //元の位置に戻す
         rectTransform.anchoredPosition = originalAnchoredPosition;
+    }
+
+    public void ReturnHomePosition()
+    {
+        transform.SetParent(homeParent, false);
+        rectTransform.anchoredPosition = homeAnchoredPosition;
+        SetAssigned(false);
+    }
+
+    public void SetToSlot(FormationSlotView slotView)
+    {
+        droppedToSlot = true;
+        currentSlotView = slotView;
+
+        transform.SetParent(slotView.transform, false);
+        rectTransform.anchoredPosition = Vector2.zero;
+        SetAssigned(true);
     }
 }

@@ -65,6 +65,17 @@ public class FormationManager : MonoBehaviour
         return GetAssignedSlotIndex(unit) >= 0;
     }
 
+    public void ClearUnit(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= slots.Length)
+        {
+            return;
+        }
+
+        slots[slotIndex] = null;
+        OnFormationChanged?.Invoke();
+    }
+
     //指定したユニットがどこのスロットに配置されているかを確認するためのメソッド
     private int GetAssignedSlotIndex(UnitInstance unit)
     {

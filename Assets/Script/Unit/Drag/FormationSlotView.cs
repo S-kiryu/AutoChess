@@ -9,6 +9,8 @@ public class FormationSlotView : MonoBehaviour, IDropHandler
     [SerializeField] private FormationManager formationManager;
     [SerializeField] private Image unitIcon;
 
+    private CharacterIconView currentIconView;
+
     private void OnEnable()
     {
         if (formationManager != null)
@@ -39,11 +41,21 @@ public class FormationSlotView : MonoBehaviour, IDropHandler
             return;
         }
 
-        if (formationManager.SetUnit(slotIndex, iconView.Unit))
+        if (!formationManager.SetUnit(slotIndex, iconView.Unit))
         {
-            RefreshView();
-            Debug.Log($"スロット{slotIndex}に配置: {iconView.Unit.Data.CharacterName}");
+            return;
         }
+
+        if (currentIconView != null && currentIconView != iconView)
+        {
+            currentIconView.ReturnHomePosition();
+        }
+
+        currentIconView = iconView;
+        currentIconView.SetToSlot(this);
+
+        RefreshView();
+        Debug.Log($"スロット{slotIndex}に配置: {iconView.Unit.Data.CharacterName}");
     }
 
     //スロットの表示を更新するためのメソッド
@@ -66,4 +78,18 @@ public class FormationSlotView : MonoBehaviour, IDropHandler
         unitIcon.enabled = true;
         unitIcon.sprite = unit.Data.Icon;
     }
+
+    public void RemoveIcon(CharacterIconView iconView)
+    {
+        if (currentIconView != iconView)
+        {
+            return;
+        }
+
+        currentIconView = null;
+        formationManager.ClearUnit(slotIndex);
+        RefreshView();
+    }
+
+
 }

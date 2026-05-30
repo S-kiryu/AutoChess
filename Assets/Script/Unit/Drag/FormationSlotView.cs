@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-//ドロップ可能な編成スロットのUIクラス
+// ドロップ可能な編成スロットのUIクラス
 public class FormationSlotView : MonoBehaviour, IDropHandler
 {
     [SerializeField] private int slotIndex;
@@ -10,6 +10,8 @@ public class FormationSlotView : MonoBehaviour, IDropHandler
     [SerializeField] private Image unitIcon;
 
     private CharacterIconView currentIconView;
+
+    public int SlotIndex => slotIndex;
 
     private void OnEnable()
     {
@@ -29,36 +31,96 @@ public class FormationSlotView : MonoBehaviour, IDropHandler
         }
     }
 
-    //ドロップされたときに呼び出されるメソッド
     public void OnDrop(PointerEventData eventData)
     {
         CharacterIconView iconView = eventData.pointerDrag != null
             ? eventData.pointerDrag.GetComponent<CharacterIconView>()
             : null;
 
-        if (iconView == null || iconView.Unit == null)
+        if (iconView == null || iconView.Unit == null || formationManager == null)
         {
             return;
         }
 
-        if (!formationManager.SetUnit(slotIndex, iconView.Unit))
+        FormationSlotView sourceSlot = iconView.PreviousSlotView;
+        CharacterIconView displacedIcon = currentIconView;
+
+        formationManager.ClearUnitSilent(slotIndex);
+        currentIconView = null;
+
+        if (displacedIcon != null && displacedIcon != iconView)
         {
-            return;
+            if (sourceSlot != null)
+            {
+                if (!formationManager.SetUnitSilent(sourceSlot.SlotIndex, displacedIcon.Unit))
+                {
+                    RestoreDragSource(iconView, sourceSlot);
+                    displacedIcon.SetToSlot(this);
+                    formationManager.SetUnitSilent(slotIndex, displacedIcon.Unit);
+                    formationManager.NotifyFormationChanged();
+                    return;
+                }
+
+                sourceSlot.AcceptIcon(displacedIcon);
+                displacedIcon.SetToSlot(sourceSlot);
+            }
+            else
+            {
+                displacedIcon.ReturnHomePosition();
+            }
         }
 
-        if (currentIconView != null && currentIconView != iconView)
+        if (!formationManager.SetUnitSilent(slotIndex, iconView.Unit))
         {
-            currentIconView.ReturnHomePosition();
+            if (displacedIcon != null && displacedIcon != iconView)
+            {
+                displacedIcon.ReturnHomePosition();
+            }
+
+            RestoreDragSource(iconView, sourceSlot);
+            formationManager.NotifyFormationChanged();
+            return;
         }
 
         currentIconView = iconView;
-        currentIconView.SetToSlot(this);
+        iconView.SetToSlot(this);
 
-        RefreshView();
-        Debug.Log($"スロット{slotIndex}に配置: {iconView.Unit.Data.CharacterName}");
+        formationManager.NotifyFormationChanged();
     }
 
-    //スロットの表示を更新するためのメソッド
+    public void AcceptIcon(CharacterIconView iconView)
+    {
+        currentIconView = iconView;
+    }
+
+    public bool RestoreIcon(CharacterIconView iconView)
+    {
+        if (iconView == null || iconView.Unit == null || formationManager == null)
+        {
+            return false;
+        }
+
+        if (!formationManager.SetUnitSilent(slotIndex, iconView.Unit))
+        {
+            return false;
+        }
+
+        currentIconView = iconView;
+        formationManager.NotifyFormationChanged();
+        return true;
+    }
+
+    private void RestoreDragSource(CharacterIconView iconView, FormationSlotView sourceSlot)
+    {
+        if (sourceSlot != null && sourceSlot.RestoreIcon(iconView))
+        {
+            iconView.SetToSlot(sourceSlot);
+            return;
+        }
+
+        iconView.ReturnHomePosition();
+    }
+
     private void RefreshView()
     {
         if (unitIcon == null || formationManager == null)
@@ -88,8 +150,16 @@ public class FormationSlotView : MonoBehaviour, IDropHandler
 
         currentIconView = null;
         formationManager.ClearUnit(slotIndex);
-        RefreshView();
     }
 
+    public void DetachIcon(CharacterIconView iconView)
+    {
+        if (currentIconView != iconView)
+        {
+            return;
+        }
 
+        currentIconView = null;
+        formationManager.ClearUnitSilent(slotIndex);
+    }
 }

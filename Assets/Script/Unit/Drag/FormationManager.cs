@@ -76,6 +76,30 @@ public class FormationManager : MonoBehaviour
         OnFormationChanged?.Invoke();
     }
 
+    // イベントを発火させずにデータだけ消す（ドラッグ中の一時的なクリア用）
+    public void ClearUnitSilent(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= slots.Length) return;
+        slots[slotIndex] = null;
+        // OnFormationChanged は発火しない
+    }
+
+    public bool SetUnitSilent(int slotIndex, UnitInstance unit)
+    {
+        if (slotIndex < 0 || slotIndex >= slots.Length || unit == null) return false;
+        int assignedIndex = GetAssignedSlotIndex(unit);
+        if (assignedIndex >= 0 && assignedIndex != slotIndex) return false;
+        if (slots[slotIndex] == unit) return true;
+        slots[slotIndex] = unit;
+        // OnFormationChanged は発火しない
+        return true;
+    }
+
+    public void NotifyFormationChanged()
+    {
+        OnFormationChanged?.Invoke();
+    }
+
     //指定したユニットがどこのスロットに配置されているかを確認するためのメソッド
     private int GetAssignedSlotIndex(UnitInstance unit)
     {

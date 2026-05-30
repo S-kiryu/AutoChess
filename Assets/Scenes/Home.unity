@@ -1264,15 +1264,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OwnedCharacterInitializer
   initialCharacters:
   - {fileID: 11400000, guid: 0ce3a81c7c696394590cf3b91ac53cbd, type: 2}
-  - {fileID: 11400000, guid: 0ce3a81c7c696394590cf3b91ac53cbd, type: 2}
-  - {fileID: 11400000, guid: 0ce3a81c7c696394590cf3b91ac53cbd, type: 2}
-  - {fileID: 11400000, guid: 0ce3a81c7c696394590cf3b91ac53cbd, type: 2}
-  - {fileID: 11400000, guid: 0ce3a81c7c696394590cf3b91ac53cbd, type: 2}
-  - {fileID: 11400000, guid: 0ce3a81c7c696394590cf3b91ac53cbd, type: 2}
-  - {fileID: 11400000, guid: 0ce3a81c7c696394590cf3b91ac53cbd, type: 2}
-  - {fileID: 11400000, guid: 0ce3a81c7c696394590cf3b91ac53cbd, type: 2}
-  - {fileID: 11400000, guid: 0ce3a81c7c696394590cf3b91ac53cbd, type: 2}
-  - {fileID: 11400000, guid: 0ce3a81c7c696394590cf3b91ac53cbd, type: 2}
+  - {fileID: 11400000, guid: 493c396da2187924e85418156b175beb, type: 2}
   characterListView: {fileID: 256994631}
 --- !u!4 &1896183603
 Transform:

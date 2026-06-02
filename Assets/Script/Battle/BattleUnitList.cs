@@ -32,7 +32,7 @@ public class BattleUnitList : MonoBehaviour
 
     public void GetUnits() 
     {
-        if(_unitList.Count < 0)return;
+        if(_unitList.Count < 0&&_unitList == null)return;
         foreach (var unit in _unitList) 
         {
             Debug.Log(unit);

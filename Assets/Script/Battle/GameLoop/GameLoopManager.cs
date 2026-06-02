@@ -4,6 +4,13 @@ public class GameLoopManager : MonoBehaviour
 {
     public GameState CurrentState { get; private set; }
 
+    [SerializeField] private GameState initialState;
+
+    private void Start()
+    {
+        ChangeState(initialState);
+    }
+
     public void ChangeState(GameState newState)
     {
         CurrentState = newState;

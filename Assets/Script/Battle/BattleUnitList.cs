@@ -4,11 +4,10 @@ using System.Collections.Generic;
 
 public class BattleUnitList : MonoBehaviour
 {
-    public static BattleUnitList instance;
+    public static BattleUnitList instance { get; private set; }
 
     [SerializeField] private FormationManager formationManager;
     private List<UnitInstance> _unitList = new List<UnitInstance>();
-    private int[] a = new int[0];
 
     void Awake()
     {
@@ -21,12 +20,22 @@ public class BattleUnitList : MonoBehaviour
         instance = this;
     }
 
+    //ƒ{ƒ^ƒ“‚ÅŒÄ‚ñ‚Å‚Ü‚·
     public void BattleUnitSet() 
     {
         var units = formationManager.GetUnits();
         foreach (var unit in units)
         {
             _unitList.Add(unit);
+        }
+    }
+
+    public void GetUnits() 
+    {
+        if(_unitList.Count < 0)return;
+        foreach (var unit in _unitList) 
+        {
+            Debug.Log(unit);
         }
     }
 }

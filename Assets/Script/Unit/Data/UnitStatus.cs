@@ -8,33 +8,33 @@ using UnityEngine;
 public class UnitStatus
 {
     [Header("基本ステータス")]
-    [SerializeField] private int _maxHp;
-    [SerializeField] private int _currentHp;
-    [SerializeField] private int _maxMp;
-    [SerializeField] private int _currentMp;
-    [SerializeField] private int _level;
+    private int _maxHp;
+    private int _currentHp;
+    private int _maxMp;
+    private int _currentMp;
+    private int _level;
 
     [Header("攻撃ステータス")]
-    [SerializeField] private float _attack;
-    [SerializeField] private float _magicAttack;
-    [SerializeField] private int _attackSpeed;
-    [SerializeField] private int _attackRange;
+    private float _attack;
+    private float _magicAttack;
+    private int _attackSpeed;
+    private int _attackRange;
 
     [Header("クリティカル率")]
-    [SerializeField] private float _criticalRate;
-    [SerializeField] private float _criticalDamage;
+    private float _criticalRate;
+    private float _criticalDamage;
 
     [Header("防御ステータス")]
-    [SerializeField] private float _defense;
-    [SerializeField] private float _magicDefense;
-    [SerializeField] private float _criticalDefense;
+    private float _defense;
+    private float _magicDefense;
+    private float _criticalDefense;
 
     [Header("サブステータス")]
-    [SerializeField] private float _moveSpeed;
-    [SerializeField] private float _dodgeRate;
+    private float _moveSpeed;
+    private float _dodgeRate;
 
     [Header("ユニットのタイプ")]
-    [SerializeField] private UnitType[] _type;
+    private UnitType[] _type;
 
     public int MaxHp => _maxHp;
     public int CurrentHp => _currentHp;

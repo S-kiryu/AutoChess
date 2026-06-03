@@ -3,8 +3,19 @@ using UnityEngine;
 public class GameLoopManager : MonoBehaviour
 {
     public GameState CurrentState { get; private set; }
+    public static GameLoopManager Instance { get; private set; }
 
     [SerializeField] private GameState initialState;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
 
     private void Start()
     {

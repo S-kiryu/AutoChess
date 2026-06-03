@@ -1,12 +1,6 @@
 using UnityEngine;
 
+///戦闘ユニットの管理クラス
 public class BatttleUnitManager : MonoBehaviour
 {
-    BattleUnitList _unitsL;
-
-    private void Awake()
-    {
-        _unitsL = FindFirstObjectByType<BattleUnitList>();
-        _unitsL.GetUnits();
-    }
 }

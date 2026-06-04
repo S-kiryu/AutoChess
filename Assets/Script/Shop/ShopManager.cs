@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ShopManager : MonoBehaviour
 {
     public List<UnitInstance> unitPool;
+    [SerializeField] private int _generate = 1;
 
     private void Start()
     {
@@ -21,6 +21,7 @@ public class ShopManager : MonoBehaviour
 
             var instance = new UnitInstance();
             instance.Initialize(baseUnit.Data);
+            Debug.Log($"Generated Unit: {instance.Data.name}");
         }
     }
 }

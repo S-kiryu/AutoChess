@@ -1,6 +1,9 @@
 public static class UnitFactory
 {
-    //UnitInstanceを生成するためのファクトリークラス
+    /// <summary>
+    /// UnitInstanceを生成するためのファクトリークラス
+    /// </summary>
+    /// <param name="data"></param>
     public static UnitInstance Create(CharacterData data)
     {
         var unit = new UnitInstance();

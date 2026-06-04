@@ -19,7 +19,10 @@ public class CharacterManager : MonoBehaviour
         Instance = this;
     }
 
-    //キャラクターリストに追加するためのメソッド
+    /// <summary>
+    /// キャラクターリストに追加するためのメソッド
+    /// </summary>
+    /// <param name="data"></param>
     public UnitInstance CreateCharacter(CharacterData data)
     {
         var unit = UnitFactory.Create(data);

@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
-/// ドラック可能なキャラクターアイコンのUIクラス
+/// ドラッグ可能なキャラクターアイコンのUIクラス
 /// </summary>
 public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -13,10 +13,14 @@ public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Transform originalParent;
+    private Transform homeParent;
+    private Vector2 homeAnchoredPosition;
     private Vector2 originalAnchoredPosition;
-    private bool isAssigned;
+    private FormationSlotView currentSlotView;
+    private bool droppedToSlot;
 
     public UnitInstance Unit { get; private set; }
+    public FormationSlotView PreviousSlotView { get; private set; }
 
     private void Awake()
     {
@@ -38,56 +42,93 @@ public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler,
     {
         Unit = unit;
         iconImage.sprite = unit.Data.Icon;
+
+        homeParent = transform.parent;
+        homeAnchoredPosition = rectTransform.anchoredPosition;
         SetAssigned(false);
     }
 
-    //編成に配置されているキャラクターのアイコンをグレーアウトするためのメソッド
     public void SetAssigned(bool assigned)
     {
-        isAssigned = assigned;
-        iconImage.color = assigned ? new Color(0.4f, 0.4f, 0.4f, 1f) : Color.white;
+        iconImage.color = assigned
+            ? new Color(0.4f, 0.4f, 0.4f, 1f)
+            : Color.white;
     }
 
-    //ドラック開始時の処理
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (Unit == null || isAssigned || canvas == null)
-        {
-            return;
-        }
-
+        droppedToSlot = false;
         originalParent = transform.parent;
         originalAnchoredPosition = rectTransform.anchoredPosition;
 
+        if (currentSlotView != null)
+        {
+            PreviousSlotView = currentSlotView;
+            currentSlotView.DetachIcon(this);
+            currentSlotView = null;
+            SetAssigned(false);
+        }
+        else
+        {
+            PreviousSlotView = null;
+        }
+
         transform.SetParent(canvas.transform, true);
         transform.SetAsLastSibling();
-
-        // ドラック中は他のUI要素の下に表示されるようにするため、Raycastを無効化
         canvasGroup.blocksRaycasts = false;
     }
 
-    //ドラック中の処理
     public void OnDrag(PointerEventData eventData)
     {
-        if (Unit == null || isAssigned)
-        {
-            return;
-        }
-
         rectTransform.position = eventData.position;
     }
 
-    //ドラック終了時の処理
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (Unit == null || isAssigned)
+        canvasGroup.blocksRaycasts = true;
+
+        if (Unit == null)
         {
             return;
         }
 
-        //元に戻した
-        canvasGroup.blocksRaycasts = true;
+        if (droppedToSlot)
+        {
+            return;
+        }
+
+        if (PreviousSlotView != null && PreviousSlotView.RestoreIcon(this))
+        {
+            SetToSlot(PreviousSlotView);
+            PreviousSlotView = null;
+            return;
+        }
+
+        ReturnHomePosition();
+        PreviousSlotView = null;
+    }
+
+    public void Returnposition()
+    {
         transform.SetParent(originalParent, false);
         rectTransform.anchoredPosition = originalAnchoredPosition;
+    }
+
+    public void ReturnHomePosition()
+    {
+        transform.SetParent(homeParent, false);
+        rectTransform.anchoredPosition = homeAnchoredPosition;
+        currentSlotView = null;
+        SetAssigned(false);
+    }
+
+    public void SetToSlot(FormationSlotView slotView)
+    {
+        droppedToSlot = true;
+        currentSlotView = slotView;
+
+        transform.SetParent(slotView.transform, false);
+        rectTransform.anchoredPosition = Vector2.zero;
+        SetAssigned(true);
     }
 }

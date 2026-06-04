@@ -36,12 +36,19 @@ public class FormationManager : MonoBehaviour
             return true;
         }
 
+        //同じユニットが他のスロットに配置されている場合は、元のスロットを空にする
         slots[slotIndex] = unit;
         OnFormationChanged?.Invoke();
         return true;
     }
 
-    //編成中のユニットを取得するためのメソッド
+    //編成しているユニットを取得するためのメソッド
+    public UnitInstance[] GetUnits()
+    {
+        return slots;
+    }
+
+    //指定したスロットに配置されているユニットを取得するためのメソッド
     public UnitInstance GetUnit(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= slots.Length)
@@ -56,6 +63,41 @@ public class FormationManager : MonoBehaviour
     public bool IsAssigned(UnitInstance unit)
     {
         return GetAssignedSlotIndex(unit) >= 0;
+    }
+
+    public void ClearUnit(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= slots.Length)
+        {
+            return;
+        }
+
+        slots[slotIndex] = null;
+        OnFormationChanged?.Invoke();
+    }
+
+    // イベントを発火させずにデータだけ消す（ドラッグ中の一時的なクリア用）
+    public void ClearUnitSilent(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= slots.Length) return;
+        slots[slotIndex] = null;
+        // OnFormationChanged は発火しない
+    }
+
+    public bool SetUnitSilent(int slotIndex, UnitInstance unit)
+    {
+        if (slotIndex < 0 || slotIndex >= slots.Length || unit == null) return false;
+        int assignedIndex = GetAssignedSlotIndex(unit);
+        if (assignedIndex >= 0 && assignedIndex != slotIndex) return false;
+        if (slots[slotIndex] == unit) return true;
+        slots[slotIndex] = unit;
+        // OnFormationChanged は発火しない
+        return true;
+    }
+
+    public void NotifyFormationChanged()
+    {
+        OnFormationChanged?.Invoke();
     }
 
     //指定したユニットがどこのスロットに配置されているかを確認するためのメソッド

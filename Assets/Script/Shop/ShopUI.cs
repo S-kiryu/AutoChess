@@ -1,14 +1,14 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ShopUI : MonoBehaviour
 {
     [SerializeField] Button _button;
-    [SerializeField] ShopManager shopManager;
-    [SerializeField] int _generateCount = 1;
+    [SerializeField] ShopManager _shopManager;
 
     public void OnClickGenerate() 
     {
-        shopManager.GenerateUnit(_generateCount);
+        var Units = _shopManager.GenerateShop();
     }
 }

@@ -25,5 +25,5 @@ MonoBehaviour:
   MagicDefense: 0
   CriticalDefense: 0
   MoveSpeed: 0
-  dodgeRate: 0
+  DodgeRate: 0
   Type: 

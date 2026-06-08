@@ -8,6 +8,8 @@ public class ShopManager : MonoBehaviour
     private void Start()
     {
         unitPool = BattleUnitList.instance.GetUnits();
+        for (int i = 0; i < unitPool.Count; i++)
+            Debug.Log($"{unitPool[i]}");
     }
 
     /// <summary>
@@ -20,10 +22,10 @@ public class ShopManager : MonoBehaviour
 
         var data = unitPool[Random.Range(0, unitPool.Count)];
         var unit = UnitFactory.Create(data.Data);
+        Debug.Log($"¶¬‚³‚ê‚½ƒ†ƒjƒbƒg: {unit.Data.CharacterName}");
 
-        var result = unit;
 
-        return result;
+        return unit;
     }
 
 }

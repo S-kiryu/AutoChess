@@ -7,13 +7,7 @@ using UnityEngine.UI;
 public class BenchSlotUI : MonoBehaviour
 {
     [SerializeField] private Image _unitIcon;
-    [SerializeField] private Image _background;
     [SerializeField] private GameObject _highlight;
-
-    public void SetBackground(Image background) 
-    {
-        _background = background;
-    }
 
     /// <summary>
     /// ユニットを配置する

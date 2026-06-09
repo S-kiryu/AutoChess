@@ -7,15 +7,41 @@ using UnityEngine.UI;
 public class BenchUI : MonoBehaviour
 {
     [SerializeField] private BenchManager benchManager;
-    [SerializeField] private BenchSlotUI[,] slotUIs;
-    [SerializeField] private GameObject slotPrefab;
-    [SerializeField] private Image _background;
-    int width, height;
+    [SerializeField] private BenchSlotUI slotPrefab;
+    [SerializeField] private Transform slotParent;
+    [SerializeField] private GameObject backgroundPrefab;
+    [SerializeField] private Transform backgroundParent;
 
-    private void Start()
+    private BenchSlotUI[,] slotUIs;
+    private int width, height;
+
+    private void Awake()
     {
+        if (benchManager == null)
+        {
+            Debug.LogError("BenchManagerが設定されていません。", this);
+            enabled = false;
+            return;
+        }
+
+        if (slotPrefab == null)
+        {
+            Debug.LogError("SlotPrefabが設定されていません。", this);
+            enabled = false;
+            return;
+        }
+
+        if (slotParent == null)
+        {
+            slotParent = transform;
+        }
+        
         width = benchManager.Width;
         height = benchManager.Height;
+
+        slotUIs = new BenchSlotUI[width, height];
+
+        GenerateBackground();
         BenchGenerate();
     }
 
@@ -24,15 +50,28 @@ public class BenchUI : MonoBehaviour
     /// </summary>
     private void BenchGenerate()
     {
-        for(int x = 0; x < width; x++)
+        for (int x = 0; x < width; x++)
         {
-            for(int y = 0; y < height; y++)
+            for (int y = 0; y < height; y++)
             {
-                slotUIs[x, y] = Instantiate(slotPrefab, transform).GetComponent<BenchSlotUI>();
-                slotUIs[x, y].SetBackground(_background);
+                BenchSlotUI slotUI = Instantiate(slotPrefab, slotParent);
+                slotUIs[x, y] = slotUI;
+
+                slotUI.Clear();
             }
         }
     }
+    private void GenerateBackground()
+    {
+        if (backgroundPrefab == null)
+        {
+            return;
+        }
+
+        Transform parent = backgroundParent != null ? backgroundParent : transform;
+        Instantiate(backgroundPrefab, parent);
+    }
+
 
     #region//イベント系
     //イベント追加

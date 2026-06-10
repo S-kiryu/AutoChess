@@ -558,7 +558,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -634, y: -312}
+  m_AnchoredPosition: {x: -600, y: -300}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &845761152
@@ -759,7 +759,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Battle
+  m_text: Shop
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1197,6 +1197,7 @@ MonoBehaviour:
   benchManager: {fileID: 727479956}
   slotPrefab: {fileID: 3201410656970364565, guid: 28ab05a4658279d4398213d5832fd237, type: 3}
   slotUIPrefab: {fileID: 1566059963035183220, guid: d089a4b191987364ba51dccd1161e00f, type: 3}
+  canvas: {fileID: 327924901}
   slotRoot: {fileID: 1924344194}
 --- !u!114 &1924344196
 MonoBehaviour:
@@ -1351,7 +1352,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -720, y: 430}
+  m_AnchoredPosition: {x: -700, y: 400}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2032846117

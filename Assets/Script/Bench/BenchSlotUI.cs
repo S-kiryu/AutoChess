@@ -1,13 +1,34 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
 /// 個々のスロットのUIを管理するクラス
 /// </summary>
-public class BenchSlotUI : MonoBehaviour
+public class BenchSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] private Image _unitIcon;
     [SerializeField] private GameObject _highlight;
+    [SerializeField] private Canvas _canvas;
+
+    private UnitInstance unit;
+    private RectTransform rectTransform;
+    private CanvasGroup canvasGroup;
+    private Transform originalParent;
+    private Vector2 originalAnchoredPosition;
+    public UnitInstance Unit => unit;
+
+    private void Awake()
+    {
+        rectTransform = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
+
+        if (canvasGroup == null)
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        }
+    }
 
     /// <summary>
     /// ユニットを配置する
@@ -15,6 +36,8 @@ public class BenchSlotUI : MonoBehaviour
     /// <param name="unit"></param>
     public void SetUnit(UnitInstance unit)
     {
+        this.unit = unit;
+
         _unitIcon.sprite = unit.Data.Icon;
         _unitIcon.enabled = true;
     }
@@ -24,6 +47,8 @@ public class BenchSlotUI : MonoBehaviour
     /// </summary>
     public void Clear()
     {
+        unit = null;
+
         _unitIcon.sprite = null;
         _unitIcon.enabled = false;
     }
@@ -35,6 +60,53 @@ public class BenchSlotUI : MonoBehaviour
     public void SetSelected(bool selected)
     {
         _highlight.SetActive(selected);
+    }
+
+    public void SetCanvas(Canvas canvas) 
+    {
+        _canvas = canvas;
+    }
+
+    //ドラック開始
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (unit == null)
+        {
+            return;
+        }
+
+        originalParent = transform.parent;
+        originalAnchoredPosition = rectTransform.anchoredPosition;
+
+        transform.SetParent(_canvas.transform, true);
+        transform.SetAsLastSibling();
+
+        canvasGroup.blocksRaycasts = false;
+    }
+
+    //ドラック中
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (unit == null)
+        {
+            return;
+        }
+
+        rectTransform.position = eventData.position;
+    }
+
+    //ドラック終了
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (unit == null)
+        {
+            return;
+        }
+
+        canvasGroup.blocksRaycasts = true;
+
+        transform.SetParent(originalParent, false);
+        rectTransform.anchoredPosition = originalAnchoredPosition;
     }
 
     /// <summary>

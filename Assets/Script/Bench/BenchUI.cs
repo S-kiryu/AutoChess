@@ -13,6 +13,7 @@ public class BenchUI : MonoBehaviour
     [Header("ê∂ê¨Ç∑ÇÈÉvÉåÉnÉu")]
     [SerializeField] private BenchSlot slotPrefab;
     [SerializeField] private BenchSlotUI slotUIPrefab;
+    [SerializeField] private Canvas canvas;
     [SerializeField] private Transform slotRoot;
 
     private BenchSlot[,] slots;
@@ -81,6 +82,7 @@ public class BenchUI : MonoBehaviour
         BenchSlot slot = slots[x, y];
 
         BenchSlotUI slotUI = Instantiate(slotUIPrefab, slot.transform);
+        slotUI.SetCanvas(canvas);
 
         RectTransform rectTransform = slotUI.GetComponent<RectTransform>();
 

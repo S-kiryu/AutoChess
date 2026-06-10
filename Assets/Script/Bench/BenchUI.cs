@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,11 +9,13 @@ using UnityEngine.UI;
 public class BenchUI : MonoBehaviour
 {
     [SerializeField] private BenchManager benchManager;
-    [SerializeField] private BenchSlotUI slotPrefab;
-    [SerializeField] private Transform slotParent;
-    [SerializeField] private GameObject backgroundPrefab;
-    [SerializeField] private Transform backgroundParent;
 
+    [Header("生成するプレハブ")]
+    [SerializeField] private BenchSlot slotPrefab;
+    [SerializeField] private BenchSlotUI slotUIPrefab;
+    [SerializeField] private Transform slotRoot;
+
+    private BenchSlot[,] slots;
     private BenchSlotUI[,] slotUIs;
     private int width, height;
 
@@ -24,56 +28,27 @@ public class BenchUI : MonoBehaviour
             return;
         }
 
-        if (slotPrefab == null)
+        if (slotUIPrefab == null)
         {
             Debug.LogError("SlotPrefabが設定されていません。", this);
             enabled = false;
             return;
         }
 
-        if (slotParent == null)
+        if (slotRoot == null)
         {
-            slotParent = transform;
+            slotRoot = transform;
         }
         
         width = benchManager.Width;
         height = benchManager.Height;
 
+        slots = new BenchSlot[width, height];
         slotUIs = new BenchSlotUI[width, height];
 
-        GenerateBackground();
-        BenchGenerate();
+        GenerateSlots();
     }
 
-    /// <summary>
-    /// ベンチを生成する
-    /// </summary>
-    private void BenchGenerate()
-    {
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                BenchSlotUI slotUI = Instantiate(slotPrefab, slotParent);
-                slotUIs[x, y] = slotUI;
-
-                slotUI.Clear();
-            }
-        }
-    }
-    private void GenerateBackground()
-    {
-        if (backgroundPrefab == null)
-        {
-            return;
-        }
-
-        Transform parent = backgroundParent != null ? backgroundParent : transform;
-        Instantiate(backgroundPrefab, parent);
-    }
-
-
-    #region//イベント系
     //イベント追加
     private void OnEnable()
     {
@@ -87,19 +62,67 @@ public class BenchUI : MonoBehaviour
         benchManager.OnUnitPlaced -= HandleUnitPlaced;
         benchManager.OnUnitRemoved -= HandleUnitRemoved;
     }
+    private void GenerateSlots()
+    {
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                BenchSlot slot = Instantiate(slotPrefab, slotRoot);
+                slot.name = $"BenchSlot_{x}_{y}";
+                slot.Initialize(x, y, benchManager);
+                slots[x, y] = slot;
+            }
+        }
+    }
 
-    // ユニットが配置されたときのUI更新
+    private void GenerateUnit(int x, int y)
+    {
+        BenchSlot slot = slots[x, y];
+
+        BenchSlotUI slotUI = Instantiate(slotUIPrefab, slot.transform);
+
+        RectTransform rectTransform = slotUI.GetComponent<RectTransform>();
+
+        //
+        if (rectTransform != null)
+        {
+            rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            rectTransform.pivot = new Vector2(0.5f, 0.5f);
+            rectTransform.anchoredPosition = Vector2.zero;
+            rectTransform.localScale = Vector3.one;
+        }
+        else
+        {
+            slotUI.transform.localPosition = Vector3.zero;
+            slotUI.transform.localScale = Vector3.one;
+        }
+
+        slotUI.Clear();
+
+        slotUIs[x, y] = slotUI;
+    }
+
     private void HandleUnitPlaced(UnitInstance instance, int x, int y)
     {
+        if (slotUIs[x, y] == null)
+        {
+            GenerateUnit(x, y);
+        }
+
         slotUIs[x, y].SetUnit(instance);
         slotUIs[x, y].PlayPlaceEffect();
     }
 
-    // ユニットが撤去されたときのUI更新
     private void HandleUnitRemoved(UnitInstance instance, int x, int y)
     {
+        if (slotUIs[x, y] == null)
+        {
+            return;
+        }
+
         slotUIs[x, y].Clear();
         slotUIs[x, y].PlayRemoveEffect();
     }
-    #endregion
 }

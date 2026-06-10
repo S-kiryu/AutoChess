@@ -29,7 +29,7 @@ public class BenchSlotUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ユニットが選択されているかどうかを表示する
+    /// ユニットが選択されているかどうかを表示するハイライト
     /// </summary>
     /// <param name="selected"></param>
     public void SetSelected(bool selected)

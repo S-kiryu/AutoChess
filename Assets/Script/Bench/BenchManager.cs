@@ -105,14 +105,10 @@ public class BenchManager : MonoBehaviour
         {
             for (int x = 0; x < _benchs.GetLength(0); x++)
             {
-                if (_benchs[x, y] != null)
+                if (SetUnit(unit, x, y))
                 {
-                    continue;
+                    return true;
                 }
-
-                _benchs[x, y] = unit;
-                OnUnitPlaced?.Invoke(unit, x, y);
-                return true;
             }
         }
 

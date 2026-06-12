@@ -17,7 +17,17 @@ public class BenchSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private CanvasGroup canvasGroup;
     private Transform originalParent;
     private Vector2 originalAnchoredPosition;
+    private int x;
+    private int y;
     public UnitInstance Unit => unit;
+    public int X => x;
+    public int Y => y;
+
+    public void Initialize(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
 
     private void Awake()
     {
@@ -37,6 +47,7 @@ public class BenchSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void SetUnit(UnitInstance unit)
     {
         this.unit = unit;
+        Debug.Log($"{this.unit.Data.name}Çê›íu");
 
         _unitIcon.sprite = unit.Data.Icon;
         _unitIcon.enabled = true;

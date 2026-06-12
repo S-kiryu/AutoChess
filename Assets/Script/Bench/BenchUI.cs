@@ -86,7 +86,6 @@ public class BenchUI : MonoBehaviour
 
         RectTransform rectTransform = slotUI.GetComponent<RectTransform>();
 
-        //
         if (rectTransform != null)
         {
             rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
@@ -106,6 +105,7 @@ public class BenchUI : MonoBehaviour
         slotUIs[x, y] = slotUI;
     }
 
+    //ユニットを置くときにイベントで呼ぶ
     private void HandleUnitPlaced(UnitInstance instance, int x, int y)
     {
         if (slotUIs[x, y] == null)
@@ -114,9 +114,11 @@ public class BenchUI : MonoBehaviour
         }
 
         slotUIs[x, y].SetUnit(instance);
+        slotUIs[x, y].Initialize(x, y);
         slotUIs[x, y].PlayPlaceEffect();
     }
 
+    //イベントでユニットを消す
     private void HandleUnitRemoved(UnitInstance instance, int x, int y)
     {
         if (slotUIs[x, y] == null)

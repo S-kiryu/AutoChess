@@ -19,9 +19,5 @@ public class BenchSlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        // 後でここにドラッグ中ユニットの受け取りを書く
-        // 例:
-        // UnitInstance unit = ...
-        // benchManager.SetUnit(unit, x, y);
     }
 }

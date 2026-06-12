@@ -20,10 +20,21 @@ public class ShopManager : MonoBehaviour
     public UnitInstance GenerateShop()
     {
 
-        var data = unitPool[Random.Range(0, unitPool.Count)];
-        var unit = UnitFactory.Create(data.Data);
-        Debug.Log($"生成されたユニット: {unit.Data.CharacterName}");
+        int randomNum = Random.Range(0, unitPool.Count);
+        UnitInstance data;
+        UnitInstance unit;
 
+        if (unitPool[randomNum] == null)
+        {
+            unit = null;
+        }
+        else
+        {
+             data = unitPool[Random.Range(0, unitPool.Count)];
+             unit = UnitFactory.Create(data.Data);
+
+            Debug.Log($"生成されたユニット: {unit.Data.CharacterName}");
+        }
 
         return unit;
     }

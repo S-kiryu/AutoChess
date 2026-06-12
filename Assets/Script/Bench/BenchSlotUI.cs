@@ -19,6 +19,7 @@ public class BenchSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private Vector2 originalAnchoredPosition;
     private int x;
     private int y;
+    private bool droppedOnSlot = false;
     public UnitInstance Unit => unit;
     public int X => x;
     public int Y => y;
@@ -81,10 +82,9 @@ public class BenchSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     //ドラック開始
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (unit == null)
-        {
-            return;
-        }
+        if (unit == null) return;
+
+        droppedOnSlot = false; // ←リセット
 
         originalParent = transform.parent;
         originalAnchoredPosition = rectTransform.anchoredPosition;
@@ -109,15 +109,16 @@ public class BenchSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     //ドラック終了
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (unit == null)
-        {
-            return;
-        }
+        if (unit == null) return;
 
         canvasGroup.blocksRaycasts = true;
 
-        transform.SetParent(originalParent, false);
-        rectTransform.anchoredPosition = originalAnchoredPosition;
+        // 成功してないなら戻す
+        if (!droppedOnSlot)
+        {
+            transform.SetParent(originalParent, false);
+            rectTransform.anchoredPosition = originalAnchoredPosition;
+        }
     }
 
     /// <summary>
@@ -134,5 +135,10 @@ public class BenchSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void PlayRemoveEffect()
     {
         // 消える演出、縮小、パーティクルなど
+    }
+
+    public void SetDropped(bool value)
+    {
+        droppedOnSlot = value;
     }
 }

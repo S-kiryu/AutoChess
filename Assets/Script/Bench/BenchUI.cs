@@ -121,12 +121,10 @@ public class BenchUI : MonoBehaviour
     //イベントでユニットを消す
     private void HandleUnitRemoved(UnitInstance instance, int x, int y)
     {
-        if (slotUIs[x, y] == null)
-        {
-            return;
-        }
+        if (slotUIs[x, y] == null) return;
 
-        slotUIs[x, y].Clear();
-        slotUIs[x, y].PlayRemoveEffect();
+        Destroy(slotUIs[x, y].gameObject);
+        slotUIs[x, y] = null;
     }
+
 }

@@ -1,24 +1,17 @@
 using UnityEngine;
 
-/// <summary>
-/// 戦闘グリッドの1マス
-/// </summary>
-public class BattleGridCell : MonoBehaviour
+public class BattleGrid : MonoBehaviour
 {
     private bool _isUnitPresent;
     private Vector2Int _position;
 
-    public Vector2Int Position => _position;
-    public bool IsUnitPresent => _isUnitPresent;
-
-    public void Initialize(Vector2Int position)
+    public bool IsUnitPresent() 
     {
-        _position = position;
-        _isUnitPresent = false;
+        return _isUnitPresent;
     }
 
-    public void SetUnitPresent(bool isPresent)
+    public void SetPos(Vector2Int pos) 
     {
-        _isUnitPresent = isPresent;
+        _position = pos;
     }
 }

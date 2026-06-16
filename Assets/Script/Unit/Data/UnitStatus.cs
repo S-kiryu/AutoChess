@@ -17,7 +17,7 @@ public class UnitStatus
     [Header("攻撃ステータス")]
     private float _attack;
     private float _magicAttack;
-    private int _attackSpeed;
+    private float _attackSpeed;
     private int _attackRange;
 
     [Header("クリティカル率")]
@@ -43,7 +43,7 @@ public class UnitStatus
     public int Level => _level;
     public float Attack => _attack;
     public float MagicAttack => _magicAttack;
-    public int AttackSpeed => _attackSpeed;
+    public float AttackSpeed => _attackSpeed;
     public int AttackRange => _attackRange;
     public float CriticalRate => _criticalRate;
     public float CriticalDamage => _criticalDamage;
@@ -53,6 +53,9 @@ public class UnitStatus
     public float MoveSpeed => _moveSpeed;
     public float DodgeRate => _dodgeRate;
     public UnitType[] Type => _type;
+
+
+    public bool IsDead => _currentHp <= 0;
 
     public void Initialize(BaseStatus baseStatus)
     {
@@ -74,5 +77,15 @@ public class UnitStatus
         _moveSpeed = baseStatus.MoveSpeed;
         _dodgeRate = baseStatus.DodgeRate;
         _type = baseStatus.Type;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        _currentHp -= (int)damage;
+
+        if (_currentHp < 0)
+        {
+            _currentHp = 0;
+        }
     }
 }

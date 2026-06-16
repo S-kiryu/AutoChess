@@ -26,26 +26,7 @@ public class BenchSlot : MonoBehaviour, IDropHandler
             return;
         }
 
-        // ★ ドロップ成功フラグ
-        draggedUI.SetDropped(true);
-
-        int fromX = draggedUI.X;
-        int fromY = draggedUI.Y;
-
-        if (fromX == x && fromY == y) return;
-
-        var movingUnit = draggedUI.Unit;
-        var targetUnit = benchManager.GetUnit(x, y);
-
-        benchManager.RemoveUnit(fromX, fromY);
-
-        if (targetUnit != null)
-        {
-            benchManager.RemoveUnit(x, y);
-            benchManager.SetUnit(targetUnit, fromX, fromY);
-        }
-
-        benchManager.SetUnit(movingUnit, x, y);
+        benchManager.SwapUnit(draggedUI,x,y);
 
         // UI移動
         draggedUI.transform.SetParent(transform, false);

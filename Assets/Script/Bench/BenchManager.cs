@@ -94,6 +94,31 @@ public class BenchManager : MonoBehaviour
         return true;
     }
 
+    public bool SwapUnit(BenchSlotUI draggedUI,int x,int y) 
+    {
+        draggedUI.SetDropped(true);
+
+        int fromX = draggedUI.X;
+        int fromY = draggedUI.Y;
+
+        if (fromX == x && fromY == y) return false;
+
+        var movingUnit = draggedUI.Unit;
+        var targetUnit = GetUnit(x, y);
+
+        RemoveUnit(fromX, fromY);
+
+        if (targetUnit != null)
+        {
+            RemoveUnit(x, y);
+            SetUnit(targetUnit, fromX, fromY);
+        }
+
+        SetUnit(movingUnit, x, y);
+
+        return true;
+    }
+
     /// <summary>
     /// 空いてるベンチを探してユニットを置く
     /// </summary>

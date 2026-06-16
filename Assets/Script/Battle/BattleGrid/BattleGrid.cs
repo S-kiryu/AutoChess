@@ -1,17 +1,29 @@
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class BattleGrid : MonoBehaviour
+public class BattleGrid : MonoBehaviour, IDropHandler
 {
-    private bool _isUnitPresent;
+    //今いるユニット
+    private UnitInstance _currentUnit;
+    //グリットの座標
     private Vector2Int _position;
 
-    public bool IsUnitPresent() 
-    {
-        return _isUnitPresent;
-    }
+    public UnitInstance CurrentUnit => _currentUnit;
+    public Vector2Int Position => _position;
 
-    public void SetPos(Vector2Int pos) 
+    public void OnDrop(PointerEventData eventData)
+    {
+        //戦闘中だったら何もできないようにする
+
+    }
+    public void Initialize(Vector2Int pos)
     {
         _position = pos;
+    }
+
+    public void SetUnit(UnitInstance unit) 
+    {
+        _currentUnit = unit;
     }
 }

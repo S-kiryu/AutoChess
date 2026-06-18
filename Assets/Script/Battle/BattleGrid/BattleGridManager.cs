@@ -1,12 +1,17 @@
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class BattleGridManager : MonoBehaviour
 {
     public static BattleGridManager Instance { get; private set; }
     [SerializeField] private BattleGrid grid;
-    private GameObject[] _gameObjects;
+    [SerializeField] private int x;
+    [SerializeField] private int y;
+    [SerializeField] private Color color1;
+    [SerializeField] private Color color2;
+    [SerializeField] private GridLayoutGroup gridLayoutGroup;
+    private BattleGrid[,] _battleGrid;
 
     private void Awake()
     {
@@ -22,11 +27,32 @@ public class BattleGridManager : MonoBehaviour
 
     private void Start()
     {
+        _battleGrid = new BattleGrid[x,y];
+        gridLayoutGroup.constraintCount = x;
         GenerateGrid();
     }
 
-    private void GenerateGrid() 
+    private void GenerateGrid()
     {
-        var battleGrid = Instantiate(grid, transform);
+        for (int i = 0; i < x; i++)
+        {
+            for (int j = 0; j < y; j++)
+            {
+                var battleGrid = Instantiate(grid, transform);
+
+                battleGrid.name = $"BattleGrid_{i}_{j}";
+
+                bool isEven = (i + j) % 2 == 0;
+
+                Image image = battleGrid.GetComponentInChildren<Image>();
+
+                if (image != null)
+                {
+                    image.color = isEven ? color1 : color2;
+                }
+
+                _battleGrid[i, j] = battleGrid;
+            }
+        }
     }
 }

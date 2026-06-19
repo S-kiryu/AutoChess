@@ -917,8 +917,11 @@ MonoBehaviour:
   grid: {fileID: -9102445964867375330, guid: ef02a2f9b4897694093a64601a30f4a7, type: 3}
   x: 10
   y: 12
+  Unitplace: 3
   color1: {r: 0.4881665, g: 0.9547169, b: 0.5309499, a: 1}
   color2: {r: 0.27191874, g: 0.6830188, b: 0.36862072, a: 1}
+  color3: {r: 1, g: 0, b: 0.12143278, a: 1}
+  color4: {r: 0, g: 0.24671888, b: 1, a: 1}
   gridLayoutGroup: {fileID: 1256472147}
   benchManager: {fileID: 727479956}
 --- !u!1 &1304084806

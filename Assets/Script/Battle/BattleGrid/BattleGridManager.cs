@@ -8,8 +8,11 @@ public class BattleGridManager : MonoBehaviour
     [SerializeField] private BattleGrid grid;
     [SerializeField] private int x;
     [SerializeField] private int y;
+    [SerializeField] private int Unitplace;
     [SerializeField] private Color color1;
     [SerializeField] private Color color2;
+    [SerializeField] private Color color3;
+    [SerializeField] private Color color4; 
     [SerializeField] private GridLayoutGroup gridLayoutGroup;
     [SerializeField] private BenchManager benchManager;
     private BattleGrid[,] _battleGrid;
@@ -53,6 +56,32 @@ public class BattleGridManager : MonoBehaviour
                 }
 
                 _battleGrid[i, j] = battleGrid;
+            }
+        }
+
+        // 左側 Unitplace 列を color3 にする
+        for (int i = 0; i < Unitplace; i++)
+        {
+            for (int j = 0; j < y; j++)
+            {
+                Image image = _battleGrid[i, j].GetComponentInChildren<Image>();
+                if (image != null)
+                {
+                    image.color = color3;
+                }
+            }
+        }
+
+        // 右側 Unitplace 列を color4 にする
+        for (int i = x - Unitplace; i < x; i++)
+        {
+            for (int j = 0; j < y; j++)
+            {
+                Image image = _battleGrid[i, j].GetComponentInChildren<Image>();
+                if (image != null)
+                {
+                    image.color = color4;
+                }
             }
         }
     }

@@ -11,6 +11,7 @@ public class BattleGridManager : MonoBehaviour
     [SerializeField] private Color color1;
     [SerializeField] private Color color2;
     [SerializeField] private GridLayoutGroup gridLayoutGroup;
+    [SerializeField] private BenchManager benchManager;
     private BattleGrid[,] _battleGrid;
 
     private void Awake()
@@ -55,4 +56,17 @@ public class BattleGridManager : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// 範囲内かどうかをチェックする
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    private bool IsInside(int x, int y)
+    {
+        return x >= 0 && x < _battleGrid.GetLength(0)
+            && y >= 0 && y < _battleGrid.GetLength(1);
+    }
+
 }

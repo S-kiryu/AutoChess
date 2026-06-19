@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private BattleUnit enemyPrefab;
+    [SerializeField] private BattleUnitBase enemyPrefab;
     //[SerializeField] private BattleGrid battleGrid;
     [SerializeField] private Transform enemyParent;
 
@@ -16,9 +16,9 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     /// <param name="stageData">生成したいステージ</param>
     /// <returns></returns>
-    public List<BattleUnit> SpawnEnemies(BattleStageData stageData)
+    public List<BattleUnitBase> SpawnEnemies(BattleStageData stageData)
     {
-        List<BattleUnit> enemies = new List<BattleUnit>();
+        List<BattleUnitBase> enemies = new List<BattleUnitBase>();
 
         //適した位置に敵を生成している
         foreach (EnemySpawnData spawnData in stageData.Enemies)
@@ -26,7 +26,7 @@ public class EnemySpawner : MonoBehaviour
             //Vector3 spawnPosition = battleGrid.GetWorldPosition(spawnData.GridPosition);
             Vector3 spawnPosition = new Vector3();
 
-            BattleUnit enemy = Instantiate(
+            BattleUnitBase enemy = Instantiate(
                 enemyPrefab,
                 spawnPosition,
                 Quaternion.identity,

@@ -94,6 +94,7 @@ public class BenchManager : MonoBehaviour
         return true;
     }
 
+    //指定した位置にいるユニットを入れ替える
     public bool SwapUnit(BenchSlotUI draggedUI,int x,int y) 
     {
         draggedUI.SetDropped(true);

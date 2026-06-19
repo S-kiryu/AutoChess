@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// 戦闘時のデータ
 /// </summary>
-public class BattleUnit : MonoBehaviour
+public class BattleUnitBase : MonoBehaviour
 {
     public UnitInstance UnitInstance { get; private set; }
     public UnitStatus Status { get; private set; }
@@ -11,7 +11,7 @@ public class BattleUnit : MonoBehaviour
     public int TeamId { get; private set; }
     public bool IsDead => Status.CurrentHp <= 0;
 
-    private BattleUnit target;
+    private BattleUnitBase target;
     private float attackTimer;
 
     private void Start()

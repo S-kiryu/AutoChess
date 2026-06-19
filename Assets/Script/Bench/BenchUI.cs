@@ -63,6 +63,7 @@ public class BenchUI : MonoBehaviour
         benchManager.OnUnitPlaced -= HandleUnitPlaced;
         benchManager.OnUnitRemoved -= HandleUnitRemoved;
     }
+    //ƒXƒƒbƒg‚ğ¶¬
     private void GenerateSlots()
     {
         for (int y = 0; y < height; y++)

@@ -1,13 +1,17 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.UI.CanvasScaler;
 
 public class BattleGridManager : MonoBehaviour
 {
     public static BattleGridManager Instance { get; private set; }
     [SerializeField] private BattleGrid grid;
     [SerializeField] private int x;
+    public int X => x;
     [SerializeField] private int y;
+    public int Y => y;
+
     //配置できる行の数
     [SerializeField] private int Unitplace;
     //グリットの色
@@ -15,13 +19,17 @@ public class BattleGridManager : MonoBehaviour
     [SerializeField] private Color color2;
     [SerializeField] private Color color3;
     [SerializeField] private Color color4;
-    //各グリットのマネージャー
-    [SerializeField] private BattleUnitGenerateBase unitGenerateBase;
-    [SerializeField] private BattleUnitGenerateBase enemyGenerateBase;
 
     [SerializeField] private GridLayoutGroup gridLayoutGroup;
     [SerializeField] private BenchManager benchManager;
     private BattleGrid[,] _battleGrid;
+    private BattleGrid[,] _PlayerBattleGrid;
+    private BattleGrid[,] _EnemyBattleGrid;
+
+    //置いた時
+    public event System.Action<UnitInstance, int, int> OnUnitPlaced;
+    //撤去したとき
+    public event System.Action<UnitInstance, int, int> OnUnitRemoved;
 
     private void Awake()
     {
@@ -56,7 +64,7 @@ public class BattleGridManager : MonoBehaviour
                 bool isEven = (i + j) % 2 == 0;
 
                 //グリットに座標とマネージャーを持たせた
-                Vector2Int vect = new Vector2Int(x,y);
+                Vector2Int vect = new Vector2Int(i,j);
                 battleGrid.Initialize(vect, this);
                 Image image = battleGrid.GetComponentInChildren<Image>();
 
@@ -69,11 +77,13 @@ public class BattleGridManager : MonoBehaviour
             }
         }
 
-        // 左側 Unitplace 列を color3 にする
+        _EnemyBattleGrid = new BattleGrid[Unitplace,y];
+        // 左側 Unitplace 列を 敵のグリット にする
         for (int i = 0; i < Unitplace; i++)
         {
             for (int j = 0; j < y; j++)
             {
+                _EnemyBattleGrid[i, j] = _battleGrid[i, j];
                 Image image = _battleGrid[i, j].GetComponentInChildren<Image>();
                 if (image != null)
                 {
@@ -82,11 +92,17 @@ public class BattleGridManager : MonoBehaviour
             }
         }
 
-        // 右側 Unitplace 列を color4 にする
+        _PlayerBattleGrid = new BattleGrid[Unitplace, y];
+
+        // 右側 Unitplace 列を プレイヤーのグリッド にする
         for (int i = x - Unitplace; i < x; i++)
         {
             for (int j = 0; j < y; j++)
             {
+                int playerX = i - (x - Unitplace);
+
+                _PlayerBattleGrid[playerX, j] = _battleGrid[i, j];
+
                 Image image = _battleGrid[i, j].GetComponentInChildren<Image>();
                 if (image != null)
                 {
@@ -94,6 +110,83 @@ public class BattleGridManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void MoveUnitFromGrid(int x,int y) 
+    {
+        benchManager.RemoveUnit(x, y);
+    }
+
+    public bool SetUnit(UnitInstance unit, BattleGrid[,] grid, int x, int y) 
+    {
+        if (!IsInside(x, y))
+        {
+            return false;
+        }
+
+        // すでにユニットが配置されている場合は置けない
+        if (grid[x, y] != null)
+        {
+            return false;
+        }
+
+        grid[x, y].SetUnit(unit);
+        OnUnitPlaced?.Invoke(unit, x, y);
+        return true;
+    }
+
+    public bool RemoveUnit(int x, int y)
+    {
+        if (!IsInside(x, y))
+        {
+            return false;
+        }
+
+        UnitInstance unit = _PlayerBattleGrid[x, y].CurrentUnit;
+
+        if (unit == null)
+        {
+            return false;
+        }
+
+        _PlayerBattleGrid[x, y].SetUnit(null);
+        OnUnitRemoved?.Invoke(unit, x, y);
+        return true;
+    }
+
+    public bool SwapUnit(BenchSlotUI draggedUI, int x, int y)
+    {
+        draggedUI.SetDropped(true);
+
+        int fromX = draggedUI.X;
+        int fromY = draggedUI.Y;
+
+        if (fromX == x && fromY == y) return false;
+
+        var movingUnit = draggedUI.Unit;
+        var targetUnit = GetUnit(x, y);
+
+        RemoveUnit(fromX, fromY);
+
+        if (targetUnit != null)
+        {
+            RemoveUnit(x, y);
+            SetUnit(targetUnit, _PlayerBattleGrid, fromX, fromY);
+        }
+
+        SetUnit(movingUnit, _PlayerBattleGrid, x, y);
+
+        return true;
+    }
+
+    public UnitInstance GetUnit(int x, int y)
+    {
+        if (!IsInside(x, y))
+        {
+            return null;
+        }
+
+        return _PlayerBattleGrid[x, y].CurrentUnit;
     }
 
     /// <summary>

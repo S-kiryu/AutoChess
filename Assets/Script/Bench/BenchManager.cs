@@ -13,6 +13,7 @@ public class BenchManager : MonoBehaviour
     [SerializeField] private int height = 1;
 
     private UnitInstance[,] _benchs;
+    private BattleGridManager battleGridManager;
 
     public int Width => width;
     public int Height => height;
@@ -150,6 +151,11 @@ public class BenchManager : MonoBehaviour
         }
 
         return _benchs[x, y];
+    }
+
+    public void MoveUnitFromGrid(int x, int y)
+    {
+        battleGridManager.RemoveUnit(x, y);
     }
 
     /// <summary>

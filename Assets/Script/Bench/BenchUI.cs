@@ -78,6 +78,7 @@ public class BenchUI : MonoBehaviour
         }
     }
 
+    //指定した座標にユニットを置く
     private void GenerateUnit(int x, int y)
     {
         BenchSlot slot = slots[x, y];

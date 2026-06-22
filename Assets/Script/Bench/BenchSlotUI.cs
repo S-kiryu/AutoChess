@@ -20,6 +20,7 @@ public class BenchSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private int x;
     private int y;
     private bool droppedOnSlot = false;
+    public bool isBattle = false;
     public UnitInstance Unit => unit;
     public int X => x;
     public int Y => y;

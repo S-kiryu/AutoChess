@@ -6,6 +6,7 @@ public class BenchSlot : MonoBehaviour, IDropHandler
     private int x;
     private int y;
     private BenchManager benchManager;
+    private BattleGridManager battleGridManager;
 
     public int X => x;
     public int Y => y;
@@ -15,6 +16,7 @@ public class BenchSlot : MonoBehaviour, IDropHandler
         this.x = x;
         this.y = y;
         this.benchManager = benchManager;
+        battleGridManager = BattleGridManager.Instance;
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -24,6 +26,11 @@ public class BenchSlot : MonoBehaviour, IDropHandler
         if (draggedUI == null || draggedUI.Unit == null)
         {
             return;
+        }
+        //ユニットが戦闘グリットから来たのかを判定する
+        if (draggedUI.isBattle) 
+        {
+            battleGridManager.RemoveUnit(draggedUI.X, draggedUI.Y);
         }
 
         benchManager.SwapUnit(draggedUI,x,y);

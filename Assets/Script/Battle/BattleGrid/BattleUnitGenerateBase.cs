@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using UnityEngine;
 
 public abstract class BattleUnitGenerateBase : MonoBehaviour

@@ -8,11 +8,17 @@ public class BattleGridManager : MonoBehaviour
     [SerializeField] private BattleGrid grid;
     [SerializeField] private int x;
     [SerializeField] private int y;
+    //配置できる行の数
     [SerializeField] private int Unitplace;
+    //グリットの色
     [SerializeField] private Color color1;
     [SerializeField] private Color color2;
     [SerializeField] private Color color3;
-    [SerializeField] private Color color4; 
+    [SerializeField] private Color color4;
+    //各グリットのマネージャー
+    [SerializeField] private BattleUnitGenerateBase unitGenerateBase;
+    [SerializeField] private BattleUnitGenerateBase enemyGenerateBase;
+
     [SerializeField] private GridLayoutGroup gridLayoutGroup;
     [SerializeField] private BenchManager benchManager;
     private BattleGrid[,] _battleGrid;
@@ -36,6 +42,7 @@ public class BattleGridManager : MonoBehaviour
         GenerateGrid();
     }
 
+    //グリットを生成して色を変える
     private void GenerateGrid()
     {
         for (int i = 0; i < x; i++)
@@ -48,6 +55,9 @@ public class BattleGridManager : MonoBehaviour
 
                 bool isEven = (i + j) % 2 == 0;
 
+                //グリットに座標とマネージャーを持たせた
+                Vector2Int vect = new Vector2Int(x,y);
+                battleGrid.Initialize(vect, this);
                 Image image = battleGrid.GetComponentInChildren<Image>();
 
                 if (image != null)

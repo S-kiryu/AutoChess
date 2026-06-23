@@ -117,6 +117,7 @@ public class BenchManager : MonoBehaviour
         }
 
         SetUnit(movingUnit, x, y);
+        draggedUI.isBattle = false;
 
         return true;
     }

@@ -65,7 +65,7 @@ public class BattleGridManager : MonoBehaviour
 
                 //グリットに座標とマネージャーを持たせた
                 Vector2Int vect = new Vector2Int(i,j);
-                battleGrid.Initialize(vect, this);
+                battleGrid.Initialize(i,j, benchManager);
                 Image image = battleGrid.GetComponentInChildren<Image>();
 
                 if (image != null)
@@ -119,17 +119,21 @@ public class BattleGridManager : MonoBehaviour
 
     public bool SetUnit(UnitInstance unit, BattleGrid[,] grid, int x, int y) 
     {
+        Debug.Log("ユニットを配置");
         if (!IsInside(x, y))
         {
+            Debug.Log("範囲外");
             return false;
         }
 
         // すでにユニットが配置されている場合は置けない
-        if (grid[x, y] != null)
+        if (grid[x, y].CurrentUnit != null)
         {
+            Debug.Log("ユニットがもういる");
             return false;
         }
 
+        
         grid[x, y].SetUnit(unit);
         OnUnitPlaced?.Invoke(unit, x, y);
         return true;
@@ -156,12 +160,17 @@ public class BattleGridManager : MonoBehaviour
 
     public bool SwapUnit(BenchSlotUI draggedUI, int x, int y)
     {
+        Debug.Log("Unitをセットを試す");
         draggedUI.SetDropped(true);
 
         int fromX = draggedUI.X;
         int fromY = draggedUI.Y;
 
-        if (fromX == x && fromY == y) return false;
+        if (fromX == x && fromY == y) 
+        {
+            Debug.Log("同じところに落とされた");
+            return false;
+        } 
 
         var movingUnit = draggedUI.Unit;
         var targetUnit = GetUnit(x, y);
@@ -170,11 +179,13 @@ public class BattleGridManager : MonoBehaviour
 
         if (targetUnit != null)
         {
+            Debug.Log("入れ替える");
             RemoveUnit(x, y);
             SetUnit(targetUnit, _PlayerBattleGrid, fromX, fromY);
         }
 
         SetUnit(movingUnit, _PlayerBattleGrid, x, y);
+        draggedUI.isBattle = true;
 
         return true;
     }

@@ -164,5 +164,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbe0351605784944b983e9295874824e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BenchSlotUI
-  _unitIcon: {fileID: 5831339746371801096}
-  _highlight: {fileID: 674945245059332588}
+  unitIcon: {fileID: 5831339746371801096}
+  highlight: {fileID: 0}
+  canvas: {fileID: 0}

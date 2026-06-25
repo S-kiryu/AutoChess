@@ -1,10 +1,7 @@
-using System.ComponentModel;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
-/// Slot全体のUIを管理するクラス
+/// ベンチのスロットと、新規購入時のユニットUI生成を管理する。
 /// </summary>
 public class BenchUI : MonoBehaviour
 {
@@ -17,21 +14,16 @@ public class BenchUI : MonoBehaviour
     [SerializeField] private Transform slotRoot;
 
     private BenchSlot[,] slots;
-    private BenchSlotUI[,] slotUIs;
-    private int width, height;
+    private int width;
+    private int height;
 
     private void Awake()
     {
-        if (benchManager == null)
+        if (benchManager == null ||
+            slotPrefab == null ||
+            slotUIPrefab == null)
         {
-            Debug.LogError("BenchManagerが設定されていません。", this);
-            enabled = false;
-            return;
-        }
-
-        if (slotUIPrefab == null)
-        {
-            Debug.LogError("SlotPrefabが設定されていません。", this);
+            Debug.LogError("BenchUIの参照が設定されていません。", this);
             enabled = false;
             return;
         }
@@ -40,30 +32,40 @@ public class BenchUI : MonoBehaviour
         {
             slotRoot = transform;
         }
-        
+
         width = benchManager.Width;
         height = benchManager.Height;
 
         slots = new BenchSlot[width, height];
-        slotUIs = new BenchSlotUI[width, height];
 
         GenerateSlots();
     }
 
-    //イベント追加
     private void OnEnable()
     {
+        if (benchManager == null)
+        {
+            return;
+        }
+
         benchManager.OnUnitPlaced += HandleUnitPlaced;
         benchManager.OnUnitRemoved += HandleUnitRemoved;
     }
 
-    //イベント削除
     private void OnDisable()
     {
+        if (benchManager == null)
+        {
+            return;
+        }
+
         benchManager.OnUnitPlaced -= HandleUnitPlaced;
         benchManager.OnUnitRemoved -= HandleUnitRemoved;
     }
-    //スロットを生成
+
+    /// <summary>
+    /// ベンチを生成する
+    /// </summary>
     private void GenerateSlots()
     {
         for (int y = 0; y < height; y++)
@@ -71,62 +73,72 @@ public class BenchUI : MonoBehaviour
             for (int x = 0; x < width; x++)
             {
                 BenchSlot slot = Instantiate(slotPrefab, slotRoot);
+
                 slot.name = $"BenchSlot_{x}_{y}";
                 slot.Initialize(x, y, benchManager);
+
                 slots[x, y] = slot;
             }
         }
     }
 
-    //指定した座標にユニットを置く
-    private void GenerateUnit(int x, int y)
+    /// <summary>
+    /// ユニットが生成時にいろいろと設定するメソット
+    /// </summary>
+    private void HandleUnitPlaced(
+        UnitInstance unit,
+        int x,
+        int y)
     {
+        if (!benchManager.IsInside(x, y))
+        {
+            return;
+        }
+
         BenchSlot slot = slots[x, y];
 
-        BenchSlotUI slotUI = Instantiate(slotUIPrefab, slot.transform);
-        slotUI.SetCanvas(canvas);
+        BenchSlotUI existingUI =
+            slot.GetComponentInChildren<BenchSlotUI>(true);
 
-        RectTransform rectTransform = slotUI.GetComponent<RectTransform>();
-
-        if (rectTransform != null)
+        if (existingUI != null)
         {
-            rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-            rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-            rectTransform.pivot = new Vector2(0.5f, 0.5f);
-            rectTransform.anchoredPosition = Vector2.zero;
-            rectTransform.localScale = Vector3.one;
-        }
-        else
-        {
-            slotUI.transform.localPosition = Vector3.zero;
-            slotUI.transform.localScale = Vector3.one;
+            existingUI.SetUnit(unit);
+            existingUI.SetLocation(UnitArea.Bench, x, y);
+            return;
         }
 
-        slotUI.Clear();
+        BenchSlotUI unitUI =
+            Instantiate(slotUIPrefab, slot.transform);
 
-        slotUIs[x, y] = slotUI;
+        unitUI.SetCanvas(canvas);
+        unitUI.SetUnit(unit);
+        unitUI.SetLocation(UnitArea.Bench, x, y);
+        unitUI.MoveTo(slot.transform);
+        unitUI.PlayPlaceEffect();
     }
 
-    //ユニットを置くときにイベントで呼ぶ
-    private void HandleUnitPlaced(UnitInstance instance, int x, int y)
+    /// <summary>
+    /// 売却時だけUIオブジェクトを破棄する。
+    /// </summary>
+    private void HandleUnitRemoved(
+        UnitInstance unit,
+        int x,
+        int y)
     {
-        if (slotUIs[x, y] == null)
+        if (!benchManager.IsInside(x, y))
         {
-            GenerateUnit(x, y);
+            return;
         }
 
-        slotUIs[x, y].SetUnit(instance);
-        slotUIs[x, y].Initialize(x, y);
-        slotUIs[x, y].PlayPlaceEffect();
+        BenchSlotUI unitUI =
+            slots[x, y].GetComponentInChildren<BenchSlotUI>(true);
+
+        if (unitUI == null)
+        {
+            return;
+        }
+
+        unitUI.PlayRemoveEffect();
+        Destroy(unitUI.gameObject);
     }
-
-    //イベントでユニットを消す
-    private void HandleUnitRemoved(UnitInstance instance, int x, int y)
-    {
-        if (slotUIs[x, y] == null) return;
-
-        Destroy(slotUIs[x, y].gameObject);
-        slotUIs[x, y] = null;
-    }
-
 }

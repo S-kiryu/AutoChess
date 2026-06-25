@@ -1,46 +1,175 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// ベンチスロットへのドロップを処理する。
+/// </summary>
 public class BenchSlot : MonoBehaviour, IDropHandler
 {
     private int x;
     private int y;
+
     private BenchManager benchManager;
     private BattleGridManager battleGridManager;
 
     public int X => x;
     public int Y => y;
 
-    public void Initialize(int x, int y, BenchManager benchManager)
+    public void Initialize(
+        int newX,
+        int newY,
+        BenchManager manager)
     {
-        this.x = x;
-        this.y = y;
-        this.benchManager = benchManager;
+        x = newX;
+        y = newY;
+
+        benchManager = manager;
         battleGridManager = BattleGridManager.Instance;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnDrop(PointerEventData eventData)
     {
-        var draggedUI = eventData.pointerDrag?.GetComponent<BenchSlotUI>();
+        BenchSlotUI draggedUI =
+            eventData.pointerDrag?.GetComponent<BenchSlotUI>();
 
         if (draggedUI == null || draggedUI.Unit == null)
         {
             return;
         }
-        //ユニットが戦闘グリットから来たのかを判定する
-        if (draggedUI.isBattle) 
+
+        bool success;
+
+        if (draggedUI.Area == UnitArea.Bench)
         {
-            battleGridManager.RemoveUnit(draggedUI.X, draggedUI.Y);
+            success = MoveInsideBench(draggedUI);
+        }
+        else
+        {
+            success = MoveFromBattle(draggedUI);
         }
 
-        benchManager.SwapUnit(draggedUI,x,y);
+        if (success)
+        {
+            draggedUI.SetDropped(true);
+        }
+    }
 
-        // UI移動
-        draggedUI.transform.SetParent(transform, false);
+    /// <summary>
+    /// ベンチ内での移動・交換。
+    /// </summary>
+    private bool MoveInsideBench(BenchSlotUI draggedUI)
+    {
+        int fromX = draggedUI.X;
+        int fromY = draggedUI.Y;
 
-        var rect = draggedUI.GetComponent<RectTransform>();
-        rect.anchoredPosition = Vector2.zero;
+        if (fromX == x && fromY == y)
+        {
+            return false;
+        }
 
-        draggedUI.Initialize(x, y);
+        Transform sourceSlot = draggedUI.OriginalParent;
+
+        BenchSlotUI targetUI =
+            GetComponentInChildren<BenchSlotUI>(true);
+
+        bool success = benchManager.SwapUnits(
+            fromX,
+            fromY,
+            x,
+            y);
+
+        if (!success)
+        {
+            return false;
+        }
+
+        if (targetUI != null && targetUI != draggedUI)
+        {
+            targetUI.MoveTo(sourceSlot);
+            targetUI.SetLocation(
+                UnitArea.Bench,
+                fromX,
+                fromY);
+        }
+
+        draggedUI.MoveTo(transform);
+        draggedUI.SetLocation(UnitArea.Bench, x, y);
+
+        return true;
+    }
+
+    /// <summary>
+    /// 戦闘グリッドからベンチへの移動・交換。
+    /// </summary>
+    private bool MoveFromBattle(BenchSlotUI draggedUI)
+    {
+        if (battleGridManager == null)
+        {
+            battleGridManager = BattleGridManager.Instance;
+        }
+
+        int battleX = draggedUI.X;
+        int battleY = draggedUI.Y;
+
+        Transform sourceGrid = draggedUI.OriginalParent;
+
+        UnitInstance movingUnit =
+            battleGridManager.GetUnit(battleX, battleY);
+
+        if (movingUnit == null)
+        {
+            return false;
+        }
+
+        UnitInstance targetUnit =
+            benchManager.GetUnit(x, y);
+
+        BenchSlotUI targetUI =
+            GetComponentInChildren<BenchSlotUI>(true);
+
+        battleGridManager.TakeUnit(battleX, battleY);
+
+        if (targetUnit != null)
+        {
+            benchManager.TakeUnit(x, y);
+        }
+
+        if (!benchManager.PutUnit(movingUnit, x, y))
+        {
+            battleGridManager.PutUnit(
+                movingUnit,
+                battleX,
+                battleY);
+
+            if (targetUnit != null)
+            {
+                benchManager.PutUnit(targetUnit, x, y);
+            }
+
+            return false;
+        }
+
+        if (targetUnit != null)
+        {
+            battleGridManager.PutUnit(
+                targetUnit,
+                battleX,
+                battleY);
+
+            targetUI.MoveTo(sourceGrid);
+            targetUI.SetLocation(
+                UnitArea.Battle,
+                battleX,
+                battleY);
+        }
+
+        draggedUI.MoveTo(transform);
+        draggedUI.SetLocation(UnitArea.Bench, x, y);
+
+        return true;
     }
 }

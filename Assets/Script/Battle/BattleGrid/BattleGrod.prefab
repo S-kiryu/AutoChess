@@ -88,3 +88,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad44ae59889decf49ab4c0b8762649e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleGrid
+  backgroundImage: {fileID: 9198107082996810094}

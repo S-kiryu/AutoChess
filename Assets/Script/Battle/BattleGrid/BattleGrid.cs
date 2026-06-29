@@ -30,10 +30,7 @@ public class BattleGrid : MonoBehaviour, IDropHandler
     public bool IsPlayerGrid => isPlayerGrid;
     public bool IsEnemyGrid => isEnemyGrid;
 
-    public void Initialize(
-        int gridX,
-        int gridY,
-        BenchManager manager)
+    public void Initialize(int gridX,int gridY,BenchManager manager)
     {
         x = gridX;
         y = gridY;
@@ -55,9 +52,7 @@ public class BattleGrid : MonoBehaviour, IDropHandler
     /// プレイヤーが配置できる下側グリッドに設定する。
     /// 座標はプレイヤーエリア内のローカル座標になる。
     /// </summary>
-    public void SetAsPlayerGrid(
-        int playerX,
-        int playerY)
+    public void SetAsPlayerGrid(int playerX,int playerY)
     {
         x = playerX;
         y = playerY;
@@ -69,11 +64,15 @@ public class BattleGrid : MonoBehaviour, IDropHandler
     /// <summary>
     /// 敵側の上側グリッドに設定する。
     /// </summary>
-    public void SetAsEnemyGrid()
+    public void SetAsEnemyGrid(int playerX, int playerY)
     {
+        x = playerX;
+        y = playerY;
+
         isPlayerGrid = false;
         isEnemyGrid = true;
     }
+
 
     /// <summary>
     /// 色を設定する

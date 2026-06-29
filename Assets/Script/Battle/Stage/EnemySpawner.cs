@@ -8,7 +8,6 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private BattleUnitBase enemyPrefab;
-    //[SerializeField] private BattleGrid battleGrid;
     [SerializeField] private Transform enemyParent;
 
     /// <summary>
@@ -23,8 +22,9 @@ public class EnemySpawner : MonoBehaviour
         //適した位置に敵を生成している
         foreach (EnemySpawnData spawnData in stageData.Enemies)
         {
-            //Vector3 spawnPosition = battleGrid.GetWorldPosition(spawnData.GridPosition);
-            Vector3 spawnPosition = new Vector3();
+            Vector3 spawnPosition = BattleGridManager.Instance.GetEnemyWorldPosition(
+                spawnData.GridPosition.x,
+                spawnData.GridPosition.y);
 
             BattleUnitBase enemy = Instantiate(
                 enemyPrefab,
@@ -35,6 +35,7 @@ public class EnemySpawner : MonoBehaviour
 
             UnitInstance enemyInstance = new UnitInstance();
             enemyInstance.Initialize(spawnData.CharacterData);
+            Debug.Log($"{enemyInstance.Data.name}を{spawnData.GridPosition.x}{spawnData.GridPosition.y}に生成");
 
             enemy.Initialize(enemyInstance, teamId: 1);
 

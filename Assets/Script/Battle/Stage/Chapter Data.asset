@@ -15,4 +15,3 @@ MonoBehaviour:
   chapterName: 
   battleStages:
   - {fileID: 11400000, guid: 6af8f3e8f26232b4d94df08ad9539fa3, type: 2}
-  - {fileID: 0}

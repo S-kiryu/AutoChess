@@ -6,6 +6,8 @@ public class GameLoopManager : MonoBehaviour
     public static GameLoopManager Instance { get; private set; }
 
     [SerializeField] private GameState initialState;
+    [SerializeField] private EnemySpawner enemySpawner;
+    [SerializeField] private StageProgressManager stageProgressManager;
 
     private void Awake()
     {
@@ -43,6 +45,7 @@ public class GameLoopManager : MonoBehaviour
     private void OnPreparation()
     {
         // 準備フェーズの処理
+        enemySpawner.SpawnEnemies(stageProgressManager.CurrentBattleStage);
         Debug.Log("準備フェーズに入りました。");
     }
 

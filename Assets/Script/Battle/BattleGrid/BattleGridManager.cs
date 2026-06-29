@@ -23,7 +23,7 @@ public class BattleGridManager : MonoBehaviour
     [Header("上下それぞれの配置可能な行数")]
     [SerializeField] private int unitPlace = 3;
 
-    [Header("通常グリッドの市松模様")]
+    [Header("通常グリッドの模様")]
     [SerializeField] private Color color1 = Color.white;
     [SerializeField] private Color color2 = Color.gray;
 
@@ -194,7 +194,7 @@ public class BattleGridManager : MonoBehaviour
                 enemyBattleGrids[gridX, enemyY] =
                     targetGrid;
 
-                targetGrid.SetAsEnemyGrid();
+                targetGrid.SetAsEnemyGrid(gridX, enemyY);
                 targetGrid.SetColor(enemyAreaColor);
             }
         }
@@ -350,6 +350,31 @@ public class BattleGridManager : MonoBehaviour
         toGrid.SetUnit(movingUnit);
 
         return true;
+    }
+
+    //エネミーを取得する
+    public Vector3 GetEnemyWorldPosition(int gridX, int gridY)
+    {
+        if (!IsInsideEnemyGrid(gridX, gridY))
+        {
+            return Vector3.zero;
+        }
+
+        return enemyBattleGrids[gridX, gridY].transform.position;
+    }
+
+    //エネミーの範囲
+    public bool IsInsideEnemyGrid(int gridX, int gridY)
+    {
+        if (enemyBattleGrids == null)
+        {
+            return false;
+        }
+
+        return gridX >= 0 &&
+               gridX < enemyBattleGrids.GetLength(0) &&
+               gridY >= 0 &&
+               gridY < enemyBattleGrids.GetLength(1);
     }
 
     public bool IsInsidePlayerGrid(

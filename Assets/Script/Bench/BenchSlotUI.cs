@@ -1,61 +1,179 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
-/// 個々のスロットのUIを管理するクラス
+/// ドラッグできるユニットUI。
+/// ベンチと戦闘グリッドの両方で同じオブジェクトを使用する。
 /// </summary>
-public class BenchSlotUI : MonoBehaviour
+public class BenchSlotUI : MonoBehaviour,
+    IBeginDragHandler,
+    IDragHandler,
+    IEndDragHandler
 {
-    [SerializeField] private Image _unitIcon;
-    [SerializeField] private Image _background;
-    [SerializeField] private GameObject _highlight;
+    [SerializeField] private Image unitIcon;
+    [SerializeField] private GameObject highlight;
+    [SerializeField] private Canvas canvas;
 
-    public void SetBackground(Image background) 
+    private UnitInstance unit;
+    private RectTransform rectTransform;
+    private CanvasGroup canvasGroup;
+
+    private Transform originalParent;
+    private Vector2 originalAnchoredPosition;
+
+    private int x;
+    private int y;
+    private bool droppedOnSlot;
+
+    public UnitInstance Unit => unit;
+    public int X => x;
+    public int Y => y;
+    public UnitArea Area { get; private set; }
+    public Transform OriginalParent => originalParent;
+
+    private void Awake()
     {
-        _background = background;
+        rectTransform = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
+
+        if (canvasGroup == null)
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        }
     }
 
-    /// <summary>
-    /// ユニットを配置する
-    /// </summary>
-    /// <param name="unit"></param>
-    public void SetUnit(UnitInstance unit)
+    public void SetUnit(UnitInstance newUnit)
     {
-        _unitIcon.sprite = unit.Data.Icon;
-        _unitIcon.enabled = true;
+        unit = newUnit;
+
+        if (unit == null)
+        {
+            Clear();
+            return;
+        }
+
+        unitIcon.sprite = unit.Data.Icon;
+        unitIcon.enabled = true;
     }
 
-    /// <summary>
-    /// ユニットを撤去する
-    /// </summary>
     public void Clear()
     {
-        _unitIcon.sprite = null;
-        _unitIcon.enabled = false;
+        unit = null;
+        unitIcon.sprite = null;
+        unitIcon.enabled = false;
+    }
+
+    public void SetCanvas(Canvas newCanvas)
+    {
+        canvas = newCanvas;
     }
 
     /// <summary>
-    /// ユニットが選択されているかどうかを表示する
+    /// 現在所属している場所と座標を更新する。
     /// </summary>
-    /// <param name="selected"></param>
+    public void SetLocation(UnitArea area, int newX, int newY)
+    {
+        Area = area;
+        x = newX;
+        y = newY;
+    }
+
+    /// <summary>
+    /// UIオブジェクトを破棄せず、指定スロットへ直接移動する。
+    /// </summary>
+    public void MoveTo(Transform destination)
+    {
+        transform.SetParent(destination, false);
+
+        rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+        rectTransform.anchoredPosition = Vector2.zero;
+        rectTransform.localScale = Vector3.one;
+    }
+
+    /// <summary>
+    /// ユニットをアクティブにする
+    /// </summary>
     public void SetSelected(bool selected)
     {
-        _highlight.SetActive(selected);
+        if (highlight != null)
+        {
+            highlight.SetActive(selected);
+        }
     }
 
     /// <summary>
-    /// 置いた時の演出
+    /// 
     /// </summary>
+    public void SetDropped(bool value)
+    {
+        droppedOnSlot = value;
+    }
+
+    /// <summary>
+    /// ドラック始めに
+    /// </summary>
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (unit == null || canvas == null)
+        {
+            return;
+        }
+
+        droppedOnSlot = false;
+
+        originalParent = transform.parent;
+        originalAnchoredPosition = rectTransform.anchoredPosition;
+
+        transform.SetParent(canvas.transform, true);
+        transform.SetAsLastSibling();
+
+        canvasGroup.blocksRaycasts = false;
+    }
+
+    /// <summary>
+    /// ドラック中
+    /// </summary>
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (unit == null)
+        {
+            return;
+        }
+
+        rectTransform.position = eventData.position;
+    }
+
+    /// <summary>
+    /// ドラック終了時
+    /// </summary>
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (unit == null)
+        {
+            return;
+        }
+
+        canvasGroup.blocksRaycasts = true;
+
+        if (droppedOnSlot)
+        {
+            return;
+        }
+
+        transform.SetParent(originalParent, false);
+        rectTransform.anchoredPosition = originalAnchoredPosition;
+    }
+
     public void PlayPlaceEffect()
     {
-        // 光る演出、拡大縮小、パーティクルなど
+        // 配置演出
     }
 
-    /// <summary>
-    /// 消した時の演出
-    /// </summary>
     public void PlayRemoveEffect()
     {
-        // 消える演出、縮小、パーティクルなど
+        // 売却演出
     }
 }

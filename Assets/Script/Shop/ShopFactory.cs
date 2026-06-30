@@ -10,16 +10,22 @@ public class ShopFactory : MonoBehaviour
 
     public void OnClickGenerate()
     {
-        var Unit = _shopManager.GenerateShop();
-        bool placed = _benchManager.TryAddUnit(Unit);
+        UnitInstance unit = _shopManager.GenerateShop();
+
+        if (unit == null)
+        {
+            Debug.LogWarning("ユニット生成に失敗しました");
+            return;
+        }
+
+        bool placed = _benchManager.TryAddUnit(unit);
 
         if (!placed)
         {
             Debug.Log("ベンチが満杯なので配置できません");
+            return;
         }
-        else
-        {
-            Debug.Log($"ユニット {Unit.Data.CharacterName} をベンチに配置しました");
-        }
+
+        Debug.Log($"ユニット {unit.Data.CharacterName} をベンチに配置しました");
     }
 }

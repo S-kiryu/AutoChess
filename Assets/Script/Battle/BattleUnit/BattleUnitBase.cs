@@ -11,21 +11,47 @@ public class BattleUnitBase : MonoBehaviour
     public UnitInstance UnitInstance { get; private set; }
     public UnitStatus Status { get; private set; }
 
-    public int TeamId { get; private set; }
+    public BattleTeam Team { get; private set; }
     public bool IsDead => Status != null && Status.CurrentHp <= 0;
 
     private BattleUnitBase target;
     private float attackTimer;
 
-    public void Initialize(UnitInstance unitInstance, int teamId)
+
+    private void FixedUpdate()
+    {
+        if (Status == null || IsDead)
+        {
+            return;
+        }
+
+        if (target == null || target.IsDead)
+        {
+            FindNearestEnemy();
+        }
+
+        if (target == null)
+        {
+            return;
+        }
+
+        AttackRangeCheck();
+    }
+
+    public void Initialize(UnitInstance unitInstance, BattleTeam teamId)
     {
         UnitInstance = unitInstance;
         Status = unitInstance.Status;
-        TeamId = teamId;
+        Team = teamId;
 
         attackTimer = Status.AttackSpeed;
 
         UpdateView();
+    }
+
+    public void SetTarget(BattleUnitBase newTarget)
+    {
+        target = newTarget;
     }
 
     private void UpdateView()
@@ -39,31 +65,33 @@ public class BattleUnitBase : MonoBehaviour
         unitImage.enabled = true;
     }
 
-    public void SetTarget(BattleUnitBase newTarget)
-    {
-        target = newTarget;
-    }
-
-    private void FixedUpdate()
-    {
-        if (Status == null || IsDead || target == null || target.IsDead)
-        {
-            return;
-        }
-
-        AttackRangeCheck();
-    }
-
     //一番近い敵を見つけてそこに動く
-    public void FindNearestEnemy()
+    private void FindNearestEnemy()
     {
-        if (target == null)
+        var enemies = BattleManager.Instance.GetEnemies(Team);
+
+        BattleUnitBase nearest = null;
+        float nearestDistance = float.MaxValue;
+
+        foreach (BattleUnitBase enemy in enemies)
         {
-            return;
+            if (enemy == null || enemy.IsDead)
+            {
+                continue;
+            }
+
+            float distance = Vector3.Distance(
+                transform.position,
+                enemy.transform.position);
+
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearest = enemy;
+            }
         }
 
-        Vector3 dir = (target.transform.position - transform.position).normalized;
-        transform.position += dir * Status.MoveSpeed * Time.deltaTime;
+        target = nearest;
     }
 
     //攻撃が届くかどうかを確認して行動を決める
@@ -113,4 +141,9 @@ public class BattleUnitBase : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+}
+public enum BattleTeam
+{
+    Player,
+    Enemy
 }

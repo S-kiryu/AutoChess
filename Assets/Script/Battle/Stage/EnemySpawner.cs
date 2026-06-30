@@ -37,7 +37,7 @@ public class EnemySpawner : MonoBehaviour
             enemyInstance.Initialize(spawnData.CharacterData);
             Debug.Log($"{enemyInstance.Data.name}を{spawnData.GridPosition.x}{spawnData.GridPosition.y}に生成");
 
-            enemy.Initialize(enemyInstance, teamId: 1);
+            enemy.Initialize(enemyInstance, teamId: BattleTeam.Enemy);
 
             enemies.Add(enemy);
         }

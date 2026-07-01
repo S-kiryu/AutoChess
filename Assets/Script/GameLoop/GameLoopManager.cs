@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class GameLoopManager : MonoBehaviour
 {
@@ -19,8 +20,14 @@ public class GameLoopManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
+        while (BattleGridManager.Instance == null ||
+               !BattleGridManager.Instance.IsReady)
+        {
+            yield return null;
+        }
+
         ChangeState(initialState);
     }
 

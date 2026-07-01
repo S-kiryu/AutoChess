@@ -40,6 +40,7 @@ public class BattleGridManager : MonoBehaviour
 
     private BattleGrid[,] enemyBattleGrids;
 
+    public bool IsReady { get; private set; }
     public int X => x;
     public int Y => y;
     public int UnitPlace => unitPlace;
@@ -73,6 +74,8 @@ public class BattleGridManager : MonoBehaviour
         GenerateGrid();
         SetEnemyArea();
         SetPlayerArea();
+
+        IsReady = true;
     }
 
 
@@ -375,6 +378,16 @@ public class BattleGridManager : MonoBehaviour
                gridX < enemyBattleGrids.GetLength(0) &&
                gridY >= 0 &&
                gridY < enemyBattleGrids.GetLength(1);
+    }
+
+    public BattleGrid GetEnemyGrid(int gridX, int gridY)
+    {
+        if (!IsInsideEnemyGrid(gridX, gridY))
+        {
+            return null;
+        }
+
+        return enemyBattleGrids[gridX, gridY];
     }
 
     public bool IsInsidePlayerGrid(

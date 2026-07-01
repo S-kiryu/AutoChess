@@ -17,21 +17,30 @@ public class EnemySpawner : MonoBehaviour
     /// <returns></returns>
     public List<BattleUnitBase> SpawnEnemies(BattleStageData stageData)
     {
+        Debug.Log($"ステージ{stageData.StageId}の敵を生成");
         List<BattleUnitBase> enemies = new List<BattleUnitBase>();
 
         //適した位置に敵を生成している
         foreach (EnemySpawnData spawnData in stageData.Enemies)
         {
-            Vector3 spawnPosition = BattleGridManager.Instance.GetEnemyWorldPosition(
+            BattleGrid targetGrid = BattleGridManager.Instance.GetEnemyGrid(
                 spawnData.GridPosition.x,
                 spawnData.GridPosition.y);
 
+            if (targetGrid == null)
+            {
+                Debug.LogWarning(
+                    $"敵の生成位置が範囲外です: {spawnData.GridPosition.x}, {spawnData.GridPosition.y}");
+                continue;
+            }
+
             BattleUnitBase enemy = Instantiate(
                 enemyPrefab,
-                spawnPosition,
-                Quaternion.identity,
-                enemyParent
-            );
+                targetGrid.transform);
+
+            enemy.transform.localPosition = Vector3.zero;
+            enemy.transform.localRotation = Quaternion.identity;
+            enemy.transform.localScale = Vector3.one;
 
             UnitInstance enemyInstance = new UnitInstance();
             enemyInstance.Initialize(spawnData.CharacterData);

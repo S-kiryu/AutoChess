@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8c258a92b285444c934a756d502887f, type: 3}
   m_Name: DemoUnitBaseStatus
   m_EditorClassIdentifier: Assembly-CSharp::BaseStatus
-  Hp: 0
+  Hp: 100
   Mp: 0
-  Level: 0
-  Attack: 0
+  Level: 1
+  Attack: 10
   MagicAttack: 0
-  AttackSpeed: 0
-  AttackRange: 0
+  AttackSpeed: 1
+  AttackRange: 1
   CriticalRate: 0
   CriticalDamage: 0
   Defense: 0
   MagicDefense: 0
   CriticalDefense: 0
-  MoveSpeed: 0
+  MoveSpeed: 50
   DodgeRate: 0
   Type: 

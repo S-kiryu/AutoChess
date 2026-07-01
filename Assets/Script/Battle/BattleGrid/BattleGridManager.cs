@@ -32,6 +32,7 @@ public class BattleGridManager : MonoBehaviour
     [SerializeField] private Color playerAreaColor = Color.blue;
 
     [SerializeField] private BenchManager benchManager;
+    [SerializeField] private Transform battleUnitRoot;
 
 
     private BattleGrid[,] battleGrids;
@@ -44,6 +45,7 @@ public class BattleGridManager : MonoBehaviour
     public int X => x;
     public int Y => y;
     public int UnitPlace => unitPlace;
+    public Transform BattleUnitRoot => battleUnitRoot;
 
     private void Awake()
     {
@@ -412,6 +414,7 @@ public class BattleGridManager : MonoBehaviour
     {
         if (playerBattleGrids == null)
         {
+            Debug.LogWarning("playerBattleGrids がありません。");
             return;
         }
 
@@ -424,8 +427,15 @@ public class BattleGridManager : MonoBehaviour
                 BenchSlotUI unitUI =
                     grid.GetComponentInChildren<BenchSlotUI>(true);
 
-                if (unitUI == null || unitUI.Unit == null)
+                if (unitUI == null)
                 {
+                    Debug.Log($"[{x}, {y}] BenchSlotUIなし");
+                    continue;
+                }
+
+                if (unitUI.Unit == null)
+                {
+                    Debug.Log($"[{x}, {y}] Unitなし");
                     continue;
                 }
 
@@ -438,6 +448,10 @@ public class BattleGridManager : MonoBehaviour
                     continue;
                 }
 
+                battleUnit.transform.SetParent(battleUnitRoot, true);
+                battleUnit.SetCurrentGrid(grid);
+
+                Debug.Log($"味方登録: {unitUI.Unit.Data.name} [{x}, {y}]");
                 battleUnit.Initialize(unitUI.Unit, BattleTeam.Player);
             }
         }

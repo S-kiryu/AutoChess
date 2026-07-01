@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor.Overlays;
 using UnityEngine;
 
 /// <summary>
@@ -36,11 +35,12 @@ public class EnemySpawner : MonoBehaviour
 
             BattleUnitBase enemy = Instantiate(
                 enemyPrefab,
-                targetGrid.transform);
+                BattleGridManager.Instance.BattleUnitRoot);
 
-            enemy.transform.localPosition = Vector3.zero;
+            enemy.transform.position = targetGrid.transform.position;
             enemy.transform.localRotation = Quaternion.identity;
             enemy.transform.localScale = Vector3.one;
+            enemy.SetCurrentGrid(targetGrid);
 
             UnitInstance enemyInstance = new UnitInstance();
             enemyInstance.Initialize(spawnData.CharacterData);

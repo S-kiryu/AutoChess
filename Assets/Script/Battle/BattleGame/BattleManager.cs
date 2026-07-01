@@ -37,6 +37,7 @@ public class BattleManager : MonoBehaviour
         {
             return;
         }
+        Debug.Log($"RegisterUnit: {unit.name}, Team: {unit.Team}");
 
         targetList.Add(unit);
     }
@@ -62,6 +63,8 @@ public class BattleManager : MonoBehaviour
     // 戦闘開始
     public void StartBattle()
     {
+        Debug.Log("BattleManager.StartBattle");
+
         isBattleFinished = false;
 
         if (BattleGridManager.Instance != null)
@@ -69,11 +72,17 @@ public class BattleManager : MonoBehaviour
             BattleGridManager.Instance.RegisterPlayerUnitsForBattle();
         }
 
+        Debug.Log($"戦闘開始時 味方数: {playerUnits.Count}, 敵数: {enemyUnits.Count}");
+
         foreach (BattleUnitBase unit in playerUnits)
         {
             if (unit != null && !unit.IsDead)
             {
                 unit.StartBattle();
+            }　
+            else if(unit.IsDead)
+            {
+                Debug.Log("ユニットが死んでるよ");
             }
         }
 
@@ -82,6 +91,10 @@ public class BattleManager : MonoBehaviour
             if (unit != null && !unit.IsDead)
             {
                 unit.StartBattle();
+            }
+            else if (unit.IsDead)
+            {
+                Debug.Log("ユニットが死んでるよ");
             }
         }
     }

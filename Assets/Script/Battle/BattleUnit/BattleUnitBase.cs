@@ -9,6 +9,8 @@ public class BattleUnitBase : MonoBehaviour
     [SerializeField] private Image unitImage;
 
     public UnitInstance UnitInstance { get; private set; }
+
+    public BattleGrid CurrentGrid { get; private set; }
     public UnitStatus Status { get; private set; }
 
     public BattleTeam Team { get; private set; }
@@ -34,8 +36,20 @@ public class BattleUnitBase : MonoBehaviour
         }
     }
 
+    public void SetCurrentGrid(BattleGrid grid)
+    {
+        CurrentGrid = grid;
+
+        if (grid != null)
+        {
+            transform.position = grid.transform.position;
+        }
+    }
+
     public void StartBattle()
     {
+        Debug.Log($"StartBattle: {name}, Team: {Team}");
+
         isBattling = true;
         target = null;
     }
@@ -144,6 +158,8 @@ public class BattleUnitBase : MonoBehaviour
             return;
         }
 
+        Debug.Log($"{name} MoveSpeed: {Status.MoveSpeed}");
+
         transform.position = Vector3.MoveTowards(
             transform.position,
             target.transform.position,
@@ -158,6 +174,8 @@ public class BattleUnitBase : MonoBehaviour
         {
             return;
         }
+
+        Debug.Log($"{name} が {target.name} を攻撃");
 
         target.TakeDamage(Status.Attack);
         attackTimer = Status.AttackSpeed;

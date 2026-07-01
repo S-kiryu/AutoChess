@@ -404,4 +404,42 @@ public class BattleGridManager : MonoBehaviour
                gridY >= 0 &&
                gridY < playerBattleGrids.GetLength(1);
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void RegisterPlayerUnitsForBattle()
+    {
+        if (playerBattleGrids == null)
+        {
+            return;
+        }
+
+        for (int y = 0; y < playerBattleGrids.GetLength(1); y++)
+        {
+            for (int x = 0; x < playerBattleGrids.GetLength(0); x++)
+            {
+                BattleGrid grid = playerBattleGrids[x, y];
+
+                BenchSlotUI unitUI =
+                    grid.GetComponentInChildren<BenchSlotUI>(true);
+
+                if (unitUI == null || unitUI.Unit == null)
+                {
+                    continue;
+                }
+
+                BattleUnitBase battleUnit =
+                    unitUI.GetComponent<BattleUnitBase>();
+
+                if (battleUnit == null)
+                {
+                    Debug.LogWarning("BenchSlotUIにBattleUnitBaseが付いていません。", unitUI);
+                    continue;
+                }
+
+                battleUnit.Initialize(unitUI.Unit, BattleTeam.Player);
+            }
+        }
+    }
 }

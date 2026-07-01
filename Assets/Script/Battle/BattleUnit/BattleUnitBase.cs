@@ -16,11 +16,38 @@ public class BattleUnitBase : MonoBehaviour
 
     private BattleUnitBase target;
     private float attackTimer;
+    private bool isBattling;
 
+    public void Initialize(UnitInstance unitInstance, BattleTeam teamId)
+    {
+        UnitInstance = unitInstance;
+        Status = unitInstance.Status;
+        Team = teamId;
+
+        attackTimer = Status.AttackSpeed;
+
+        UpdateView();
+
+        if (BattleManager.Instance != null)
+        {
+            BattleManager.Instance.RegisterUnit(this);
+        }
+    }
+
+    public void StartBattle()
+    {
+        isBattling = true;
+        target = null;
+    }
+
+    public void StopBattle()
+    {
+        isBattling = false;
+    }
 
     private void FixedUpdate()
     {
-        if (Status == null || IsDead)
+        if (!isBattling || Status == null || IsDead)
         {
             return;
         }
@@ -36,17 +63,6 @@ public class BattleUnitBase : MonoBehaviour
         }
 
         AttackRangeCheck();
-    }
-
-    public void Initialize(UnitInstance unitInstance, BattleTeam teamId)
-    {
-        UnitInstance = unitInstance;
-        Status = unitInstance.Status;
-        Team = teamId;
-
-        attackTimer = Status.AttackSpeed;
-
-        UpdateView();
     }
 
     public void SetTarget(BattleUnitBase newTarget)
@@ -65,9 +81,14 @@ public class BattleUnitBase : MonoBehaviour
         unitImage.enabled = true;
     }
 
-    //一番近い敵を見つけてそこに動く
+    // 一番近い敵を見つける
     private void FindNearestEnemy()
     {
+        if (BattleManager.Instance == null)
+        {
+            return;
+        }
+
         var enemies = BattleManager.Instance.GetEnemies(Team);
 
         BattleUnitBase nearest = null;
@@ -94,7 +115,7 @@ public class BattleUnitBase : MonoBehaviour
         target = nearest;
     }
 
-    //攻撃が届くかどうかを確認して行動を決める
+    // 攻撃が届くかどうかを確認して行動を決める
     public void AttackRangeCheck()
     {
         if (target == null)
@@ -102,7 +123,9 @@ public class BattleUnitBase : MonoBehaviour
             return;
         }
 
-        float distance = Vector3.Distance(transform.position, target.transform.position);
+        float distance = Vector3.Distance(
+            transform.position,
+            target.transform.position);
 
         if (distance <= Status.AttackRange)
         {
@@ -110,13 +133,26 @@ public class BattleUnitBase : MonoBehaviour
         }
         else
         {
-            FindNearestEnemy();
+            MoveToTarget();
         }
+    }
+
+    private void MoveToTarget()
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            target.transform.position,
+            Status.MoveSpeed * Time.fixedDeltaTime);
     }
 
     private void Attack()
     {
-        attackTimer -= Time.deltaTime;
+        attackTimer -= Time.fixedDeltaTime;
 
         if (attackTimer > 0)
         {
@@ -129,6 +165,11 @@ public class BattleUnitBase : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (Status == null || IsDead)
+        {
+            return;
+        }
+
         Status.TakeDamage(damage);
 
         if (Status.IsDead)
@@ -139,9 +180,16 @@ public class BattleUnitBase : MonoBehaviour
 
     private void Die()
     {
+        isBattling = false;
         gameObject.SetActive(false);
+
+        if (BattleManager.Instance != null)
+        {
+            BattleManager.Instance.NotifyUnitDead(this);
+        }
     }
 }
+
 public enum BattleTeam
 {
     Player,

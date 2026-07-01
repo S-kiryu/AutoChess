@@ -60,6 +60,10 @@ public class GameLoopManager : MonoBehaviour
     {
         // 戦闘フェーズの処理
         Debug.Log("戦闘フェーズに入りました。");
+        if (BattleManager.Instance != null)
+        {
+            BattleManager.Instance.StartBattle();
+        }
     }
 
     private void OnReward()

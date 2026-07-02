@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class GameLoopManager : MonoBehaviour
@@ -9,6 +10,7 @@ public class GameLoopManager : MonoBehaviour
     [SerializeField] private GameState initialState;
     [SerializeField] private EnemySpawner enemySpawner;
     [SerializeField] private StageProgressManager stageProgressManager;
+    [SerializeField] private GameObject nextButton;
 
     private void Awake()
     {
@@ -51,6 +53,7 @@ public class GameLoopManager : MonoBehaviour
 
     private void OnPreparation()
     {
+        nextButton.SetActive(false);
         // 準備フェーズの処理
         enemySpawner.SpawnEnemies(stageProgressManager.CurrentBattleStage);
         Debug.Log("準備フェーズに入りました。");
@@ -68,6 +71,7 @@ public class GameLoopManager : MonoBehaviour
 
     private void OnReward()
     {
+        nextButton.SetActive(true);
         // 報酬フェーズの処理
         Debug.Log("報酬フェーズに入りました。");
     }

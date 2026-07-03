@@ -6,6 +6,7 @@ public class BattleManager : MonoBehaviour
     public static BattleManager Instance { get; private set; }
 
     [SerializeField] private BattleUnitSpawner battleUnitSpawner;
+    [SerializeField] private BattleMovementResolver movementResolver;
 
     // 戦闘にいるユニットを管理するリスト
     private List<BattleUnitBase> playerUnits = new List<BattleUnitBase>();
@@ -23,6 +24,15 @@ public class BattleManager : MonoBehaviour
 
         Instance = this;
     }
+    public List<BattleUnitBase> GetAllBattleUnits()
+    {
+        List<BattleUnitBase> allUnits = new List<BattleUnitBase>();
+
+        allUnits.AddRange(playerUnits);
+        allUnits.AddRange(enemyUnits);
+
+        return allUnits;
+    }
 
     // 戦闘ユニットの追加
     public void RegisterUnit(BattleUnitBase unit)
@@ -39,7 +49,6 @@ public class BattleManager : MonoBehaviour
         {
             return;
         }
-        Debug.Log($"RegisterUnit: {unit.name}, Team: {unit.Team}");
 
         targetList.Add(unit);
     }
@@ -99,6 +108,11 @@ public class BattleManager : MonoBehaviour
                 Debug.Log("敵ユニットがすでに死んでいます");
             }
         }
+        if (movementResolver != null)
+        {
+            movementResolver.StartResolve();
+        }
+
     }
 
     // ユニットが死んだときに呼ばれる
@@ -159,6 +173,11 @@ public class BattleManager : MonoBehaviour
 
     private void StopAllUnits()
     {
+        if (movementResolver != null)
+        {
+            movementResolver.StopResolve();
+        }
+
         foreach (BattleUnitBase unit in playerUnits)
         {
             if (unit != null)

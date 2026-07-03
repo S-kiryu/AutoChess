@@ -16,9 +16,12 @@ public class BattleGrid : MonoBehaviour, IDropHandler
     private int boardX;
     private int boardY;
     private BattleUnitBase currentBattleUnit;
+    private BattleUnitBase movingUnit;
 
     private bool isPlayerGrid;
     private bool isEnemyGrid;
+    public bool HasMovingUnit => movingUnit != null;
+    public bool IsEnterBlocked => currentBattleUnit != null || movingUnit != null;
 
     private BenchManager benchManager;
     private BattleGridManager battleGridManager;
@@ -55,6 +58,30 @@ public class BattleGrid : MonoBehaviour, IDropHandler
         if (backgroundImage == null)
         {
             backgroundImage = GetComponent<Image>();
+        }
+    }
+
+    public bool TryLockForMove(BattleUnitBase unit)
+    {
+        if (unit == null)
+        {
+            return false;
+        }
+
+        if (currentBattleUnit != null || movingUnit != null)
+        {
+            return false;
+        }
+
+        movingUnit = unit;
+        return true;
+    }
+
+    public void ClearMoveLock(BattleUnitBase unit)
+    {
+        if (movingUnit == unit)
+        {
+            movingUnit = null;
         }
     }
 

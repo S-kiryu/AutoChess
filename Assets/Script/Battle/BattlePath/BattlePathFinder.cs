@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public static class BattlePathFinder
@@ -14,142 +13,44 @@ public static class BattlePathFinder
                Mathf.Abs(from.BoardY - to.BoardY);
     }
 
-    public static List<BattleGrid> GetNeighborGrids(BattleGrid grid)
-    {
-        List<BattleGrid> neighbors = new List<BattleGrid>();
-
-        if (grid == null || BattleGridManager.Instance == null)
-        {
-            return neighbors;
-        }
-
-        AddNeighbor(neighbors, grid.BoardX + 1, grid.BoardY);
-        AddNeighbor(neighbors, grid.BoardX - 1, grid.BoardY);
-        AddNeighbor(neighbors, grid.BoardX, grid.BoardY + 1);
-        AddNeighbor(neighbors, grid.BoardX, grid.BoardY - 1);
-
-        return neighbors;
-    }
-
-    private static void AddNeighbor(
-        List<BattleGrid> neighbors,
-        int boardX,
-        int boardY)
-    {
-        BattleGrid grid =
-            BattleGridManager.Instance.GetGridByBoardPosition(
-                boardX,
-                boardY);
-
-        if (grid != null)
-        {
-            neighbors.Add(grid);
-        }
-    }
-
-    public static BattleGrid GetNextGridTowardForwardAttackRange(
+    public static BattleGrid GetNextGridTowardTarget(
         BattleGrid from,
-        BattleGrid target,
-        BattleTeam team,
-        int width,
-        int depth)
+        BattleGrid target)
     {
-        if (from == null || target == null)
+        if (from == null || target == null || BattleGridManager.Instance == null)
         {
             return null;
         }
 
-        Queue<BattleGrid> open = new Queue<BattleGrid>();
-        Dictionary<BattleGrid, BattleGrid> cameFrom =
-            new Dictionary<BattleGrid, BattleGrid>();
+        int dx = target.BoardX - from.BoardX;
+        int dy = target.BoardY - from.BoardY;
 
-        open.Enqueue(from);
-        cameFrom[from] = null;
+        BattleGrid nextGrid = null;
 
-        BattleGrid bestGrid = null;
-        int bestDistance = int.MaxValue;
-
-        while (open.Count > 0)
+        if (Mathf.Abs(dy) >= Mathf.Abs(dx))
         {
-            BattleGrid current = open.Dequeue();
-
-            if (IsGridInForwardAttackRange(
-                    current,
-                    target,
-                    team,
-                    width,
-                    depth))
+            if (dy != 0)
             {
-                bestGrid = current;
-                break;
+                nextGrid = BattleGridManager.Instance.GetGridByBoardPosition(
+                    from.BoardX,
+                    from.BoardY + (dy > 0 ? 1 : -1));
             }
-
-            int distanceToTarget = GetGridDistance(current, target);
-
-            if (distanceToTarget < bestDistance)
+        }
+        else
+        {
+            if (dx != 0)
             {
-                bestDistance = distanceToTarget;
-                bestGrid = current;
-            }
-
-            foreach (BattleGrid neighbor in GetNeighborGrids(current))
-            {
-                if (cameFrom.ContainsKey(neighbor))
-                {
-                    continue;
-                }
-
-                if (neighbor.HasBattleUnit)
-                {
-                    continue;
-                }
-
-                cameFrom[neighbor] = current;
-                open.Enqueue(neighbor);
+                nextGrid = BattleGridManager.Instance.GetGridByBoardPosition(
+                    from.BoardX + (dx > 0 ? 1 : -1),
+                    from.BoardY);
             }
         }
 
-        if (bestGrid == null || bestGrid == from)
+        if (nextGrid == null || nextGrid.IsEnterBlocked)
         {
             return null;
         }
 
-        BattleGrid step = bestGrid;
-
-        while (cameFrom[step] != from)
-        {
-            step = cameFrom[step];
-        }
-
-        return step;
-    }
-
-    public static bool IsGridInForwardAttackRange(
-        BattleGrid attackerGrid,
-        BattleGrid targetGrid,
-        BattleTeam team,
-        int width,
-        int depth)
-    {
-        if (attackerGrid == null || targetGrid == null)
-        {
-            return false;
-        }
-
-        int dx = targetGrid.BoardX - attackerGrid.BoardX;
-        int dy = targetGrid.BoardY - attackerGrid.BoardY;
-
-        int forwardDistance =
-            team == BattleTeam.Player ? -dy : dy;
-
-        if (forwardDistance <= 0)
-        {
-            return false;
-        }
-
-        int halfWidth = width / 2;
-
-        return Mathf.Abs(dx) <= halfWidth &&
-               forwardDistance <= depth;
+        return nextGrid;
     }
 }

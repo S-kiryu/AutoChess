@@ -182,6 +182,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleUnitBase
   unitView: {fileID: 4402936459083195521}
+  chatterLimit: 6
+  chatterStopTime: 0.5
 --- !u!114 &4402936459083195521
 MonoBehaviour:
   m_ObjectHideFlags: 0

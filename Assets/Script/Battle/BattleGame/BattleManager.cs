@@ -5,6 +5,8 @@ public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; private set; }
 
+    [SerializeField] private BattleUnitSpawner battleUnitSpawner;
+
     // 戦闘にいるユニットを管理するリスト
     private List<BattleUnitBase> playerUnits = new List<BattleUnitBase>();
     private List<BattleUnitBase> enemyUnits = new List<BattleUnitBase>();
@@ -67,9 +69,9 @@ public class BattleManager : MonoBehaviour
 
         isBattleFinished = false;
 
-        if (BattleGridManager.Instance != null)
+        if (battleUnitSpawner != null)
         {
-            BattleGridManager.Instance.RegisterPlayerUnitsForBattle();
+            battleUnitSpawner.RegisterPlayerUnits();
         }
 
         Debug.Log($"戦闘開始時 味方数: {playerUnits.Count}, 敵数: {enemyUnits.Count}");
@@ -79,10 +81,10 @@ public class BattleManager : MonoBehaviour
             if (unit != null && !unit.IsDead)
             {
                 unit.StartBattle();
-            }　
-            else if(unit.IsDead)
+            }
+            else if (unit != null && unit.IsDead)
             {
-                Debug.Log("ユニットが死んでるよ");
+                Debug.Log("味方ユニットがすでに死んでいます");
             }
         }
 
@@ -92,9 +94,9 @@ public class BattleManager : MonoBehaviour
             {
                 unit.StartBattle();
             }
-            else if (unit.IsDead)
+            else if (unit != null && unit.IsDead)
             {
-                Debug.Log("ユニットが死んでるよ");
+                Debug.Log("敵ユニットがすでに死んでいます");
             }
         }
     }

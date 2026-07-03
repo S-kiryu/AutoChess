@@ -15,3 +15,4 @@ MonoBehaviour:
   CharacterName: aasa
   Icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   BaseStatus: {fileID: 11400000, guid: 2f4a8a70b7fd7ad41911e639afd9f9e0, type: 2}
+  NormalAttack: {fileID: 11400000, guid: a89bd41d589b23d45b7c56dddff44305, type: 2}

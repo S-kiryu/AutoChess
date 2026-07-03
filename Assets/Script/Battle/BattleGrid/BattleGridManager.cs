@@ -408,55 +408,6 @@ public class BattleGridManager : MonoBehaviour
                gridY < playerBattleGrids.GetLength(1);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public void RegisterPlayerUnitsForBattle()
-    {
-        if (playerBattleGrids == null)
-        {
-            Debug.LogWarning("playerBattleGrids がありません。");
-            return;
-        }
-
-        for (int y = 0; y < playerBattleGrids.GetLength(1); y++)
-        {
-            for (int x = 0; x < playerBattleGrids.GetLength(0); x++)
-            {
-                BattleGrid grid = playerBattleGrids[x, y];
-
-                BenchSlotUI unitUI =
-                    grid.GetComponentInChildren<BenchSlotUI>(true);
-
-                if (unitUI == null)
-                {
-                    Debug.Log($"[{x}, {y}] BenchSlotUIなし");
-                    continue;
-                }
-
-                if (unitUI.Unit == null)
-                {
-                    Debug.Log($"[{x}, {y}] Unitなし");
-                    continue;
-                }
-
-                BattleUnitBase battleUnit =
-                    unitUI.GetComponent<BattleUnitBase>();
-
-                if (battleUnit == null)
-                {
-                    Debug.LogWarning("BenchSlotUIにBattleUnitBaseが付いていません。", unitUI);
-                    continue;
-                }
-
-                battleUnit.transform.SetParent(battleUnitRoot, true);
-                battleUnit.SetCurrentGrid(grid);
-                battleUnit.Initialize(unitUI.Unit, BattleTeam.Player);
-                Debug.Log($"味方登録: {unitUI.Unit.Data.name} [{x}, {y}]");
-            }
-        }
-    }
-
     public BattleGrid GetGridByBoardPosition(int boardX, int boardY)
     {
         if (battleGrids == null)
@@ -475,111 +426,19 @@ public class BattleGridManager : MonoBehaviour
         return battleGrids[boardX, boardY];
     }
 
-    public int GetGridDistance(BattleGrid from, BattleGrid to)
+    public IEnumerable<BattleGrid> GetPlayerBattleGrids()
     {
-        if (from == null || to == null)
+        if (playerBattleGrids == null)
         {
-            return int.MaxValue;
+            yield break;
         }
 
-        return Mathf.Abs(from.BoardX - to.BoardX) +
-               Mathf.Abs(from.BoardY - to.BoardY);
-    }
-
-    public List<BattleGrid> GetNeighborGrids(BattleGrid grid)
-    {
-        List<BattleGrid> neighbors = new List<BattleGrid>();
-
-        if (grid == null)
+        for (int y = 0; y < playerBattleGrids.GetLength(1); y++)
         {
-            return neighbors;
-        }
-
-        AddNeighbor(neighbors, grid.BoardX + 1, grid.BoardY);
-        AddNeighbor(neighbors, grid.BoardX - 1, grid.BoardY);
-        AddNeighbor(neighbors, grid.BoardX, grid.BoardY + 1);
-        AddNeighbor(neighbors, grid.BoardX, grid.BoardY - 1);
-
-        return neighbors;
-    }
-
-    private void AddNeighbor(List<BattleGrid> neighbors, int boardX, int boardY)
-    {
-        BattleGrid grid = GetGridByBoardPosition(boardX, boardY);
-
-        if (grid != null)
-        {
-            neighbors.Add(grid);
-        }
-    }
-
-    public BattleGrid GetNextGridTowardAttackRange(
-        BattleGrid from,
-        BattleGrid target,
-        int attackRange)
-    {
-        if (from == null || target == null)
-        {
-            return null;
-        }
-
-        Queue<BattleGrid> open = new Queue<BattleGrid>();
-        Dictionary<BattleGrid, BattleGrid> cameFrom =
-            new Dictionary<BattleGrid, BattleGrid>();
-
-        open.Enqueue(from);
-        cameFrom[from] = null;
-
-        BattleGrid bestGrid = null;
-        int bestDistance = int.MaxValue;
-
-        while (open.Count > 0)
-        {
-            BattleGrid current = open.Dequeue();
-
-            int distanceToTarget = GetGridDistance(current, target);
-
-            if (distanceToTarget <= attackRange)
+            for (int x = 0; x < playerBattleGrids.GetLength(0); x++)
             {
-                bestGrid = current;
-                break;
-            }
-
-            if (distanceToTarget < bestDistance)
-            {
-                bestDistance = distanceToTarget;
-                bestGrid = current;
-            }
-
-            foreach (BattleGrid neighbor in GetNeighborGrids(current))
-            {
-                if (cameFrom.ContainsKey(neighbor))
-                {
-                    continue;
-                }
-
-                if (neighbor.HasBattleUnit)
-                {
-                    continue;
-                }
-
-                cameFrom[neighbor] = current;
-                open.Enqueue(neighbor);
+                yield return playerBattleGrids[x, y];
             }
         }
-
-        if (bestGrid == null || bestGrid == from)
-        {
-            return null;
-        }
-
-        BattleGrid step = bestGrid;
-
-        while (cameFrom[step] != from)
-        {
-            step = cameFrom[step];
-        }
-
-        return step;
     }
 }

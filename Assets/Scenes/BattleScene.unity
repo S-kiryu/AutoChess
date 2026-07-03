@@ -661,6 +661,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 560119850}
   m_CullTransparentMesh: 1
+--- !u!1 &652954608
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 652954610}
+  - component: {fileID: 652954609}
+  m_Layer: 0
+  m_Name: BattleUnitSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &652954609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 652954608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 101cf1829d6deab47a8e5c7add6502ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleUnitSpawner
+  enemyPrefab: {fileID: 1126852099153274538, guid: e4a04498468dd7d4d8c1ff5cd6d29626, type: 3}
+  battleUnitRoot: {fileID: 1347651000}
+--- !u!4 &652954610
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 652954608}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 994.1291, y: 597.1577, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &727479955
 GameObject:
   m_ObjectHideFlags: 0
@@ -1312,7 +1358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameLoopManager
   initialState: 0
-  enemySpawner: {fileID: 415742210}
+  battleUnitSpawner: {fileID: 652954609}
   stageProgressManager: {fileID: 1413032654}
   nextButton: {fileID: 2019095109}
 --- !u!4 &1049186424
@@ -1361,6 +1407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d2b93f8df57d0e4c8d9a0e143165baf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleManager
+  battleUnitSpawner: {fileID: 652954609}
 --- !u!4 &1230427201
 Transform:
   m_ObjectHideFlags: 0
@@ -2280,3 +2327,4 @@ SceneRoots:
   - {fileID: 1504387149}
   - {fileID: 1032396804}
   - {fileID: 1230427201}
+  - {fileID: 652954610}

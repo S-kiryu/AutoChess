@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 /// <summary>
 /// 戦闘時のデータ
 /// </summary>
 public class BattleUnitBase : MonoBehaviour
 {
-    [SerializeField] private Image unitImage;
+    [SerializeField] private BattleUnitView unitView;
 
     public UnitInstance UnitInstance { get; private set; }
 
@@ -21,6 +22,7 @@ public class BattleUnitBase : MonoBehaviour
     private bool isBattling;
     private bool isMoving;
     private Vector3 moveDestination;
+    private Vector2Int forwardDirection = Vector2Int.up;
 
     public void Initialize(UnitInstance unitInstance, BattleTeam teamId)
     {
@@ -30,7 +32,15 @@ public class BattleUnitBase : MonoBehaviour
 
         attackTimer = Status.AttackSpeed;
 
-        UpdateView();
+        if (unitView == null)
+        {
+            unitView = GetComponent<BattleUnitView>();
+        }
+
+        if (unitView != null)
+        {
+            unitView.SetUnit(UnitInstance);
+        }
 
         if (BattleManager.Instance != null)
         {
@@ -98,17 +108,6 @@ public class BattleUnitBase : MonoBehaviour
         target = newTarget;
     }
 
-    private void UpdateView()
-    {
-        if (unitImage == null || UnitInstance == null || UnitInstance.Data == null)
-        {
-            return;
-        }
-
-        unitImage.sprite = UnitInstance.Data.Icon;
-        unitImage.enabled = true;
-    }
-
     // 一番近い敵を見つける
     private void FindNearestEnemy()
     {
@@ -129,7 +128,7 @@ public class BattleUnitBase : MonoBehaviour
                 continue;
             }
 
-            int distance = BattleGridManager.Instance.GetGridDistance(
+            int distance = BattlePathFinder.GetGridDistance(
                 CurrentGrid,
                 enemy.CurrentGrid);
 
@@ -146,42 +145,55 @@ public class BattleUnitBase : MonoBehaviour
     // 攻撃が届くかどうかを確認して行動を決める
     public void AttackRangeCheck()
     {
-        if (target == null || target.CurrentGrid == null || CurrentGrid == null)
+        if (target == null)
         {
             return;
         }
 
-        int distance = BattleGridManager.Instance.GetGridDistance(
-            CurrentGrid,
-            target.CurrentGrid);
+        NormalAttackData attackData = UnitInstance.Data.NormalAttack;
 
-        if (distance <= Status.AttackRange)
+        if (attackData == null)
         {
-            Attack();
+            Debug.LogWarning($"{name} に通常攻撃データがありません。");
+            return;
+        }
+
+        FaceTarget();
+
+        if (IsTargetInForwardAttackRange(target, attackData))
+        {
+            Attack(attackData);
         }
         else
         {
-            MoveToTarget();
+            MoveToTarget(attackData);
         }
     }
 
-    private void MoveToTarget()
+    private void MoveToTarget(NormalAttackData attackData)
     {
-        if (target == null || target.CurrentGrid == null || CurrentGrid == null)
+        if (target == null ||
+            target.CurrentGrid == null ||
+            CurrentGrid == null ||
+            attackData == null)
         {
             return;
         }
 
         BattleGrid nextGrid =
-    BattleGridManager.Instance.GetNextGridTowardAttackRange(
-        CurrentGrid,
-        target.CurrentGrid,
-        Status.AttackRange);
+            BattlePathFinder.GetNextGridTowardForwardAttackRange(
+                CurrentGrid,
+                target.CurrentGrid,
+                Team,
+                attackData.Width,
+                attackData.Depth);
 
         if (nextGrid == null)
         {
             return;
         }
+
+        FaceGrid(nextGrid);
 
         CurrentGrid.ClearBattleUnit(this);
 
@@ -206,7 +218,7 @@ public class BattleUnitBase : MonoBehaviour
         }
     }
 
-    private void Attack()
+    private void Attack(NormalAttackData attackData)
     {
         attackTimer -= Time.fixedDeltaTime;
 
@@ -215,29 +227,58 @@ public class BattleUnitBase : MonoBehaviour
             return;
         }
 
-        DamageResult result =
-            DamageCalculator.CalculateDamage(
+        DamageResult result = DamageCalculator.CalculateDamage(
             this,
             target,
-            DamageType.Physical);
+            attackData.DamageType,
+            attackData.DamageMultiplier);
 
         if (result.IsDodged)
         {
-            Debug.Log($"{target.name} が回避した");
+            Debug.Log($"{target.name} が回避しました。");
             attackTimer = Status.AttackSpeed;
             return;
         }
 
-        if (result.IsCritical)
-        {
-            Debug.Log("クリティカル！");
-        }
-
         target.TakeDamage(result.Damage);
-
-        Debug.Log($"{name} が {target.name} に {result.Damage} ダメージ");
+        Debug.Log($"{name} が {target.name} に {result.Damage} のダメージを与えました。");
 
         attackTimer = Status.AttackSpeed;
+    }
+
+    private bool IsTargetInForwardAttackRange(
+    BattleUnitBase targetUnit,
+    NormalAttackData attackData)
+    {
+        if (targetUnit == null ||
+            targetUnit.CurrentGrid == null ||
+            CurrentGrid == null ||
+            attackData == null)
+        {
+            return false;
+        }
+
+        int dx = targetUnit.CurrentGrid.BoardX - CurrentGrid.BoardX;
+        int dy = targetUnit.CurrentGrid.BoardY - CurrentGrid.BoardY;
+
+        int forwardDistance =
+            dx * forwardDirection.x +
+            dy * forwardDirection.y;
+
+        if (forwardDistance <= 0)
+        {
+            return false;
+        }
+
+        int sideDistance =
+            Mathf.Abs(
+                dx * -forwardDirection.y +
+                dy * forwardDirection.x);
+
+        int halfWidth = attackData.Width / 2;
+
+        return sideDistance <= halfWidth &&
+               forwardDistance <= attackData.Depth;
     }
 
     public void TakeDamage(float damage)
@@ -248,6 +289,11 @@ public class BattleUnitBase : MonoBehaviour
         }
 
         Status.TakeDamage(damage);
+
+        if (unitView != null)
+        {
+            unitView.PlayDamageFlash();
+        }
 
         if (Status.IsDead)
         {
@@ -260,6 +306,11 @@ public class BattleUnitBase : MonoBehaviour
         isBattling = false;
         isMoving = false;
 
+        if (unitView != null)
+        {
+            unitView.ResetColor();
+        }
+
         if (CurrentGrid != null)
         {
             CurrentGrid.ClearBattleUnit(this);
@@ -270,6 +321,61 @@ public class BattleUnitBase : MonoBehaviour
         if (BattleManager.Instance != null)
         {
             BattleManager.Instance.NotifyUnitDead(this);
+        }
+    }
+
+    private void FaceTarget()
+    {
+        if (target == null ||
+            target.CurrentGrid == null ||
+            CurrentGrid == null)
+        {
+            return;
+        }
+
+        int dx = target.CurrentGrid.BoardX - CurrentGrid.BoardX;
+        int dy = target.CurrentGrid.BoardY - CurrentGrid.BoardY;
+
+        if (Mathf.Abs(dx) > Mathf.Abs(dy))
+        {
+            forwardDirection = dx > 0
+                ? Vector2Int.right
+                : Vector2Int.left;
+        }
+        else
+        {
+            forwardDirection = dy > 0
+                ? Vector2Int.up
+                : Vector2Int.down;
+        }
+    }
+
+    private void FaceGrid(BattleGrid grid)
+    {
+        if (grid == null || CurrentGrid == null)
+        {
+            return;
+        }
+
+        int dx = grid.BoardX - CurrentGrid.BoardX;
+        int dy = grid.BoardY - CurrentGrid.BoardY;
+
+        if (dx == 0 && dy == 0)
+        {
+            return;
+        }
+
+        if (Mathf.Abs(dx) > Mathf.Abs(dy))
+        {
+            forwardDirection = dx > 0
+                ? Vector2Int.right
+                : Vector2Int.left;
+        }
+        else
+        {
+            forwardDirection = dy > 0
+                ? Vector2Int.up
+                : Vector2Int.down;
         }
     }
 }

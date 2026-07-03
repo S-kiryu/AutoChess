@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 
 public class GameLoopManager : MonoBehaviour
@@ -8,7 +7,7 @@ public class GameLoopManager : MonoBehaviour
     public static GameLoopManager Instance { get; private set; }
 
     [SerializeField] private GameState initialState;
-    [SerializeField] private EnemySpawner enemySpawner;
+    [SerializeField] private BattleUnitSpawner battleUnitSpawner;
     [SerializeField] private StageProgressManager stageProgressManager;
     [SerializeField] private GameObject nextButton;
 
@@ -19,6 +18,7 @@ public class GameLoopManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
     }
 
@@ -54,15 +54,19 @@ public class GameLoopManager : MonoBehaviour
     private void OnPreparation()
     {
         nextButton.SetActive(false);
-        // 準備フェーズの処理
-        enemySpawner.SpawnEnemies(stageProgressManager.CurrentBattleStage);
+
+        if (battleUnitSpawner != null)
+        {
+            battleUnitSpawner.SpawnEnemies(stageProgressManager.CurrentBattleStage);
+        }
+
         Debug.Log("準備フェーズに入りました。");
     }
 
     private void OnBattle()
     {
-        // 戦闘フェーズの処理
         Debug.Log("戦闘フェーズに入りました。");
+
         if (BattleManager.Instance != null)
         {
             BattleManager.Instance.StartBattle();
@@ -72,7 +76,6 @@ public class GameLoopManager : MonoBehaviour
     private void OnReward()
     {
         nextButton.SetActive(true);
-        // 報酬フェーズの処理
         Debug.Log("報酬フェーズに入りました。");
     }
 }

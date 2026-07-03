@@ -513,34 +513,73 @@ public class BattleGridManager : MonoBehaviour
         }
     }
 
-    public BattleGrid GetNextGridToward(BattleGrid from, BattleGrid target)
+    public BattleGrid GetNextGridTowardAttackRange(
+        BattleGrid from,
+        BattleGrid target,
+        int attackRange)
     {
         if (from == null || target == null)
         {
             return null;
         }
 
-        List<BattleGrid> neighbors = GetNeighborGrids(from);
+        Queue<BattleGrid> open = new Queue<BattleGrid>();
+        Dictionary<BattleGrid, BattleGrid> cameFrom =
+            new Dictionary<BattleGrid, BattleGrid>();
+
+        open.Enqueue(from);
+        cameFrom[from] = null;
 
         BattleGrid bestGrid = null;
         int bestDistance = int.MaxValue;
 
-        foreach (BattleGrid grid in neighbors)
+        while (open.Count > 0)
         {
-            if (grid.HasBattleUnit)
+            BattleGrid current = open.Dequeue();
+
+            int distanceToTarget = GetGridDistance(current, target);
+
+            if (distanceToTarget <= attackRange)
             {
-                continue;
+                bestGrid = current;
+                break;
             }
 
-            int distance = GetGridDistance(grid, target);
-
-            if (distance < bestDistance)
+            if (distanceToTarget < bestDistance)
             {
-                bestDistance = distance;
-                bestGrid = grid;
+                bestDistance = distanceToTarget;
+                bestGrid = current;
+            }
+
+            foreach (BattleGrid neighbor in GetNeighborGrids(current))
+            {
+                if (cameFrom.ContainsKey(neighbor))
+                {
+                    continue;
+                }
+
+                if (neighbor.HasBattleUnit)
+                {
+                    continue;
+                }
+
+                cameFrom[neighbor] = current;
+                open.Enqueue(neighbor);
             }
         }
 
-        return bestGrid;
+        if (bestGrid == null || bestGrid == from)
+        {
+            return null;
+        }
+
+        BattleGrid step = bestGrid;
+
+        while (cameFrom[step] != from)
+        {
+            step = cameFrom[step];
+        }
+
+        return step;
     }
 }

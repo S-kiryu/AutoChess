@@ -19,11 +19,11 @@ MonoBehaviour:
   MagicAttack: 0
   AttackSpeed: 1
   AttackRange: 2
-  CriticalRate: 0
-  CriticalDamage: 0
-  Defense: 0
+  CriticalRate: 25
+  CriticalDamage: 100
+  Defense: 1
   MagicDefense: 0
   CriticalDefense: 0
-  MoveSpeed: 50
-  DodgeRate: 0
+  MoveSpeed: 100
+  DodgeRate: 1
   Type: 

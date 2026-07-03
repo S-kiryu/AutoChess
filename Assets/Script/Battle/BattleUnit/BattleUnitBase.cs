@@ -172,9 +172,11 @@ public class BattleUnitBase : MonoBehaviour
             return;
         }
 
-        BattleGrid nextGrid = BattleGridManager.Instance.GetNextGridToward(
-            CurrentGrid,
-            target.CurrentGrid);
+        BattleGrid nextGrid =
+    BattleGridManager.Instance.GetNextGridTowardAttackRange(
+        CurrentGrid,
+        target.CurrentGrid,
+        Status.AttackRange);
 
         if (nextGrid == null)
         {
@@ -213,9 +215,28 @@ public class BattleUnitBase : MonoBehaviour
             return;
         }
 
-        Debug.Log($"{name} が {target.name} を攻撃");
+        DamageResult result =
+            DamageCalculator.CalculateDamage(
+            this,
+            target,
+            DamageType.Physical);
 
-        target.TakeDamage(Status.Attack);
+        if (result.IsDodged)
+        {
+            Debug.Log($"{target.name} が回避した");
+            attackTimer = Status.AttackSpeed;
+            return;
+        }
+
+        if (result.IsCritical)
+        {
+            Debug.Log("クリティカル！");
+        }
+
+        target.TakeDamage(result.Damage);
+
+        Debug.Log($"{name} が {target.name} に {result.Damage} ダメージ");
+
         attackTimer = Status.AttackSpeed;
     }
 

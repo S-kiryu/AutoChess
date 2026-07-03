@@ -18,7 +18,7 @@ MonoBehaviour:
   Attack: 10
   MagicAttack: 0
   AttackSpeed: 1
-  AttackRange: 1
+  AttackRange: 2
   CriticalRate: 0
   CriticalDamage: 0
   Defense: 0

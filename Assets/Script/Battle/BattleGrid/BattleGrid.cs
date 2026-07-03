@@ -13,6 +13,9 @@ public class BattleGrid : MonoBehaviour, IDropHandler
 
     private int x;
     private int y;
+    private int boardX;
+    private int boardY;
+    private BattleUnitBase currentBattleUnit;
 
     private bool isPlayerGrid;
     private bool isEnemyGrid;
@@ -26,12 +29,20 @@ public class BattleGrid : MonoBehaviour, IDropHandler
 
     public int X => x;
     public int Y => y;
+    public int BoardX => boardX;
+    public int BoardY => boardY;
+    public BattleUnitBase CurrentBattleUnit => currentBattleUnit;
+    public bool HasBattleUnit => currentBattleUnit != null;
+
 
     public bool IsPlayerGrid => isPlayerGrid;
     public bool IsEnemyGrid => isEnemyGrid;
 
-    public void Initialize(int gridX,int gridY,BenchManager manager)
+    public void Initialize(int gridX, int gridY, BenchManager manager)
     {
+        boardX = gridX;
+        boardY = gridY;
+
         x = gridX;
         y = gridY;
 
@@ -41,7 +52,6 @@ public class BattleGrid : MonoBehaviour, IDropHandler
         isPlayerGrid = false;
         isEnemyGrid = false;
 
-        //イメージがなければ自身のイメージを使う
         if (backgroundImage == null)
         {
             backgroundImage = GetComponent<Image>();
@@ -125,6 +135,19 @@ public class BattleGrid : MonoBehaviour, IDropHandler
         if (success)
         {
             draggedUI.SetDropped(true);
+        }
+    }
+
+    public void SetBattleUnit(BattleUnitBase unit)
+    {
+        currentBattleUnit = unit;
+    }
+
+    public void ClearBattleUnit(BattleUnitBase unit)
+    {
+        if (currentBattleUnit == unit)
+        {
+            currentBattleUnit = null;
         }
     }
 

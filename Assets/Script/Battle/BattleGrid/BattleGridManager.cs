@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -450,10 +451,96 @@ public class BattleGridManager : MonoBehaviour
 
                 battleUnit.transform.SetParent(battleUnitRoot, true);
                 battleUnit.SetCurrentGrid(grid);
-
-                Debug.Log($"味方登録: {unitUI.Unit.Data.name} [{x}, {y}]");
                 battleUnit.Initialize(unitUI.Unit, BattleTeam.Player);
+                Debug.Log($"味方登録: {unitUI.Unit.Data.name} [{x}, {y}]");
             }
         }
+    }
+
+    public BattleGrid GetGridByBoardPosition(int boardX, int boardY)
+    {
+        if (battleGrids == null)
+        {
+            return null;
+        }
+
+        if (boardX < 0 ||
+            boardX >= battleGrids.GetLength(0) ||
+            boardY < 0 ||
+            boardY >= battleGrids.GetLength(1))
+        {
+            return null;
+        }
+
+        return battleGrids[boardX, boardY];
+    }
+
+    public int GetGridDistance(BattleGrid from, BattleGrid to)
+    {
+        if (from == null || to == null)
+        {
+            return int.MaxValue;
+        }
+
+        return Mathf.Abs(from.BoardX - to.BoardX) +
+               Mathf.Abs(from.BoardY - to.BoardY);
+    }
+
+    public List<BattleGrid> GetNeighborGrids(BattleGrid grid)
+    {
+        List<BattleGrid> neighbors = new List<BattleGrid>();
+
+        if (grid == null)
+        {
+            return neighbors;
+        }
+
+        AddNeighbor(neighbors, grid.BoardX + 1, grid.BoardY);
+        AddNeighbor(neighbors, grid.BoardX - 1, grid.BoardY);
+        AddNeighbor(neighbors, grid.BoardX, grid.BoardY + 1);
+        AddNeighbor(neighbors, grid.BoardX, grid.BoardY - 1);
+
+        return neighbors;
+    }
+
+    private void AddNeighbor(List<BattleGrid> neighbors, int boardX, int boardY)
+    {
+        BattleGrid grid = GetGridByBoardPosition(boardX, boardY);
+
+        if (grid != null)
+        {
+            neighbors.Add(grid);
+        }
+    }
+
+    public BattleGrid GetNextGridToward(BattleGrid from, BattleGrid target)
+    {
+        if (from == null || target == null)
+        {
+            return null;
+        }
+
+        List<BattleGrid> neighbors = GetNeighborGrids(from);
+
+        BattleGrid bestGrid = null;
+        int bestDistance = int.MaxValue;
+
+        foreach (BattleGrid grid in neighbors)
+        {
+            if (grid.HasBattleUnit)
+            {
+                continue;
+            }
+
+            int distance = GetGridDistance(grid, target);
+
+            if (distance < bestDistance)
+            {
+                bestDistance = distance;
+                bestGrid = grid;
+            }
+        }
+
+        return bestGrid;
     }
 }

@@ -19,6 +19,8 @@ public class BattleUnitBase : MonoBehaviour
     private BattleUnitBase target;
     private float attackTimer;
     private bool isBattling;
+    private bool isMoving;
+    private Vector3 moveDestination;
 
     public void Initialize(UnitInstance unitInstance, BattleTeam teamId)
     {
@@ -38,11 +40,17 @@ public class BattleUnitBase : MonoBehaviour
 
     public void SetCurrentGrid(BattleGrid grid)
     {
+        if (CurrentGrid != null)
+        {
+            CurrentGrid.ClearBattleUnit(this);
+        }
+
         CurrentGrid = grid;
 
-        if (grid != null)
+        if (CurrentGrid != null)
         {
-            transform.position = grid.transform.position;
+            CurrentGrid.SetBattleUnit(this);
+            transform.position = CurrentGrid.transform.position;
         }
     }
 
@@ -63,6 +71,12 @@ public class BattleUnitBase : MonoBehaviour
     {
         if (!isBattling || Status == null || IsDead)
         {
+            return;
+        }
+
+        if (isMoving)
+        {
+            ContinueMove();
             return;
         }
 
@@ -98,7 +112,7 @@ public class BattleUnitBase : MonoBehaviour
     // 一番近い敵を見つける
     private void FindNearestEnemy()
     {
-        if (BattleManager.Instance == null)
+        if (BattleManager.Instance == null || CurrentGrid == null)
         {
             return;
         }
@@ -106,18 +120,18 @@ public class BattleUnitBase : MonoBehaviour
         var enemies = BattleManager.Instance.GetEnemies(Team);
 
         BattleUnitBase nearest = null;
-        float nearestDistance = float.MaxValue;
+        int nearestDistance = int.MaxValue;
 
         foreach (BattleUnitBase enemy in enemies)
         {
-            if (enemy == null || enemy.IsDead)
+            if (enemy == null || enemy.IsDead || enemy.CurrentGrid == null)
             {
                 continue;
             }
 
-            float distance = Vector3.Distance(
-                transform.position,
-                enemy.transform.position);
+            int distance = BattleGridManager.Instance.GetGridDistance(
+                CurrentGrid,
+                enemy.CurrentGrid);
 
             if (distance < nearestDistance)
             {
@@ -132,14 +146,14 @@ public class BattleUnitBase : MonoBehaviour
     // 攻撃が届くかどうかを確認して行動を決める
     public void AttackRangeCheck()
     {
-        if (target == null)
+        if (target == null || target.CurrentGrid == null || CurrentGrid == null)
         {
             return;
         }
 
-        float distance = Vector3.Distance(
-            transform.position,
-            target.transform.position);
+        int distance = BattleGridManager.Instance.GetGridDistance(
+            CurrentGrid,
+            target.CurrentGrid);
 
         if (distance <= Status.AttackRange)
         {
@@ -153,17 +167,41 @@ public class BattleUnitBase : MonoBehaviour
 
     private void MoveToTarget()
     {
-        if (target == null)
+        if (target == null || target.CurrentGrid == null || CurrentGrid == null)
         {
             return;
         }
 
-        Debug.Log($"{name} MoveSpeed: {Status.MoveSpeed}");
+        BattleGrid nextGrid = BattleGridManager.Instance.GetNextGridToward(
+            CurrentGrid,
+            target.CurrentGrid);
 
+        if (nextGrid == null)
+        {
+            return;
+        }
+
+        CurrentGrid.ClearBattleUnit(this);
+
+        CurrentGrid = nextGrid;
+        CurrentGrid.SetBattleUnit(this);
+
+        moveDestination = CurrentGrid.transform.position;
+        isMoving = true;
+    }
+
+    private void ContinueMove()
+    {
         transform.position = Vector3.MoveTowards(
             transform.position,
-            target.transform.position,
+            moveDestination,
             Status.MoveSpeed * Time.fixedDeltaTime);
+
+        if (Vector3.Distance(transform.position, moveDestination) <= 0.01f)
+        {
+            transform.position = moveDestination;
+            isMoving = false;
+        }
     }
 
     private void Attack()
@@ -199,6 +237,13 @@ public class BattleUnitBase : MonoBehaviour
     private void Die()
     {
         isBattling = false;
+        isMoving = false;
+
+        if (CurrentGrid != null)
+        {
+            CurrentGrid.ClearBattleUnit(this);
+        }
+
         gameObject.SetActive(false);
 
         if (BattleManager.Instance != null)

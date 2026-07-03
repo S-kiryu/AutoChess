@@ -5,30 +5,193 @@ public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; private set; }
 
-    //戦闘にいるユニットを管理するリスト
+    [SerializeField] private BattleUnitSpawner battleUnitSpawner;
+    [SerializeField] private BattleMovementResolver movementResolver;
+
+    // 戦闘にいるユニットを管理するリスト
     private List<BattleUnitBase> playerUnits = new List<BattleUnitBase>();
     private List<BattleUnitBase> enemyUnits = new List<BattleUnitBase>();
 
+    private bool isBattleFinished;
+
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
     }
+    public List<BattleUnitBase> GetAllBattleUnits()
+    {
+        List<BattleUnitBase> allUnits = new List<BattleUnitBase>();
 
-    //
+        allUnits.AddRange(playerUnits);
+        allUnits.AddRange(enemyUnits);
+
+        return allUnits;
+    }
+
+    // 戦闘ユニットの追加
     public void RegisterUnit(BattleUnitBase unit)
     {
-        if (unit.Team == BattleTeam.Player)
+        if (unit == null)
         {
-            playerUnits.Add(unit);
+            return;
         }
-        else
+
+        List<BattleUnitBase> targetList =
+            unit.Team == BattleTeam.Player ? playerUnits : enemyUnits;
+
+        if (targetList.Contains(unit))
         {
-            enemyUnits.Add(unit);
+            return;
+        }
+
+        targetList.Add(unit);
+    }
+
+    // 戦闘ユニットの削除
+    public void UnregisterUnit(BattleUnitBase unit)
+    {
+        if (unit == null)
+        {
+            return;
+        }
+
+        playerUnits.Remove(unit);
+        enemyUnits.Remove(unit);
+    }
+
+    // 敵を探す
+    public IReadOnlyList<BattleUnitBase> GetEnemies(BattleTeam team)
+    {
+        return team == BattleTeam.Player ? enemyUnits : playerUnits;
+    }
+
+    // 戦闘開始
+    public void StartBattle()
+    {
+        Debug.Log("BattleManager.StartBattle");
+
+        isBattleFinished = false;
+
+        if (battleUnitSpawner != null)
+        {
+            battleUnitSpawner.RegisterPlayerUnits();
+        }
+
+        Debug.Log($"戦闘開始時 味方数: {playerUnits.Count}, 敵数: {enemyUnits.Count}");
+
+        foreach (BattleUnitBase unit in playerUnits)
+        {
+            if (unit != null && !unit.IsDead)
+            {
+                unit.StartBattle();
+            }
+            else if (unit != null && unit.IsDead)
+            {
+                Debug.Log("味方ユニットがすでに死んでいます");
+            }
+        }
+
+        foreach (BattleUnitBase unit in enemyUnits)
+        {
+            if (unit != null && !unit.IsDead)
+            {
+                unit.StartBattle();
+            }
+            else if (unit != null && unit.IsDead)
+            {
+                Debug.Log("敵ユニットがすでに死んでいます");
+            }
+        }
+        if (movementResolver != null)
+        {
+            movementResolver.StartResolve();
+        }
+
+    }
+
+    // ユニットが死んだときに呼ばれる
+    public void NotifyUnitDead(BattleUnitBase deadUnit)
+    {
+        CheckBattleResult();
+    }
+
+    // 勝敗判定
+    private void CheckBattleResult()
+    {
+        if (isBattleFinished)
+        {
+            return;
+        }
+
+        bool playerAllDead = IsAllDead(playerUnits);
+        bool enemyAllDead = IsAllDead(enemyUnits);
+
+        if (enemyAllDead)
+        {
+            isBattleFinished = true;
+            StopAllUnits();
+
+            Debug.Log("勝利");
+
+            if (GameLoopManager.Instance != null)
+            {
+                GameLoopManager.Instance.ChangeState(GameState.Reward);
+            }
+        }
+        else if (playerAllDead)
+        {
+            isBattleFinished = true;
+            StopAllUnits();
+
+            Debug.Log("敗北");
         }
     }
 
-    public List<BattleUnitBase> GetEnemies(BattleTeam BattleTeam)
+    private bool IsAllDead(List<BattleUnitBase> units)
     {
-        return BattleTeam == BattleTeam.Player ? enemyUnits : playerUnits;
+        if (units.Count == 0)
+        {
+            return false;
+        }
+
+        foreach (BattleUnitBase unit in units)
+        {
+            if (unit != null && !unit.IsDead)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void StopAllUnits()
+    {
+        if (movementResolver != null)
+        {
+            movementResolver.StopResolve();
+        }
+
+        foreach (BattleUnitBase unit in playerUnits)
+        {
+            if (unit != null)
+            {
+                unit.StopBattle();
+            }
+        }
+
+        foreach (BattleUnitBase unit in enemyUnits)
+        {
+            if (unit != null)
+            {
+                unit.StopBattle();
+            }
+        }
     }
 }

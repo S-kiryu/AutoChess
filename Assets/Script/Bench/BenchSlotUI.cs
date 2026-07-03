@@ -91,6 +91,8 @@ public class BenchSlotUI : MonoBehaviour,
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
         rectTransform.anchoredPosition = Vector2.zero;
         rectTransform.localScale = Vector3.one;
+
+        transform.SetAsLastSibling();
     }
 
     /// <summary>

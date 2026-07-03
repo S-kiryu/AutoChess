@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,6 +33,7 @@ public class BattleGridManager : MonoBehaviour
     [SerializeField] private Color playerAreaColor = Color.blue;
 
     [SerializeField] private BenchManager benchManager;
+    [SerializeField] private Transform battleUnitRoot;
 
 
     private BattleGrid[,] battleGrids;
@@ -40,9 +42,11 @@ public class BattleGridManager : MonoBehaviour
 
     private BattleGrid[,] enemyBattleGrids;
 
+    public bool IsReady { get; private set; }
     public int X => x;
     public int Y => y;
     public int UnitPlace => unitPlace;
+    public Transform BattleUnitRoot => battleUnitRoot;
 
     private void Awake()
     {
@@ -73,6 +77,8 @@ public class BattleGridManager : MonoBehaviour
         GenerateGrid();
         SetEnemyArea();
         SetPlayerArea();
+
+        IsReady = true;
     }
 
 
@@ -377,6 +383,16 @@ public class BattleGridManager : MonoBehaviour
                gridY < enemyBattleGrids.GetLength(1);
     }
 
+    public BattleGrid GetEnemyGrid(int gridX, int gridY)
+    {
+        if (!IsInsideEnemyGrid(gridX, gridY))
+        {
+            return null;
+        }
+
+        return enemyBattleGrids[gridX, gridY];
+    }
+
     public bool IsInsidePlayerGrid(
         int gridX,
         int gridY)
@@ -390,5 +406,39 @@ public class BattleGridManager : MonoBehaviour
                gridX < playerBattleGrids.GetLength(0) &&
                gridY >= 0 &&
                gridY < playerBattleGrids.GetLength(1);
+    }
+
+    public BattleGrid GetGridByBoardPosition(int boardX, int boardY)
+    {
+        if (battleGrids == null)
+        {
+            return null;
+        }
+
+        if (boardX < 0 ||
+            boardX >= battleGrids.GetLength(0) ||
+            boardY < 0 ||
+            boardY >= battleGrids.GetLength(1))
+        {
+            return null;
+        }
+
+        return battleGrids[boardX, boardY];
+    }
+
+    public IEnumerable<BattleGrid> GetPlayerBattleGrids()
+    {
+        if (playerBattleGrids == null)
+        {
+            yield break;
+        }
+
+        for (int y = 0; y < playerBattleGrids.GetLength(1); y++)
+        {
+            for (int x = 0; x < playerBattleGrids.GetLength(0); x++)
+            {
+                yield return playerBattleGrids[x, y];
+            }
+        }
     }
 }

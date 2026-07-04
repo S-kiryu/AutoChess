@@ -56,6 +56,7 @@ public class UnitStatus
 
 
     public bool IsDead => _currentHp <= 0;
+    public bool IsManaFull => _maxMp > 0 && _currentMp >= _maxMp;
 
     public void Initialize(BaseStatus baseStatus)
     {
@@ -82,6 +83,31 @@ public class UnitStatus
     public void HPReset()
     {
         _currentHp = _maxHp;
+    }
+
+    public void MPReset()
+    {
+        _currentMp = 0;
+    }
+
+    public void AddMana(int amount)
+    {
+        if (amount <= 0 || _maxMp <= 0 || IsDead)
+        {
+            return;
+        }
+
+        _currentMp += amount;
+
+        if (_currentMp > _maxMp)
+        {
+            _currentMp = _maxMp;
+        }
+    }
+
+    public void ConsumeAllMana()
+    {
+        _currentMp = 0;
     }
 
     public void Heal(float healAmount)

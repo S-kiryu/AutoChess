@@ -7,6 +7,10 @@ public class BattleUnitBase : MonoBehaviour
     [SerializeField] private int chatterLimit = 2;
     [SerializeField] private float chatterStopTime = 0.5f;
 
+    [Header("マナの増加量")]
+    [SerializeField] private int normalAttackManaGain = 10;
+    [SerializeField] private int takeDamageManaGain = 10;
+
     public UnitInstance UnitInstance { get; private set; }
     public BattleGrid CurrentGrid { get; private set; }
     public UnitStatus Status { get; private set; }
@@ -150,6 +154,7 @@ public class BattleUnitBase : MonoBehaviour
         if (Status != null)
         {
             Status.HPReset();
+            Status.MPReset();
         }
 
         if (unitView != null)
@@ -368,6 +373,12 @@ public class BattleUnitBase : MonoBehaviour
             return;
         }
 
+        if (TryActivateSkill())
+        {
+            attackTimer = Status.AttackSpeed;
+            return;
+        }
+
         DamageResult result = DamageCalculator.CalculateDamage(
             this,
             target,
@@ -381,6 +392,8 @@ public class BattleUnitBase : MonoBehaviour
         }
 
         target.TakeDamage(result.Damage);
+        Status.AddMana(normalAttackManaGain);
+
         attackTimer = Status.AttackSpeed;
     }
 
@@ -392,6 +405,7 @@ public class BattleUnitBase : MonoBehaviour
         }
 
         Status.TakeDamage(damage);
+        Status.AddMana(takeDamageManaGain);
 
         if (unitView != null)
         {
@@ -457,6 +471,37 @@ public class BattleUnitBase : MonoBehaviour
     public void Heel(float Heal) 
     {
         UnitHeal.HealUnit(Status, Heal);
+    }
+
+    private bool TryActivateSkill()
+    {
+        if (Status == null ||
+            !Status.IsManaFull ||
+            UnitInstance == null ||
+            UnitInstance.Data == null ||
+            UnitInstance.Data.Skill == null ||
+            target == null ||
+            target.IsDead)
+        {
+            return false;
+        }
+
+        UnitSkillData skill = UnitInstance.Data.Skill;
+
+        Status.ConsumeAllMana();
+
+        DamageResult result = DamageCalculator.CalculateDamage(
+            this,
+            target,
+            skill.DamageType,
+            skill.DamageMultiplier);
+
+        if (!result.IsDodged)
+        {
+            target.TakeDamage(result.Damage);
+        }
+
+        return true;
     }
 
     private void FaceTarget()

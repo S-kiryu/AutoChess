@@ -89,7 +89,7 @@ public class BattleUnitBase : MonoBehaviour
     }
 
     /// <summary>
-    /// 現在のユニットを登録する関数
+    /// 自信をグリットに登録する関数
     /// </summary>
     /// <param name="grid"></param>
     public void SetCurrentGrid(BattleGrid grid)
@@ -382,6 +382,7 @@ public class BattleUnitBase : MonoBehaviour
         }
     }
 
+
     private void Die()
     {
         isBattling = false;
@@ -429,6 +430,11 @@ public class BattleUnitBase : MonoBehaviour
             target.CurrentGrid);
 
         return distance <= attackRange;
+    }
+
+    public void Heel(float Heal) 
+    {
+        UnitHeal.HealUnit(Status, Heal);
     }
 
     private void FaceTarget()

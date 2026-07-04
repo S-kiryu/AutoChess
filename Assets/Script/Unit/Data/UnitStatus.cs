@@ -79,6 +79,20 @@ public class UnitStatus
         _type = baseStatus.Type;
     }
 
+    public void HPReset()
+    {
+        _currentHp = _maxHp;
+    }
+
+    public void Heal(float healAmount)
+    {
+        _currentHp += (int)healAmount;
+        if (_currentHp > _maxHp)
+        {
+            _currentHp = _maxHp;
+        }
+    }
+
     public void TakeDamage(float damage)
     {
         _currentHp -= (int)damage;

@@ -119,6 +119,10 @@ public class BenchSlotUI : MonoBehaviour,
     /// </summary>
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if(GameLoopManager.Instance.CurrentState == GameState.Battle)
+        {
+            return;
+        }
         if (unit == null || canvas == null)
         {
             return;
@@ -140,6 +144,10 @@ public class BenchSlotUI : MonoBehaviour,
     /// </summary>
     public void OnDrag(PointerEventData eventData)
     {
+        if (GameLoopManager.Instance.CurrentState == GameState.Battle)
+        {
+            return;
+        }
         if (unit == null)
         {
             return;
@@ -153,6 +161,10 @@ public class BenchSlotUI : MonoBehaviour,
     /// </summary>
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (GameLoopManager.Instance.CurrentState == GameState.Battle)
+        {
+            return;
+        }
         if (unit == null)
         {
             return;

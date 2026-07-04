@@ -177,20 +177,21 @@ public class BattleManager : MonoBehaviour
             isBattleFinished = true;
             StopAllUnits();
 
-            if (GameLoopManager.Instance != null)
-            {
-                GameLoopManager.Instance.ChangeState(GameState.Reward);
-            }
-
             if (battleUnitSpawner != null)
             {
                 battleUnitSpawner.RestorePlayerUnitsAfterBattle();
-                battleUnitSpawner.RestoreEnemyUnitsAfterBattle();
+                battleUnitSpawner.ClearEnemyUnits();
+            }
+
+            if (GameLoopManager.Instance != null)
+            {
+                GameLoopManager.Instance.ChangeState(GameState.Preparation);
             }
 
             Debug.Log("敗北");
         }
     }
+
     
     /// <summary>
     /// すべてのユニットが死亡しているか判定する関数
@@ -240,5 +241,8 @@ public class BattleManager : MonoBehaviour
                 unit.StopBattle();
             }
         }
+
+        playerUnits.Clear();
+        enemyUnits.Clear();
     }
 }

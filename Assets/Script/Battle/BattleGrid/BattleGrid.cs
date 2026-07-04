@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections;
 
 /// <summary>
 /// 戦闘グリッドの1マス。
@@ -20,6 +21,9 @@ public class BattleGrid : MonoBehaviour, IDropHandler
 
     private bool isPlayerGrid;
     private bool isEnemyGrid;
+    private Coroutine flashCoroutine;
+    private Color baseColor;
+    private bool hasBaseColor;
     public bool HasMovingUnit => movingUnit != null;
     public bool IsEnterBlocked => currentBattleUnit != null || movingUnit != null;
 
@@ -58,6 +62,12 @@ public class BattleGrid : MonoBehaviour, IDropHandler
         if (backgroundImage == null)
         {
             backgroundImage = GetComponent<Image>();
+        }
+
+        if (backgroundImage != null)
+        {
+            baseColor = backgroundImage.color;
+            hasBaseColor = true;
         }
     }
 
@@ -126,6 +136,9 @@ public class BattleGrid : MonoBehaviour, IDropHandler
     /// <param name="color"></param>
     public void SetColor(Color color)
     {
+        baseColor = color;
+        hasBaseColor = true;
+
         if (backgroundImage != null)
         {
             backgroundImage.color = color;
@@ -325,5 +338,36 @@ public class BattleGrid : MonoBehaviour, IDropHandler
         draggedUI.SetLocation(UnitArea.Battle, x, y);
 
         return true;
+    }
+
+    public void FlashColor(Color flashColor, float duration)
+    {
+        if (backgroundImage == null)
+        {
+            return;
+        }
+
+        if (flashCoroutine != null)
+        {
+            StopCoroutine(flashCoroutine);
+        }
+
+        flashCoroutine = StartCoroutine(FlashColorRoutine(flashColor, duration));
+    }
+
+    private IEnumerator FlashColorRoutine(Color flashColor, float duration)
+    {
+        if (!hasBaseColor && backgroundImage != null)
+        {
+            baseColor = backgroundImage.color;
+            hasBaseColor = true;
+        }
+
+        backgroundImage.color = flashColor;
+
+        yield return new WaitForSeconds(duration);
+
+        backgroundImage.color = baseColor;
+        flashCoroutine = null;
     }
 }

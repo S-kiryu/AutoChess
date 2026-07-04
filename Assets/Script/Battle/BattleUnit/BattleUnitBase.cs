@@ -10,6 +10,7 @@ public class BattleUnitBase : MonoBehaviour
     [Header("マナの増加量")]
     [SerializeField] private int normalAttackManaGain = 10;
     [SerializeField] private int takeDamageManaGain = 10;
+    [SerializeField] private BattleActionRangeVisualizer rangeVisualizer;
 
     public UnitInstance UnitInstance { get; private set; }
     public BattleGrid CurrentGrid { get; private set; }
@@ -52,14 +53,14 @@ public class BattleUnitBase : MonoBehaviour
                 return false;
             }
 
-            NormalAttackData attackData = UnitInstance.Data.NormalAttack;
+            AttackActionData actionData = GetCurrentActionData();
 
-            if (attackData == null)
+            if (actionData == null)
             {
                 return false;
             }
 
-            if (IsEngagedWithTarget() || CanAttackTarget(attackData))
+            if (IsEngagedWithTarget() || CanUseAction(actionData))
             {
                 return false;
             }
@@ -261,21 +262,20 @@ public class BattleUnitBase : MonoBehaviour
             return null;
         }
 
-        NormalAttackData attackData = UnitInstance.Data.NormalAttack;
+        AttackActionData actionData = GetCurrentActionData();
 
-        if (attackData == null)
+        if (actionData == null)
         {
             return null;
         }
 
         FaceTarget();
 
-        if (IsEngagedWithTarget() || CanAttackTarget(attackData))
+        if (IsEngagedWithTarget() || CanUseAction(actionData))
         {
             currentPath.Clear();
             return null;
         }
-
 
         BattleGrid nextGrid = BattlePathFinder.GetNextGridTowardTarget(
             CurrentGrid,
@@ -379,6 +379,10 @@ public class BattleUnitBase : MonoBehaviour
             Status.CurrentMp >= skill.ManaCost &&
             CanUseAction(skill))
         {
+            Debug.Log(
+                $"{UnitInstance.Data.CharacterName} uses skill {skill.SkillName}. " +
+                $"MP: {Status.CurrentMp}/{Status.MaxMp}, Cost: {skill.ManaCost}");
+
             Status.ConsumeAllMana();
             ExecuteAction(skill);
             attackTimer = Status.AttackSpeed;
@@ -389,8 +393,17 @@ public class BattleUnitBase : MonoBehaviour
 
         if (normalAttack != null && CanUseAction(normalAttack))
         {
+            Debug.Log(
+                $"{UnitInstance.Data.CharacterName} uses normal attack. " +
+                $"MP: {Status.CurrentMp}/{Status.MaxMp}");
+
             ExecuteAction(normalAttack);
             Status.AddMana(normalAttackManaGain);
+
+            Debug.Log(
+                $"{UnitInstance.Data.CharacterName} gained mana by attack. " +
+                $"MP: {Status.CurrentMp}/{Status.MaxMp}");
+
             attackTimer = Status.AttackSpeed;
         }
     }
@@ -402,8 +415,15 @@ public class BattleUnitBase : MonoBehaviour
             return;
         }
 
+        int beforeMp = Status.CurrentMp;
+
         Status.TakeDamage(damage);
         Status.AddMana(takeDamageManaGain);
+
+        Debug.Log(
+            $"{UnitInstance.Data.CharacterName} took {damage} damage. " +
+            $"HP: {Status.CurrentHp}/{Status.MaxHp}, " +
+            $"MP: {beforeMp} -> {Status.CurrentMp}/{Status.MaxMp}");
 
         if (unitView != null)
         {
@@ -445,25 +465,6 @@ public class BattleUnitBase : MonoBehaviour
         {
             BattleManager.Instance.NotifyUnitDead(this);
         }
-    }
-
-    private bool CanAttackTarget(NormalAttackData attackData)
-    {
-        if (target == null ||
-            target.CurrentGrid == null ||
-            CurrentGrid == null ||
-            attackData == null)
-        {
-            return false;
-        }
-
-        int attackRange = Mathf.Max(1, attackData.Depth);
-
-        int distance = BattlePathFinder.GetGridDistance(
-            CurrentGrid,
-            target.CurrentGrid);
-
-        return distance <= attackRange;
     }
 
     public void Heel(float Heal) 
@@ -546,7 +547,7 @@ public class BattleUnitBase : MonoBehaviour
             return false;
         }
 
-        int range = Mathf.Max(1, actionData.Depth);
+        int range = Mathf.Max(1, actionData.CastRange);
 
         int distance = BattlePathFinder.GetGridDistance(
             CurrentGrid,
@@ -557,26 +558,176 @@ public class BattleUnitBase : MonoBehaviour
 
     private void ExecuteAction(AttackActionData actionData)
     {
+        List<BattleGrid> targetGrids = GetTargetGrids(actionData);
+
+        if (rangeVisualizer != null)
+        {
+            rangeVisualizer.FlashRange(actionData, targetGrids);
+        }
+
         int hitCount = Mathf.Max(1, actionData.HitCount);
 
         for (int i = 0; i < hitCount; i++)
         {
-            if (target == null || target.IsDead)
-            {
-                return;
-            }
+            List<BattleUnitBase> hitUnits = GetHitUnits(targetGrids);
 
-            DamageResult result = DamageCalculator.CalculateDamage(
-                this,
-                target,
-                actionData.DamageType,
-                actionData.DamageMultiplier);
-
-            if (!result.IsDodged)
+            foreach (BattleUnitBase hitUnit in hitUnits)
             {
-                target.TakeDamage(result.Damage);
+                if (hitUnit == null || hitUnit.IsDead)
+                {
+                    continue;
+                }
+
+                DamageResult result = DamageCalculator.CalculateDamage(
+                    this,
+                    hitUnit,
+                    actionData.DamageType,
+                    actionData.DamageMultiplier);
+
+                if (!result.IsDodged)
+                {
+                    hitUnit.TakeDamage(result.Damage);
+                }
             }
         }
+    }
+
+    private List<BattleUnitBase> GetHitUnits(List<BattleGrid> targetGrids)
+    {
+        List<BattleUnitBase> hitUnits = new List<BattleUnitBase>();
+
+        if (targetGrids == null)
+        {
+            return hitUnits;
+        }
+
+        foreach (BattleGrid grid in targetGrids)
+        {
+            if (grid == null || grid.CurrentBattleUnit == null)
+            {
+                continue;
+            }
+
+            BattleUnitBase hitUnit = grid.CurrentBattleUnit;
+
+            if (hitUnit.Team == Team)
+            {
+                continue;
+            }
+
+            if (!hitUnits.Contains(hitUnit))
+            {
+                hitUnits.Add(hitUnit);
+            }
+        }
+
+        return hitUnits;
+    }
+
+    private List<BattleGrid> GetTargetGrids(AttackActionData actionData)
+    {
+        List<BattleGrid> grids = new List<BattleGrid>();
+
+        if (actionData == null || actionData.RangeData == null)
+        {
+            if (target != null && target.CurrentGrid != null)
+            {
+                grids.Add(target.CurrentGrid);
+            }
+
+            return grids;
+        }
+
+        BattleGrid originGrid = GetRangeOriginGrid(actionData);
+
+        if (originGrid == null || actionData.RangeData.Offsets == null)
+        {
+            return grids;
+        }
+
+        foreach (Vector2Int offset in actionData.RangeData.Offsets)
+        {
+            Vector2Int worldOffset = offset;
+
+            if (actionData.RangeData.Origin == ActionRangeOrigin.FrontOfSelf)
+            {
+                worldOffset = RotateOffsetByForward(offset);
+            }
+
+            int boardX = originGrid.BoardX + worldOffset.x;
+            int boardY = originGrid.BoardY + worldOffset.y;
+
+            BattleGrid grid =
+                BattleGridManager.Instance.GetGridByBoardPosition(boardX, boardY);
+
+            if (grid != null)
+            {
+                grids.Add(grid);
+            }
+        }
+
+        return grids;
+    }
+
+    private Vector2Int RotateOffsetByForward(Vector2Int offset)
+    {
+        if (forwardDirection == Vector2Int.up)
+        {
+            return offset;
+        }
+
+        if (forwardDirection == Vector2Int.down)
+        {
+            return new Vector2Int(-offset.x, -offset.y);
+        }
+
+        if (forwardDirection == Vector2Int.right)
+        {
+            return new Vector2Int(offset.y, -offset.x);
+        }
+
+        if (forwardDirection == Vector2Int.left)
+        {
+            return new Vector2Int(-offset.y, offset.x);
+        }
+
+        return offset;
+    }
+
+    private BattleGrid GetRangeOriginGrid(AttackActionData actionData)
+    {
+        if (actionData == null || actionData.RangeData == null)
+        {
+            return null;
+        }
+
+        switch (actionData.RangeData.Origin)
+        {
+            case ActionRangeOrigin.Target:
+                return target != null ? target.CurrentGrid : null;
+
+            case ActionRangeOrigin.Self:
+                return CurrentGrid;
+
+            case ActionRangeOrigin.FrontOfSelf:
+                return GetFrontGrid();
+
+            default:
+                return null;
+        }
+    }
+
+    private BattleGrid GetFrontGrid()
+    {
+        if (CurrentGrid == null || BattleGridManager.Instance == null)
+        {
+            return null;
+        }
+
+        int boardX = CurrentGrid.BoardX + forwardDirection.x;
+        int boardY = CurrentGrid.BoardY + forwardDirection.y;
+
+        return BattleGridManager.Instance.GetGridByBoardPosition(boardX, boardY);
     }
 
     private AttackActionData GetCurrentActionData()

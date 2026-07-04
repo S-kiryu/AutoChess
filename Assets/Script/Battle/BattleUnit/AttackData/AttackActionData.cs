@@ -7,15 +7,16 @@ public abstract class AttackActionData : ScriptableObject
     [SerializeField] private float damageMultiplier = 1f;
 
     [Header("Range")]
-    [SerializeField] private int width = 1;
-    [SerializeField] private int depth = 1;
+    [SerializeField] private int castRange = 1;
+    [SerializeField] private ActionRangeData rangeData;
 
     [Header("Hit")]
     [SerializeField] private int hitCount = 1;
 
     public DamageType DamageType => damageType;
     public float DamageMultiplier => damageMultiplier;
-    public int Width => width;
-    public int Depth => depth;
+    public int CastRange => castRange;
     public int HitCount => hitCount;
+
+    public ActionRangeData RangeData => rangeData;
 }

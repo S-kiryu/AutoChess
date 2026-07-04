@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DemoUnitBaseStatus
   m_EditorClassIdentifier: Assembly-CSharp::BaseStatus
   Hp: 100
-  Mp: 0
+  Mp: 100
   Level: 1
   Attack: 10
   MagicAttack: 0

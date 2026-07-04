@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 1566059963035183220}
   - component: {fileID: -7670756052915776975}
   - component: {fileID: 4402936459083195521}
+  - component: {fileID: -7176750960875057739}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -184,6 +185,9 @@ MonoBehaviour:
   unitView: {fileID: 4402936459083195521}
   chatterLimit: 6
   chatterStopTime: 0.5
+  normalAttackManaGain: 10
+  takeDamageManaGain: 10
+  rangeVisualizer: {fileID: -7176750960875057739}
 --- !u!114 &4402936459083195521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,3 +202,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleUnitView
   unitImage: {fileID: 5831339746371801096}
   damageFlashDuration: 0.15
+--- !u!114 &-7176750960875057739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7671478863762620741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c99b028f0d501c74f80c8f7488b56392, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleActionRangeVisualizer
+  normalAttackRangeColor: {r: 0.015686274, g: 1, b: 0.9314499, a: 1}
+  skillRangeColor: {r: 0, g: 0.016850948, b: 1, a: 1}
+  flashDuration: 0.25

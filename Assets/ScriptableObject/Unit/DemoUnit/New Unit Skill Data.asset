@@ -14,3 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitSkillData
   damageType: 1
   damageMultiplier: 2
+  castRange: 1
+  rangeData: {fileID: 11400000, guid: 15de728e525ff374282e441bbe33b543, type: 2}
+  hitCount: 1
+  skillName: 
+  description: 
+  manaCost: 50

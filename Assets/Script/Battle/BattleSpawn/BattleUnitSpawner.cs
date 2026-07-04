@@ -85,6 +85,27 @@ public class BattleUnitSpawner : MonoBehaviour
         return enemies;
     }
 
+    public void ClearEnemyUnits()
+    {
+        foreach (EnemyUnitRestoreData data in enemyRestoreData)
+        {
+            if (data == null || data.BattleUnit == null)
+            {
+                continue;
+            }
+
+            if (data.BattleUnit.CurrentGrid != null)
+            {
+                data.BattleUnit.CurrentGrid.ClearBattleUnit(data.BattleUnit);
+            }
+
+            Destroy(data.BattleUnit.gameObject);
+        }
+
+        enemyRestoreData.Clear();
+        enemyUnitGrids.Clear();
+    }
+
     /// <summary>
     /// プレイヤーのユニットを登録する
     /// </summary>

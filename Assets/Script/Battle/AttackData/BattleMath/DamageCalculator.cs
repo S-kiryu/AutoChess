@@ -28,6 +28,7 @@ public static class DamageCalculator
             return new DamageResult(0, false, true);
         }
 
+        //タイプに適しているステータスを使ってダメージ計算
         float damage = damageType switch
         {
             DamageType.Physical => attacker.Status.Attack - defender.Status.Defense,
@@ -36,6 +37,7 @@ public static class DamageCalculator
             _ => 0
         };
 
+        //ダメージ倍率を適用
         damage *= damageMultiplier;
 
         if (damage < 1 && damageType != DamageType.True)

@@ -2,6 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 戦闘時のユニットの見た目を管理するクラス
+/// </summary>
 public class BattleUnitView : MonoBehaviour
 {
     [SerializeField] private Image unitImage;
@@ -58,6 +61,10 @@ public class BattleUnitView : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// ダメージを受けたときのフラッシュエフェクトを再生するコルーチン
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator DamageFlashRoutine()
     {
         unitImage.color = Color.red;

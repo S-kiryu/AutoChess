@@ -1,7 +1,16 @@
 using UnityEngine;
 
+/// <summary>
+/// グリットの移動の計算をするクラス
+/// </summary>
 public static class BattlePathFinder
 {
+    /// <summary>
+    /// グリット間の距離を計算する
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <returns></returns>
     public static int GetGridDistance(BattleGrid from, BattleGrid to)
     {
         if (from == null || to == null)
@@ -12,7 +21,10 @@ public static class BattlePathFinder
         return Mathf.Abs(from.BoardX - to.BoardX) +
                Mathf.Abs(from.BoardY - to.BoardY);
     }
-
+    
+    /// <summary>
+    /// ターゲットに向かって次のグリッドを取得する
+    /// </summary>  
     public static BattleGrid GetNextGridTowardTarget(
         BattleGrid from,
         BattleGrid target)

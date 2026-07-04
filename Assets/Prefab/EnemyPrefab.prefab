@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleUnitBase
   unitView: {fileID: -6192430161546338367}
-  chatterLimit: 6
+  chatterLimit: 3
   chatterStopTime: 0.5
 --- !u!114 &-6192430161546338367
 MonoBehaviour:

@@ -88,6 +88,10 @@ public class BattleUnitBase : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 現在のユニットを登録する関数
+    /// </summary>
+    /// <param name="grid"></param>
     public void SetCurrentGrid(BattleGrid grid)
     {
         if (CurrentGrid != null)

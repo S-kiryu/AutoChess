@@ -45,6 +45,9 @@ public class BattleMovementResolver : MonoBehaviour
         ResolveOneMovement();
     }
 
+    /// <summary>
+    /// ユニットの移動リクエストのクールダウンを更新する関数
+    /// </summary>
     private void UpdateCooldowns()
     {
         if (moveCooldowns.Count == 0)
@@ -55,6 +58,7 @@ public class BattleMovementResolver : MonoBehaviour
         List<BattleUnitBase> keys =
             new List<BattleUnitBase>(moveCooldowns.Keys);
 
+        // クールダウンを更新し、0以下になったユニットは辞書から削除する
         foreach (BattleUnitBase unit in keys)
         {
             moveCooldowns[unit] -= Time.fixedDeltaTime;
@@ -66,6 +70,10 @@ public class BattleMovementResolver : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// ユニットの移動を1回解決する関数
+    /// </summary>
     private void ResolveOneMovement()
     {
         List<BattleUnitBase> units =

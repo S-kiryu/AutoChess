@@ -1,11 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 戦闘時に使うユニットを生成するクラス
+/// </summary>
 public class BattleUnitSpawner : MonoBehaviour
 {
     [SerializeField] private BattleUnitBase enemyPrefab;
     [SerializeField] private Transform battleUnitRoot;
 
+    /// <summary>
+    /// 敵ユニットを生成する
+    /// </summary>
+    /// <param name="stageData">敵ユニットのデータ</param>
+    /// <returns></returns>
     public List<BattleUnitBase> SpawnEnemies(BattleStageData stageData)
     {
         List<BattleUnitBase> enemies = new List<BattleUnitBase>();
@@ -45,6 +53,10 @@ public class BattleUnitSpawner : MonoBehaviour
         return enemies;
     }
 
+    /// <summary>
+    /// プレイヤーのユニットを登録する
+    /// </summary>
+    /// <returns></returns>
     public List<BattleUnitBase> RegisterPlayerUnits()
     {
         List<BattleUnitBase> playerUnits =
@@ -93,6 +105,10 @@ public class BattleUnitSpawner : MonoBehaviour
         return playerUnits;
     }
 
+
+    /// <summary>
+    /// バトル時にユニットをセットアップする
+    /// </summary>
     private void SetupBattleUnit(
         BattleUnitBase unit,
         CharacterData characterData,

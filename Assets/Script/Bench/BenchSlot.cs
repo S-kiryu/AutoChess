@@ -27,10 +27,6 @@ public class BenchSlot : MonoBehaviour, IDropHandler
         battleGridManager = BattleGridManager.Instance;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="eventData"></param>
     public void OnDrop(PointerEventData eventData)
     {
         BenchSlotUI draggedUI =

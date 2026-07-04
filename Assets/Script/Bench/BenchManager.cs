@@ -197,6 +197,12 @@ public class BenchManager : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// グリットの範囲内かどうかを判定する。
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
     public bool IsInside(int x, int y)
     {
         return x >= 0 &&

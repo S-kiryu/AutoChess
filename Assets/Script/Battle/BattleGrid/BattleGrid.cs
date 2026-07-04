@@ -61,6 +61,11 @@ public class BattleGrid : MonoBehaviour, IDropHandler
         }
     }
 
+    /// <summary>
+    /// ユニットが移動中かどうかをロックする。
+    /// </summary>
+    /// <param name="unit"></param>
+    /// <returns></returns>
     public bool TryLockForMove(BattleUnitBase unit)
     {
         if (unit == null)
@@ -77,6 +82,10 @@ public class BattleGrid : MonoBehaviour, IDropHandler
         return true;
     }
 
+    /// <summary>
+    /// ユニットの移動ロックを解除する。
+    /// </summary>
+    /// <param name="unit"></param>
     public void ClearMoveLock(BattleUnitBase unit)
     {
         if (movingUnit == unit)

@@ -7,6 +7,7 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] private BattleUnitSpawner battleUnitSpawner;
     [SerializeField] private BattleMovementResolver movementResolver;
+    [SerializeField] private StageProgressManager stageProgressManager;
 
     // 戦闘にいるユニットを管理するリスト
     private List<BattleUnitBase> playerUnits = new List<BattleUnitBase>();
@@ -154,17 +155,38 @@ public class BattleManager : MonoBehaviour
             isBattleFinished = true;
             StopAllUnits();
 
+            if (battleUnitSpawner != null)
+            {
+                battleUnitSpawner.RestorePlayerUnitsAfterBattle();
+            }
+
             Debug.Log("勝利");
 
             if (GameLoopManager.Instance != null)
             {
                 GameLoopManager.Instance.ChangeState(GameState.Reward);
             }
+
+            if (stageProgressManager != null)
+            {
+                stageProgressManager.NextBattleStage();
+            }
         }
         else if (playerAllDead)
         {
             isBattleFinished = true;
             StopAllUnits();
+
+            if (GameLoopManager.Instance != null)
+            {
+                GameLoopManager.Instance.ChangeState(GameState.Reward);
+            }
+
+            if (battleUnitSpawner != null)
+            {
+                battleUnitSpawner.RestorePlayerUnitsAfterBattle();
+                battleUnitSpawner.RestoreEnemyUnitsAfterBattle();
+            }
 
             Debug.Log("敗北");
         }

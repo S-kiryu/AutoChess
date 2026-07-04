@@ -1410,6 +1410,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleManager
   battleUnitSpawner: {fileID: 652954609}
   movementResolver: {fileID: 1230427202}
+  stageProgressManager: {fileID: 1413032654}
 --- !u!4 &1230427201
 Transform:
   m_ObjectHideFlags: 0
@@ -1438,6 +1439,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleMovementResolver
   resolveInterval: 0.1
+  moveRequestCooldown: 0.25
 --- !u!1 &1256472145
 GameObject:
   m_ObjectHideFlags: 0

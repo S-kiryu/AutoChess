@@ -6,8 +6,33 @@ using UnityEngine;
 /// </summary>
 public class BattleUnitSpawner : MonoBehaviour
 {
+    //リセットデータ型
+    private class PlayerUnitRestoreData
+    {
+        public BattleUnitBase BattleUnit;
+        public BenchSlotUI UnitUI;
+        public Transform Parent;
+        public Vector2 AnchoredPosition;
+        public BattleGrid Grid;
+    }
+    private class EnemyUnitRestoreData
+    {
+        public BattleUnitBase BattleUnit;
+        public BattleGrid Grid;
+    }
+
+    private readonly List<PlayerUnitRestoreData> playerRestoreData =
+        new List<PlayerUnitRestoreData>();
+
+    private readonly List<EnemyUnitRestoreData> enemyRestoreData =
+        new List<EnemyUnitRestoreData>();
+
     [SerializeField] private BattleUnitBase enemyPrefab;
     [SerializeField] private Transform battleUnitRoot;
+
+    //配置した位置を覚えておくリスト
+    private List<BattleGrid> playerUnitGrids = new List<BattleGrid>();
+    private List<BattleGrid> enemyUnitGrids = new List<BattleGrid>();
 
     /// <summary>
     /// 敵ユニットを生成する
@@ -47,7 +72,14 @@ public class BattleUnitSpawner : MonoBehaviour
                 targetGrid,
                 BattleTeam.Enemy);
 
+            enemyRestoreData.Add(new EnemyUnitRestoreData
+            {
+                BattleUnit = enemy,
+                Grid = targetGrid
+            });
+
             enemies.Add(enemy);
+            enemyUnitGrids.Add(targetGrid);
         }
 
         return enemies;
@@ -90,6 +122,20 @@ public class BattleUnitSpawner : MonoBehaviour
                 continue;
             }
 
+            RectTransform rectTransform =
+                unitUI.GetComponent<RectTransform>();
+
+            playerRestoreData.Add(new PlayerUnitRestoreData
+            {
+                BattleUnit = battleUnit,
+                UnitUI = unitUI,
+                Parent = unitUI.transform.parent,
+                AnchoredPosition = rectTransform != null
+                    ? rectTransform.anchoredPosition
+                    : Vector2.zero,
+                Grid = grid
+            });
+
             battleUnit.transform.SetParent(battleUnitRoot, true);
 
             SetupBattleUnit(
@@ -100,11 +146,11 @@ public class BattleUnitSpawner : MonoBehaviour
                 unitUI.Unit);
 
             playerUnits.Add(battleUnit);
+            playerUnitGrids.Add(grid);
         }
 
         return playerUnits;
     }
-
 
     /// <summary>
     /// バトル時にユニットをセットアップする
@@ -135,5 +181,54 @@ public class BattleUnitSpawner : MonoBehaviour
 
         unit.SetCurrentGrid(grid);
         unit.Initialize(unitInstance, team);
+    }
+
+    /// <summary>
+    /// ユニットをバトル後にリセットする
+    /// </summary>
+    public void RestorePlayerUnitsAfterBattle()
+    {
+        foreach (PlayerUnitRestoreData data in playerRestoreData)
+        {
+            if (data == null ||
+                data.BattleUnit == null ||
+                data.UnitUI == null)
+            {
+                continue;
+            }
+
+            data.BattleUnit.ResetAfterBattle(data.Grid);
+
+            data.UnitUI.transform.SetParent(data.Parent, false);
+
+            RectTransform rectTransform =
+                data.UnitUI.GetComponent<RectTransform>();
+
+            if (rectTransform != null)
+            {
+                rectTransform.anchoredPosition = data.AnchoredPosition;
+                rectTransform.localScale = Vector3.one;
+            }
+
+            data.UnitUI.transform.SetAsLastSibling();
+        }
+
+        playerRestoreData.Clear();
+    }
+
+    /// <summary>
+    /// 敵ユニットをバトル後にリセットする
+    /// </summary>
+    public void RestoreEnemyUnitsAfterBattle()
+    {
+        foreach (EnemyUnitRestoreData data in enemyRestoreData)
+        {
+            if (data == null || data.BattleUnit == null)
+            {
+                continue;
+            }
+
+            data.BattleUnit.ResetAfterBattle(data.Grid);
+        }
     }
 }

@@ -139,6 +139,28 @@ public class BattleUnitBase : MonoBehaviour
         }
     }
 
+    public void ResetAfterBattle(BattleGrid restoreGrid)
+    {
+        StopBattle();
+
+        target = null;
+        previousGrid = null;
+        attackTimer = 0f;
+
+        if (Status != null)
+        {
+            Status.HPReset();
+        }
+
+        if (unitView != null)
+        {
+            unitView.ResetColor();
+        }
+
+        gameObject.SetActive(true);
+        SetCurrentGrid(restoreGrid);
+    }
+
     private void FixedUpdate()
     {
         if (moveStopTimer > 0f)

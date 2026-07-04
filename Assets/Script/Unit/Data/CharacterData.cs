@@ -8,5 +8,5 @@ public class CharacterData : ScriptableObject
     public Sprite Icon;             //キャラのアイコン
     public BaseStatus BaseStatus;   //キャラのベースステータス
     public NormalAttackData NormalAttack;//キャラの通常攻撃データ
-    public UnitSkillData Skill;      //キャラのスキルデータ
+    public SkillData Skill;      //キャラのスキルデータ
 }

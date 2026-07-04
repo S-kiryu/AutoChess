@@ -1,12 +1,17 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "AutoChess/Skill/UnitSkillData")]
-public class UnitSkillData : ScriptableObject
+[CreateAssetMenu(menuName = "AutoChess/Skill/SkillData")]
+public class SkillData : AttackActionData
 {
-    [Header("Damage")]
-    [SerializeField] private DamageType damageType = DamageType.Magic;
-    [SerializeField] private float damageMultiplier = 2f;
+    [Header("Info")]
+    [SerializeField] private string skillName;
+    [TextArea]
+    [SerializeField] private string description;
 
-    public DamageType DamageType => damageType;
-    public float DamageMultiplier => damageMultiplier;
+    [Header("Mana")]
+    [SerializeField] private int manaCost = 100;
+
+    public string SkillName => skillName;
+    public string Description => description;
+    public int ManaCost => manaCost;
 }

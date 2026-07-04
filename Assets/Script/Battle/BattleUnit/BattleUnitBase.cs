@@ -238,19 +238,19 @@ public class BattleUnitBase : MonoBehaviour
             return;
         }
 
-        NormalAttackData attackData = UnitInstance.Data.NormalAttack;
+        AttackActionData actionData = GetCurrentActionData();
 
-        if (attackData == null)
+        if (actionData == null)
         {
             return;
         }
 
         FaceTarget();
 
-        if (IsEngagedWithTarget() || CanAttackTarget(attackData))
+        if (IsEngagedWithTarget() || CanUseAction(actionData))
         {
             currentPath.Clear();
-            Attack(attackData);
+            Attack();
         }
     }
 
@@ -364,7 +364,7 @@ public class BattleUnitBase : MonoBehaviour
         isMoving = false;
     }
 
-    private void Attack(NormalAttackData attackData)
+    private void Attack()
     {
         attackTimer -= Time.fixedDeltaTime;
 
@@ -373,28 +373,26 @@ public class BattleUnitBase : MonoBehaviour
             return;
         }
 
-        if (TryActivateSkill())
+        SkillData skill = UnitInstance.Data.Skill;
+
+        if (skill != null &&
+            Status.CurrentMp >= skill.ManaCost &&
+            CanUseAction(skill))
         {
+            Status.ConsumeAllMana();
+            ExecuteAction(skill);
             attackTimer = Status.AttackSpeed;
             return;
         }
 
-        DamageResult result = DamageCalculator.CalculateDamage(
-            this,
-            target,
-            attackData.DamageType,
-            attackData.DamageMultiplier);
+        NormalAttackData normalAttack = UnitInstance.Data.NormalAttack;
 
-        if (result.IsDodged)
+        if (normalAttack != null && CanUseAction(normalAttack))
         {
+            ExecuteAction(normalAttack);
+            Status.AddMana(normalAttackManaGain);
             attackTimer = Status.AttackSpeed;
-            return;
         }
-
-        target.TakeDamage(result.Damage);
-        Status.AddMana(normalAttackManaGain);
-
-        attackTimer = Status.AttackSpeed;
     }
 
     public void TakeDamage(float damage)
@@ -473,37 +471,6 @@ public class BattleUnitBase : MonoBehaviour
         UnitHeal.HealUnit(Status, Heal);
     }
 
-    private bool TryActivateSkill()
-    {
-        if (Status == null ||
-            !Status.IsManaFull ||
-            UnitInstance == null ||
-            UnitInstance.Data == null ||
-            UnitInstance.Data.Skill == null ||
-            target == null ||
-            target.IsDead)
-        {
-            return false;
-        }
-
-        UnitSkillData skill = UnitInstance.Data.Skill;
-
-        Status.ConsumeAllMana();
-
-        DamageResult result = DamageCalculator.CalculateDamage(
-            this,
-            target,
-            skill.DamageType,
-            skill.DamageMultiplier);
-
-        if (!result.IsDodged)
-        {
-            target.TakeDamage(result.Damage);
-        }
-
-        return true;
-    }
-
     private void FaceTarget()
     {
         if (target == null ||
@@ -567,6 +534,66 @@ public class BattleUnitBase : MonoBehaviour
             target.CurrentGrid);
 
         return distance <= 1;
+    }
+
+    private bool CanUseAction(AttackActionData actionData)
+    {
+        if (target == null ||
+            target.CurrentGrid == null ||
+            CurrentGrid == null ||
+            actionData == null)
+        {
+            return false;
+        }
+
+        int range = Mathf.Max(1, actionData.Depth);
+
+        int distance = BattlePathFinder.GetGridDistance(
+            CurrentGrid,
+            target.CurrentGrid);
+
+        return distance <= range;
+    }
+
+    private void ExecuteAction(AttackActionData actionData)
+    {
+        int hitCount = Mathf.Max(1, actionData.HitCount);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            if (target == null || target.IsDead)
+            {
+                return;
+            }
+
+            DamageResult result = DamageCalculator.CalculateDamage(
+                this,
+                target,
+                actionData.DamageType,
+                actionData.DamageMultiplier);
+
+            if (!result.IsDodged)
+            {
+                target.TakeDamage(result.Damage);
+            }
+        }
+    }
+
+    private AttackActionData GetCurrentActionData()
+    {
+        if (UnitInstance == null || UnitInstance.Data == null || Status == null)
+        {
+            return null;
+        }
+
+        SkillData skill = UnitInstance.Data.Skill;
+
+        if (skill != null && Status.CurrentMp >= skill.ManaCost)
+        {
+            return skill;
+        }
+
+        return UnitInstance.Data.NormalAttack;
     }
 }
 

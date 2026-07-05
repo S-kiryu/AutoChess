@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BattleManager : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private BattleUnitSpawner battleUnitSpawner;
     [SerializeField] private BattleMovementResolver movementResolver;
     [SerializeField] private StageProgressManager stageProgressManager;
+    [SerializeField] private string homeSceneName = "Home";
 
     // 戦闘にいるユニットを管理するリスト
     private List<BattleUnitBase> playerUnits = new List<BattleUnitBase>();
@@ -153,28 +155,12 @@ public class BattleManager : MonoBehaviour
         if (enemyAllDead)
         {
             isBattleFinished = true;
-            StopAllUnits();
 
-            if (battleUnitSpawner != null)
-            {
-                battleUnitSpawner.RestorePlayerUnitsAfterBattle();
-            }
+            BattleStageData clearedStage =
+                stageProgressManager != null
+                    ? stageProgressManager.CurrentBattleStage
+                    : null;
 
-            Debug.Log("勝利");
-
-            if (GameLoopManager.Instance != null)
-            {
-                GameLoopManager.Instance.ChangeState(GameState.Reward);
-            }
-
-            if (stageProgressManager != null)
-            {
-                stageProgressManager.NextBattleStage();
-            }
-        }
-        else if (playerAllDead)
-        {
-            isBattleFinished = true;
             StopAllUnits();
 
             if (battleUnitSpawner != null)
@@ -183,12 +169,19 @@ public class BattleManager : MonoBehaviour
                 battleUnitSpawner.ClearEnemyUnits();
             }
 
-            if (GameLoopManager.Instance != null)
+            if (clearedStage != null &&
+                clearedStage.IsBossStage &&
+                stageProgressManager != null)
             {
-                GameLoopManager.Instance.ChangeState(GameState.Preparation);
+                stageProgressManager.MarkChapterClear();
             }
 
-            Debug.Log("敗北");
+            if (GameLoopManager.Instance != null)
+            {
+                GameLoopManager.Instance.ChangeState(GameState.Reward);
+            }
+
+            Debug.Log("勝利");
         }
     }
 

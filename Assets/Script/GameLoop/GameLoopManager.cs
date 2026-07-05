@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameLoopManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class GameLoopManager : MonoBehaviour
     [SerializeField] private BattleUnitSpawner battleUnitSpawner;
     [SerializeField] private StageProgressManager stageProgressManager;
     [SerializeField] private GameObject nextButton;
+    [SerializeField] private string homeSceneName = "Home";
 
     private void Awake()
     {
@@ -77,5 +79,23 @@ public class GameLoopManager : MonoBehaviour
     {
         nextButton.SetActive(true);
         Debug.Log("報酬フェーズに入りました。");
+    }
+
+    public void OnRewardNextButton()
+    {
+        if (stageProgressManager != null &&
+            stageProgressManager.ChapterClearPending)
+        {
+            stageProgressManager.ClearChapterClearPending();
+            SceneManager.LoadScene(homeSceneName);
+            return;
+        }
+
+        if (stageProgressManager != null)
+        {
+            stageProgressManager.NextBattleStage();
+        }
+
+        ChangeState(GameState.Preparation);
     }
 }

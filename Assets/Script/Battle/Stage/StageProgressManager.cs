@@ -8,6 +8,11 @@ public class StageProgressManager : MonoBehaviour
     [SerializeField] private ChapterData currentChapter;
 
     private int currentBattleIndex = 0;
+    private bool chapterClearPending;
+
+    public bool ChapterClearPending => chapterClearPending;
+    public ChapterData CurrentChapter => currentChapter;
+    public int CurrentBattleIndex => currentBattleIndex;
 
     public BattleStageData CurrentBattleStage
     {
@@ -15,6 +20,17 @@ public class StageProgressManager : MonoBehaviour
         {
             return currentChapter.BattleStages[currentBattleIndex];
         }
+    }
+
+
+    public void MarkChapterClear()
+    {
+        chapterClearPending = true;
+    }
+
+    public void ClearChapterClearPending()
+    {
+        chapterClearPending = false;
     }
 
     /// <summary>
@@ -32,5 +48,10 @@ public class StageProgressManager : MonoBehaviour
         }
 
         Debug.Log($"次のステージ: {CurrentBattleStage.StageId}");
+    }
+
+    public void Reward() 
+    {
+
     }
 }

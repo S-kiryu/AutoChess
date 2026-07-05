@@ -565,12 +565,45 @@ public class BattleUnitBase : MonoBehaviour
             rangeVisualizer.FlashRange(actionData, targetGrids);
         }
 
+        List<BattleUnitBase> hitUnits = GetHitUnits(targetGrids);
+
+        SkillEffectContext context = new SkillEffectContext
+        {
+            Caster = this,
+            MainTarget = target,
+            ActionData = actionData,
+            TargetGrids = targetGrids,
+            HitUnits = hitUnits
+        };
+
+        SkillData skill = actionData as SkillData;
+
+        if (skill != null && skill.Effects != null && skill.Effects.Length > 0)
+        {
+            foreach (SkillEffectData effect in skill.Effects)
+            {
+                if (effect == null)
+                {
+                    continue;
+                }
+
+                effect.Apply(context);
+            }
+
+            return;
+        }
+
+        ExecuteDamageAction(actionData, hitUnits);
+    }
+
+    private void ExecuteDamageAction(
+    AttackActionData actionData,
+    List<BattleUnitBase> hitUnits)
+    {
         int hitCount = Mathf.Max(1, actionData.HitCount);
 
         for (int i = 0; i < hitCount; i++)
         {
-            List<BattleUnitBase> hitUnits = GetHitUnits(targetGrids);
-
             foreach (BattleUnitBase hitUnit in hitUnits)
             {
                 if (hitUnit == null || hitUnit.IsDead)

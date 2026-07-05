@@ -19,3 +19,4 @@ MonoBehaviour:
   - characterData: {fileID: 11400000, guid: 493c396da2187924e85418156b175beb, type: 2}
     gridPosition: {x: 1, y: 1}
   isBossStage: 0
+  RewardGold: 0

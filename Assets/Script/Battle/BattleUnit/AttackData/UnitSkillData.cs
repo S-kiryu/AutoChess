@@ -11,7 +11,11 @@ public class SkillData : AttackActionData
     [Header("Mana")]
     [SerializeField] private int manaCost = 100;
 
+    [Header("Effects")]
+    [SerializeField] private SkillEffectData[] effects;
+
     public string SkillName => skillName;
     public string Description => description;
     public int ManaCost => manaCost;
+    public SkillEffectData[] Effects => effects;
 }

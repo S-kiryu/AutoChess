@@ -168,7 +168,6 @@ GameObject:
   - component: {fileID: 196169058}
   - component: {fileID: 196169057}
   - component: {fileID: 196169056}
-  - component: {fileID: 196169059}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -240,9 +239,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 196169059}
-        m_TargetAssemblyTypeName: ChangeState, Assembly-CSharp
-        m_MethodName: StateChange
+      - m_Target: {fileID: 1049186423}
+        m_TargetAssemblyTypeName: GameLoopManager, Assembly-CSharp
+        m_MethodName: OnRewardNextButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -290,19 +289,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 196169054}
   m_CullTransparentMesh: 1
---- !u!114 &196169059
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 196169054}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e72572426b9e18e4b995b93f480a4ebf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ChangeState
-  _gameState: 0
 --- !u!1 &327924898
 GameObject:
   m_ObjectHideFlags: 0
@@ -881,9 +867,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1032396803}
-        m_TargetAssemblyTypeName: ShopUI, Assembly-CSharp
-        m_MethodName: OnClickGenerate
+      - m_Target: {fileID: 889859442}
+        m_TargetAssemblyTypeName: MoneyManager, Assembly-CSharp
+        m_MethodName: BuyUnit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -931,6 +917,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 845761150}
   m_CullTransparentMesh: 1
+--- !u!1 &889859441
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 889859443}
+  - component: {fileID: 889859442}
+  m_Layer: 0
+  m_Name: MoneyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &889859442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889859441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b164fbb4c72894880096d224943f32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoneyManager
+  money:
+    value: 10
+  UnitPrice:
+    value: 0
+  shopFactory: {fileID: 1032396803}
+--- !u!4 &889859443
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889859441}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 804.6393, y: 480.05002, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1019742076
 GameObject:
   m_ObjectHideFlags: 0
@@ -1361,6 +1396,7 @@ MonoBehaviour:
   battleUnitSpawner: {fileID: 652954609}
   stageProgressManager: {fileID: 1413032654}
   nextButton: {fileID: 2019095109}
+  homeSceneName: Home
 --- !u!4 &1049186424
 Transform:
   m_ObjectHideFlags: 0
@@ -1411,6 +1447,7 @@ MonoBehaviour:
   battleUnitSpawner: {fileID: 652954609}
   movementResolver: {fileID: 1230427202}
   stageProgressManager: {fileID: 1413032654}
+  homeSceneName: Home
 --- !u!4 &1230427201
 Transform:
   m_ObjectHideFlags: 0
@@ -2345,3 +2382,4 @@ SceneRoots:
   - {fileID: 1032396804}
   - {fileID: 1230427201}
   - {fileID: 652954610}
+  - {fileID: 889859443}

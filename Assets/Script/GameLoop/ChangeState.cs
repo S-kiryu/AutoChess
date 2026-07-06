@@ -6,5 +6,6 @@ public class ChangeState : MonoBehaviour
     public void StateChange() 
     {
         GameLoopManager.Instance.ChangeState(_gameState);
+        Debug.Log($"StateChange: {_gameState}");
     }
 }

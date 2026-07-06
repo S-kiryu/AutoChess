@@ -25,6 +25,7 @@ public class BenchSlotUI : MonoBehaviour,
     private int x;
     private int y;
     private bool droppedOnSlot;
+    private bool isDragging;
 
     public UnitInstance Unit => unit;
     public int X => x;
@@ -119,15 +120,20 @@ public class BenchSlotUI : MonoBehaviour,
     /// </summary>
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if(GameLoopManager.Instance.CurrentState == GameState.Battle)
+        isDragging = false;
+
+        if (GameLoopManager.Instance == null ||
+            GameLoopManager.Instance.CurrentState != GameState.Preparation)
         {
             return;
         }
+
         if (unit == null || canvas == null)
         {
             return;
         }
 
+        isDragging = true;
         droppedOnSlot = false;
 
         originalParent = transform.parent;
@@ -144,11 +150,7 @@ public class BenchSlotUI : MonoBehaviour,
     /// </summary>
     public void OnDrag(PointerEventData eventData)
     {
-        if (GameLoopManager.Instance.CurrentState == GameState.Battle)
-        {
-            return;
-        }
-        if (unit == null)
+        if (!isDragging)
         {
             return;
         }
@@ -161,10 +163,13 @@ public class BenchSlotUI : MonoBehaviour,
     /// </summary>
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (GameLoopManager.Instance.CurrentState == GameState.Battle)
+        if (!isDragging)
         {
             return;
         }
+
+        isDragging = false;
+
         if (unit == null)
         {
             return;

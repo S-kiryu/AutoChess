@@ -156,6 +156,12 @@ public class BattleGrid : MonoBehaviour, IDropHandler
     /// <param name="eventData"></param>
     public void OnDrop(PointerEventData eventData)
     {
+        if (GameLoopManager.Instance != null &&
+            GameLoopManager.Instance.CurrentState == GameState.Battle)
+        {
+            return;
+        }
+
         // プレイヤー配置エリア以外には置けない
         if (!isPlayerGrid)
         {

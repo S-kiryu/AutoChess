@@ -29,6 +29,12 @@ public class BenchSlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (GameLoopManager.Instance == null ||
+            GameLoopManager.Instance.CurrentState != GameState.Preparation)
+        {
+            return;
+        }
+
         BenchSlotUI draggedUI =
             eventData.pointerDrag?.GetComponent<BenchSlotUI>();
 

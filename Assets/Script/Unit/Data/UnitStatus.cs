@@ -128,4 +128,24 @@ public class UnitStatus
             _currentHp = 0;
         }
     }
+
+    /// <summary>
+    /// ユニットの星の数に応じてステータスを変化させる
+    /// </summary>
+    /// <param name="star"></param>
+    public void ApplyStar(int star)
+    {
+        float rate = star switch
+        {
+            1 => 1f,
+            2 => 1.8f,
+            3 => 3f,
+            _ => 1f
+        };
+
+        _maxHp = Mathf.RoundToInt(_maxHp * rate);
+        _currentHp = _maxHp;
+        _attack *= rate;
+        _magicAttack *= rate;
+    }
 }

@@ -78,6 +78,19 @@ public class BenchSlot : MonoBehaviour, IDropHandler
         BenchSlotUI targetUI =
             GetComponentInChildren<BenchSlotUI>(true);
 
+        UnitInstance movingUnit = benchManager.GetUnit(fromX, fromY);
+        UnitInstance targetUnit = benchManager.GetUnit(x, y);
+
+        if (CanMerge(movingUnit, targetUnit))
+        {
+            return MergeInsideBench(
+                draggedUI,
+                targetUI,
+                targetUnit,
+                fromX,
+                fromY);
+        }
+
         bool success = benchManager.SwapUnits(
             fromX,
             fromY,
@@ -171,6 +184,50 @@ public class BenchSlot : MonoBehaviour, IDropHandler
 
         draggedUI.MoveTo(transform);
         draggedUI.SetLocation(UnitArea.Bench, x, y);
+
+        return true;
+    }
+
+    private bool CanMerge(UnitInstance movingUnit, UnitInstance targetUnit)
+    {
+        if (movingUnit == null || targetUnit == null)
+        {
+            return false;
+        }
+
+        if (movingUnit == targetUnit)
+        {
+            return false;
+        }
+
+        return movingUnit.Data == targetUnit.Data &&
+               movingUnit.Star == targetUnit.Star &&
+               targetUnit.CanUpgrade;
+    }
+
+    private bool MergeInsideBench(
+        BenchSlotUI draggedUI,
+        BenchSlotUI targetUI,
+        UnitInstance targetUnit,
+        int fromX,
+        int fromY)
+    {
+        if (!targetUnit.Upgrade())
+        {
+            return false;
+        }
+
+        benchManager.TakeUnit(fromX, fromY);
+
+        if (targetUI != null)
+        {
+            targetUI.SetUnit(targetUnit);
+            targetUI.PlayPlaceEffect();
+        }
+
+        Destroy(draggedUI.gameObject);
+
+        Debug.Log($"{targetUnit.Data.CharacterName} Ç™ êØ{targetUnit.Star} Ç…ã≠âªÇ≥ÇÍÇ‹ÇµÇΩ");
 
         return true;
     }

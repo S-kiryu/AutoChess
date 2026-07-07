@@ -10,6 +10,11 @@ public class UnitInstance
     [SerializeField] private string uniqueId;
     [SerializeField] private CharacterData data;
     [SerializeField] private UnitStatus status = new UnitStatus();
+    [SerializeField] private int star = 1;
+    public const int MaxStar = 3;
+    public int Star => star;
+    public bool CanUpgrade => star < MaxStar;
+
 
     public string UniqueId => uniqueId;
     public CharacterData Data => data;
@@ -26,5 +31,19 @@ public class UnitInstance
         uniqueId = Guid.NewGuid().ToString();
         data = characterData;
         status.Initialize(characterData.BaseStatus);
+    }
+
+    public bool Upgrade()
+    {
+        if (!CanUpgrade)
+        {
+            return false;
+        }
+
+        star++;
+        status.Initialize(data.BaseStatus);
+        status.ApplyStar(star);
+
+        return true;
     }
 }

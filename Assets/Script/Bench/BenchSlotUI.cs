@@ -14,6 +14,10 @@ public class BenchSlotUI : MonoBehaviour,
     [SerializeField] private Image unitIcon;
     [SerializeField] private GameObject highlight;
     [SerializeField] private Canvas canvas;
+    [Header("¯‚²‚Æ‚ÌF")]
+    [SerializeField] private Color star1Color = Color.white;
+    [SerializeField] private Color star2Color = new Color(0.4f, 0.8f, 1f);
+    [SerializeField] private Color star3Color = new Color(1f, 0.75f, 0.2f);
 
     private UnitInstance unit;
     private RectTransform rectTransform;
@@ -56,6 +60,23 @@ public class BenchSlotUI : MonoBehaviour,
 
         unitIcon.sprite = unit.Data.Icon;
         unitIcon.enabled = true;
+        ApplyStarColor();
+    }
+
+    private void ApplyStarColor()
+    {
+        if (unitIcon == null || unit == null)
+        {
+            return;
+        }
+
+        unitIcon.color = unit.Star switch
+        {
+            1 => star1Color,
+            2 => star2Color,
+            3 => star3Color,
+            _ => star3Color
+        };
     }
 
     public void Clear()

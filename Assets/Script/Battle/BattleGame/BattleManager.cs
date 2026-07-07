@@ -175,6 +175,8 @@ public class BattleManager : MonoBehaviour
                 stageProgressManager != null)
             {
                 stageProgressManager.MarkChapterClear();
+
+                PlayerProgress.MarkChapterCleared(stageProgressManager.CurrentChapter);
             }
 
             if (GameLoopManager.Instance != null)

@@ -22,20 +22,27 @@ public class StageProgressManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void Awake()
     {
-        if (StageSelectionContext.Instance != null &&
-            StageSelectionContext.Instance.HasSelection())
+        if (StageSelectManager.SelectedChapter != null)
         {
             Initialize(
-                StageSelectionContext.Instance.SelectedChapter,
-                StageSelectionContext.Instance.StartBattleIndex);
+                StageSelectManager.SelectedChapter,
+                StageSelectManager.SelectedBattleIndex);
+            return;
+        }
+
+        if (currentChapter != null)
+        {
+            Initialize(currentChapter, currentBattleIndex);
         }
     }
 
     public void Initialize(ChapterData chapter, int battleIndex)
     {
-        if (chapter == null || chapter.BattleStages == null || chapter.BattleStages.Length == 0)
+        if (chapter == null ||
+            chapter.BattleStages == null ||
+            chapter.BattleStages.Length == 0)
         {
             Debug.LogError("ChapterData が正しくありません。");
             return;
@@ -45,7 +52,7 @@ public class StageProgressManager : MonoBehaviour
         currentBattleIndex = Mathf.Clamp(
             battleIndex,
             0,
-            chapter.BattleStages.Length - 1);
+            currentChapter.BattleStages.Length - 1);
 
         chapterClearPending = false;
     }

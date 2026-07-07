@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5c1087bec1aea248ba6c2eabe8f5d74, type: 3}
   m_Name: Chapter Data
   m_EditorClassIdentifier: Assembly-CSharp::ChapterData
-  chapterName: 
+  chapterId: chapter_01
+  chapterName: "\u7B2C1\u7AE0"
+  chapterImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   battleStages:
   - {fileID: 11400000, guid: 6af8f3e8f26232b4d94df08ad9539fa3, type: 2}
   - {fileID: 11400000, guid: 528a7b558851f6345a022a5871b34bf8, type: 2}

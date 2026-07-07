@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8143b0edec0df474cbfb60093db95396, type: 3}
   m_Name: Battle Stage Data
   m_EditorClassIdentifier: Assembly-CSharp::BattleStageData
-  stageId: 
+  stageId: stage1-1
   enemies:
   - characterData: {fileID: 11400000, guid: 493c396da2187924e85418156b175beb, type: 2}
     gridPosition: {x: 0, y: 0}

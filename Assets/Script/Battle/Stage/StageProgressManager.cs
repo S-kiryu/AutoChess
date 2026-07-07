@@ -22,6 +22,33 @@ public class StageProgressManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if (StageSelectionContext.Instance != null &&
+            StageSelectionContext.Instance.HasSelection())
+        {
+            Initialize(
+                StageSelectionContext.Instance.SelectedChapter,
+                StageSelectionContext.Instance.StartBattleIndex);
+        }
+    }
+
+    public void Initialize(ChapterData chapter, int battleIndex)
+    {
+        if (chapter == null || chapter.BattleStages == null || chapter.BattleStages.Length == 0)
+        {
+            Debug.LogError("ChapterData が正しくありません。");
+            return;
+        }
+
+        currentChapter = chapter;
+        currentBattleIndex = Mathf.Clamp(
+            battleIndex,
+            0,
+            chapter.BattleStages.Length - 1);
+
+        chapterClearPending = false;
+    }
 
     public void MarkChapterClear()
     {
@@ -48,10 +75,5 @@ public class StageProgressManager : MonoBehaviour
         }
 
         Debug.Log($"次のステージ: {CurrentBattleStage.StageId}");
-    }
-
-    public void Reward() 
-    {
-
     }
 }

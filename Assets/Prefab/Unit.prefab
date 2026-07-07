@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.59607846}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.29803923}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -170,6 +170,10 @@ MonoBehaviour:
   unitIcon: {fileID: 5831339746371801096}
   highlight: {fileID: 0}
   canvas: {fileID: 0}
+  starFrame: {fileID: 5831339746371801096}
+  star1Color: {r: 1, g: 1, b: 1, a: 1}
+  star2Color: {r: 0.4, g: 0.8, b: 1, a: 1}
+  star3Color: {r: 1, g: 0.75, b: 0.2, a: 1}
 --- !u!114 &-7670756052915776975
 MonoBehaviour:
   m_ObjectHideFlags: 0

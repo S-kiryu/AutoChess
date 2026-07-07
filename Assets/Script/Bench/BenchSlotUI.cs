@@ -15,6 +15,7 @@ public class BenchSlotUI : MonoBehaviour,
     [SerializeField] private GameObject highlight;
     [SerializeField] private Canvas canvas;
     [Header("¯‚²‚Æ‚ÌF")]
+    [SerializeField] private Image starFrame;
     [SerializeField] private Color star1Color = Color.white;
     [SerializeField] private Color star2Color = new Color(0.4f, 0.8f, 1f);
     [SerializeField] private Color star3Color = new Color(1f, 0.75f, 0.2f);
@@ -65,17 +66,17 @@ public class BenchSlotUI : MonoBehaviour,
 
     private void ApplyStarColor()
     {
-        if (unitIcon == null || unit == null)
+        if (starFrame == null || unit == null)
         {
             return;
         }
 
-        unitIcon.color = unit.Star switch
+        starFrame.color = unit.Star switch
         {
-            1 => star1Color,
-            2 => star2Color,
-            3 => star3Color,
-            _ => star3Color
+            1 => Color.white,
+            2 => new Color(0.4f, 0.8f, 1f),
+            3 => new Color(1f, 0.75f, 0.2f),
+            _ => Color.white
         };
     }
 

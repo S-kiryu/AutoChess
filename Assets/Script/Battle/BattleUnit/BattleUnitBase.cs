@@ -246,6 +246,11 @@ public class BattleUnitBase : MonoBehaviour
             return;
         }
 
+        if (!target.IsStoppedOnGrid)
+        {
+            return;
+        }
+
         FaceTarget();
 
         if (IsEngagedWithTarget() || CanUseAction(actionData))
@@ -262,6 +267,18 @@ public class BattleUnitBase : MonoBehaviour
             return null;
         }
 
+        if (target == null)
+        {
+            return null;
+        }
+
+        BattleGrid targetGrid = target.PathTargetGrid;
+
+        if (targetGrid == null)
+        {
+            return null;
+        }
+
         AttackActionData actionData = GetCurrentActionData();
 
         if (actionData == null)
@@ -271,29 +288,38 @@ public class BattleUnitBase : MonoBehaviour
 
         FaceTarget();
 
-        if (IsEngagedWithTarget() || CanUseAction(actionData))
+        if (target.IsStoppedOnGrid &&
+            (IsEngagedWithTarget() || CanUseAction(actionData)))
         {
             currentPath.Clear();
             return null;
         }
 
-        BattleGrid nextGrid = BattlePathFinder.GetNextGridTowardTarget(
-            CurrentGrid,
-            target.CurrentGrid);
+        BattleGrid nextGrid;
 
-        if (nextGrid == null)
+        if (target.IsStoppedOnGrid)
         {
-            return null;
+            // 敵が止まっているなら、敵の周囲へ回り込む
+            nextGrid = BattlePathFinder.GetNextGridTowardStoppedTarget(
+                CurrentGrid,
+                targetGrid,
+                actionData.CastRange);
+        }
+        else
+        {
+            // 敵がまだ動いているなら、最短方向へ前進する
+            nextGrid = BattlePathFinder.GetNextGridTowardTarget(
+                CurrentGrid,
+                targetGrid);
         }
 
-        if (nextGrid == target.CurrentGrid)
+        if (nextGrid == null || nextGrid == targetGrid)
         {
             return null;
         }
 
         return nextGrid;
     }
-
 
     public void BeginMoveTo(BattleGrid nextGrid)
     {
@@ -362,6 +388,29 @@ public class BattleUnitBase : MonoBehaviour
 
         moveTargetGrid = null;
         isMoving = false;
+    }
+
+    public BattleGrid PathTargetGrid
+    {
+        get
+        {
+            if (isMoving && moveTargetGrid != null)
+            {
+                return moveTargetGrid;
+            }
+
+            return CurrentGrid;
+        }
+    }
+
+    public bool IsStoppedOnGrid
+    {
+        get
+        {
+            return !isMoving &&
+                   CurrentGrid != null &&
+                   CurrentGrid.CurrentBattleUnit == this;
+        }
     }
 
     private void Attack()

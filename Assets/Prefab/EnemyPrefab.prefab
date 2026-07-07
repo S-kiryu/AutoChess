@@ -110,6 +110,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleUnitView
   unitImage: {fileID: 2873458728613997735}
   damageFlashDuration: 0.15
+  star1Color: {r: 1, g: 1, b: 1, a: 1}
+  star2Color: {r: 0.4, g: 0.8, b: 1, a: 1}
+  star3Color: {r: 1, g: 0.75, b: 0.2, a: 1}
 --- !u!114 &-8259483144944437112
 MonoBehaviour:
   m_ObjectHideFlags: 0

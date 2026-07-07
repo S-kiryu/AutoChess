@@ -9,6 +9,11 @@ public class BattleUnitView : MonoBehaviour
 {
     [SerializeField] private Image unitImage;
     [SerializeField] private float damageFlashDuration = 0.15f;
+    [SerializeField] private Color star1Color = Color.white;
+    [SerializeField] private Color star2Color = new Color(0.4f, 0.8f, 1f);
+    [SerializeField] private Color star3Color = new Color(1f, 0.75f, 0.2f);
+
+    private Color currentBaseColor = Color.white;
 
     private Coroutine damageFlashCoroutine;
     private Color defaultColor = Color.white;
@@ -35,7 +40,20 @@ public class BattleUnitView : MonoBehaviour
 
         unitImage.sprite = unit.Data.Icon;
         unitImage.enabled = true;
-        unitImage.color = defaultColor;
+
+        currentBaseColor = GetStarColor(unit.Star);
+        unitImage.color = currentBaseColor;
+    }
+
+    private Color GetStarColor(int star)
+    {
+        return star switch
+        {
+            1 => star1Color,
+            2 => star2Color,
+            3 => star3Color,
+            _ => star3Color
+        };
     }
 
     public void PlayDamageFlash()
@@ -57,7 +75,7 @@ public class BattleUnitView : MonoBehaviour
     {
         if (unitImage != null)
         {
-            unitImage.color = defaultColor;
+            unitImage.color = currentBaseColor;
         }
     }
 
@@ -71,7 +89,7 @@ public class BattleUnitView : MonoBehaviour
 
         yield return new WaitForSeconds(damageFlashDuration);
 
-        unitImage.color = defaultColor;
+        unitImage.color = currentBaseColor;
         damageFlashCoroutine = null;
     }
 

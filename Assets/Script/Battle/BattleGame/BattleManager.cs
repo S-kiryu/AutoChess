@@ -9,6 +9,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private BattleUnitSpawner battleUnitSpawner;
     [SerializeField] private BattleMovementResolver movementResolver;
     [SerializeField] private StageProgressManager stageProgressManager;
+    [SerializeField] private PlayerLifeManager playerLifeManager;
     [SerializeField] private string homeSceneName = "Home";
 
     // 戦闘にいるユニットを管理するリスト
@@ -182,6 +183,43 @@ public class BattleManager : MonoBehaviour
             }
 
             Debug.Log("勝利");
+        }
+        else if (playerAllDead)
+        {
+            isBattleFinished = true;
+
+            StopAllUnits();
+
+            if (battleUnitSpawner != null)
+            {
+                battleUnitSpawner.RestorePlayerUnitsAfterBattle();
+                battleUnitSpawner.ClearEnemyUnits();
+            }
+
+            if (playerLifeManager != null)
+            {
+                playerLifeManager.LoseLife();
+
+                if (playerLifeManager.IsGameOver)
+                {
+                    Debug.Log("ゲームオーバー");
+
+                    // あとでGameOver画面やHomeに遷移
+                    if (GameLoopManager.Instance != null)
+                    {
+                        GameLoopManager.Instance.ChangeState(GameState.GameOver);
+                    }
+
+                    return;
+                }
+            }
+
+            if (GameLoopManager.Instance != null)
+            {
+                GameLoopManager.Instance.ChangeState(GameState.Preparation);
+            }
+
+            Debug.Log("敗北。残機があるので再挑戦します。");
         }
     }
 

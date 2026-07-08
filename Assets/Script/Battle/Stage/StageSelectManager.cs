@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro;
 
 public class StageSelectManager : MonoBehaviour
 {
@@ -18,7 +17,8 @@ public class StageSelectManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private Image chapterImage;
-    [SerializeField] private TMP_Text chapterNameText;
+    [SerializeField] private Text chapterNumText;
+    [SerializeField] private Text chapterNameText;
     [SerializeField] private GameObject lockObject;
     [SerializeField] private Button previousButton;
     [SerializeField] private Button nextButton;
@@ -131,7 +131,7 @@ public class StageSelectManager : MonoBehaviour
         if (chapter == null)
         {
             chapterImage.sprite = null;
-            chapterNameText.text = "";
+            chapterNumText.text = "";
             lockObject.SetActive(false);
             startButton.interactable = false;
             return;
@@ -140,6 +140,7 @@ public class StageSelectManager : MonoBehaviour
         bool unlocked = IsChapterUnlocked(currentChapterIndex);
 
         chapterImage.sprite = chapter.ChapterImage;
+        chapterNumText.text = ($"第{currentChapterIndex}章");
         chapterNameText.text = chapter.ChapterName;
         lockObject.SetActive(!unlocked);
         startButton.interactable = unlocked;

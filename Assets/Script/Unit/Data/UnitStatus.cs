@@ -148,4 +148,10 @@ public class UnitStatus
         _attack *= rate;
         _magicAttack *= rate;
     }
+
+    public void LevelUp(int level)
+    {
+        _level += level;
+
+    }
 }

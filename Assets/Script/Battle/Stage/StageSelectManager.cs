@@ -11,6 +11,11 @@ public class StageSelectManager : MonoBehaviour
     [Header("Scene")]
     [SerializeField] private string battleSceneName = "Battle";
 
+    [Header("Panel")]
+    [SerializeField] private GameObject selectPanel;
+    [SerializeField] private Button openButton;
+    [SerializeField] private Button closeButton;
+
     [Header("UI")]
     [SerializeField] private Image chapterImage;
     [SerializeField] private TMP_Text chapterNameText;
@@ -28,11 +33,40 @@ public class StageSelectManager : MonoBehaviour
     {
         currentChapterIndex = 0;
 
+        if (openButton != null)
+        {
+            openButton.onClick.AddListener(OpenSelectPanel);
+        }
+
+        if (closeButton != null)
+        {
+            closeButton.onClick.AddListener(CloseSelectPanel);
+        }
+
         previousButton.onClick.AddListener(PreviousChapter);
         nextButton.onClick.AddListener(NextChapter);
         startButton.onClick.AddListener(StartSelectedChapter);
 
+        CloseSelectPanel();
         UpdateView();
+    }
+
+    private void OpenSelectPanel()
+    {
+        if (selectPanel != null)
+        {
+            selectPanel.SetActive(true);
+        }
+
+        UpdateView();
+    }
+
+    private void CloseSelectPanel()
+    {
+        if (selectPanel != null)
+        {
+            selectPanel.SetActive(false);
+        }
     }
 
     private void PreviousChapter()

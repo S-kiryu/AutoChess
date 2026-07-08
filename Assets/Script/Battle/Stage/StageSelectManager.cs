@@ -1,73 +1,84 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public class StageSelectManager : MonoBehaviour
 {
+    [Header("Chapter")]
     [SerializeField] private ChapterData[] chapters;
+
+    [Header("Scene")]
     [SerializeField] private string battleSceneName = "Battle";
-    [SerializeField] private ChapterSelectButton buttonPrefab;
-    [SerializeField] private Transform buttonRoot;
+
+    [Header("UI")]
+    [SerializeField] private Image chapterImage;
+    [SerializeField] private TMP_Text chapterNameText;
+    [SerializeField] private GameObject lockObject;
+    [SerializeField] private Button previousButton;
+    [SerializeField] private Button nextButton;
+    [SerializeField] private Button startButton;
 
     public static ChapterData SelectedChapter { get; private set; }
     public static int SelectedBattleIndex { get; private set; }
 
+    private int currentChapterIndex;
+
     private void Start()
     {
-        CreateButtons();
+        currentChapterIndex = 0;
+
+        previousButton.onClick.AddListener(PreviousChapter);
+        nextButton.onClick.AddListener(NextChapter);
+        startButton.onClick.AddListener(StartSelectedChapter);
+
+        UpdateView();
     }
 
-    private void CreateButtons()
+    private void PreviousChapter()
     {
-        for (int i = 0; i < chapters.Length; i++)
+        if (chapters == null || chapters.Length == 0)
         {
-            ChapterSelectButton button =
-                Instantiate(buttonPrefab, buttonRoot);
-
-            button.Initialize(
-                this,
-                i,
-                chapters[i],
-                IsChapterUnlocked(i),
-                IsChapterCleared(i));
-        }
-    }
-
-    public ChapterData GetChapter(int chapterIndex)
-    {
-        if (chapterIndex < 0 || chapterIndex >= chapters.Length)
-        {
-            return null;
+            return;
         }
 
-        return chapters[chapterIndex];
-    }
+        currentChapterIndex--;
 
-    public bool IsChapterUnlocked(int chapterIndex)
-    {
-        if (chapterIndex <= 0)
+        if (currentChapterIndex < 0)
         {
-            return true;
+            currentChapterIndex = chapters.Length - 1;
         }
 
-        ChapterData previousChapter = GetChapter(chapterIndex - 1);
-        return PlayerProgress.IsChapterCleared(previousChapter);
+        UpdateView();
     }
 
-    public bool IsChapterCleared(int chapterIndex)
+    private void NextChapter()
     {
-        return PlayerProgress.IsChapterCleared(GetChapter(chapterIndex));
+        if (chapters == null || chapters.Length == 0)
+        {
+            return;
+        }
+
+        currentChapterIndex++;
+
+        if (currentChapterIndex >= chapters.Length)
+        {
+            currentChapterIndex = 0;
+        }
+
+        UpdateView();
     }
 
-    public void SelectChapter(int chapterIndex)
+    private void StartSelectedChapter()
     {
-        ChapterData chapter = GetChapter(chapterIndex);
+        ChapterData chapter = GetCurrentChapter();
 
         if (chapter == null)
         {
             return;
         }
 
-        if (!IsChapterUnlocked(chapterIndex))
+        if (!IsChapterUnlocked(currentChapterIndex))
         {
             Debug.Log("まだ解放されていません");
             return;
@@ -77,5 +88,53 @@ public class StageSelectManager : MonoBehaviour
         SelectedBattleIndex = 0;
 
         SceneManager.LoadScene(battleSceneName);
+    }
+
+    private void UpdateView()
+    {
+        ChapterData chapter = GetCurrentChapter();
+
+        if (chapter == null)
+        {
+            chapterImage.sprite = null;
+            chapterNameText.text = "";
+            lockObject.SetActive(false);
+            startButton.interactable = false;
+            return;
+        }
+
+        bool unlocked = IsChapterUnlocked(currentChapterIndex);
+
+        chapterImage.sprite = chapter.ChapterImage;
+        chapterNameText.text = chapter.ChapterName;
+        lockObject.SetActive(!unlocked);
+        startButton.interactable = unlocked;
+    }
+
+    private ChapterData GetCurrentChapter()
+    {
+        if (chapters == null || chapters.Length == 0)
+        {
+            return null;
+        }
+
+        if (currentChapterIndex < 0 ||
+            currentChapterIndex >= chapters.Length)
+        {
+            return null;
+        }
+
+        return chapters[currentChapterIndex];
+    }
+
+    private bool IsChapterUnlocked(int chapterIndex)
+    {
+        if (chapterIndex <= 0)
+        {
+            return true;
+        }
+
+        ChapterData previousChapter = chapters[chapterIndex - 1];
+        return PlayerProgress.IsChapterCleared(previousChapter);
     }
 }

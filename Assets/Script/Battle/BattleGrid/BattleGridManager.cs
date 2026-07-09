@@ -426,6 +426,7 @@ public class BattleGridManager : MonoBehaviour
         return battleGrids[boardX, boardY];
     }
 
+
     public IEnumerable<BattleGrid> GetPlayerBattleGrids()
     {
         if (playerBattleGrids == null)

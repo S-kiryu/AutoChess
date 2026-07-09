@@ -9,4 +9,8 @@ public class CharacterData : ScriptableObject
     public BaseStatus BaseStatus;   //キャラのベースステータス
     public NormalAttackData NormalAttack;//キャラの通常攻撃データ
     public SkillData Skill;      //キャラのスキルデータ
+    [Header("レベルアップ設定")]
+    public LevelUpStatusData[] LevelUpStatuses;
+    [Header("星グレード設定")]
+    public StarGradeData[] StarGrades;
 }

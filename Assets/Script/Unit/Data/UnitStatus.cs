@@ -133,25 +133,52 @@ public class UnitStatus
     /// ユニットの星の数に応じてステータスを変化させる
     /// </summary>
     /// <param name="star"></param>
-    public void ApplyStar(int star)
+    public void ApplyStar(StarGradeData grade)
     {
-        float rate = star switch
+        if (grade == null)
         {
-            1 => 1f,
-            2 => 1.8f,
-            3 => 3f,
-            _ => 1f
-        };
+            return;
+        }
 
-        _maxHp = Mathf.RoundToInt(_maxHp * rate);
+        float hpRate = Mathf.Max(grade.HpRate, 1f);
+        float attackRate = Mathf.Max(grade.AttackRate, 1f);
+        float magicAttackRate = Mathf.Max(grade.MagicAttackRate, 1f);
+        float defenseRate = Mathf.Max(grade.DefenseRate, 1f);
+        float magicDefenseRate = Mathf.Max(grade.MagicDefenseRate, 1f);
+
+        _maxHp = Mathf.RoundToInt(_maxHp * hpRate);
         _currentHp = _maxHp;
-        _attack *= rate;
-        _magicAttack *= rate;
+
+        _attack *= attackRate;
+        _magicAttack *= magicAttackRate;
+        _defense *= defenseRate;
+        _magicDefense *= magicDefenseRate;
     }
 
-    public void LevelUp(int level)
+    public void ApplyLevelUp(LevelUpStatusData levelData, int level)
     {
-        _level += level;
+        if (levelData == null)
+        {
+            return;
+        }
 
+        _level = level;
+
+        _maxHp += levelData.AddHp;
+        _currentHp = _maxHp;
+
+        _maxMp += levelData.AddMp;
+
+        _attack += levelData.AddAttack;
+        _magicAttack += levelData.AddMagicAttack;
+        _defense += levelData.AddDefense;
+        _magicDefense += levelData.AddMagicDefense;
+
+        _criticalRate += levelData.AddCriticalRate;
+        _criticalDamage += levelData.AddCriticalDamage;
+        _criticalDefense += levelData.AddCriticalDefense;
+
+        _moveSpeed += levelData.AddMoveSpeed;
+        _dodgeRate += levelData.AddDodgeRate;
     }
 }

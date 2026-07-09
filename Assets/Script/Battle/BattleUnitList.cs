@@ -20,12 +20,63 @@ public class BattleUnitList : MonoBehaviour
         instance = this;
     }
 
-    //ボタンで呼んでます
-    public void BattleUnitSet() 
+    public List<UnitInstance> GetBattleUnits()
     {
+        return _unitList;
+    }
+
+    public List<CharacterData> GetShopCandidateCharacters()
+    {
+        List<CharacterData> characters = new List<CharacterData>();
+
+        foreach (UnitInstance unit in _unitList)
+        {
+            if (unit == null || unit.Data == null)
+            {
+                continue;
+            }
+
+            if (!characters.Contains(unit.Data))
+            {
+                characters.Add(unit.Data);
+            }
+        }
+
+        return characters;
+    }
+
+    public List<UnitInstance> GetShopCandidateUnits()
+    {
+        List<UnitInstance> units = new List<UnitInstance>();
+
+        foreach (UnitInstance unit in _unitList)
+        {
+            if (unit == null || unit.Data == null)
+            {
+                continue;
+            }
+
+            units.Add(unit);
+        }
+
+        return units;
+    }
+
+    //ボタンで呼んでます
+    public void BattleUnitSet()
+    {
+        _unitList.Clear();
+
         var units = formationManager.GetUnits();
+
         foreach (var unit in units)
         {
+            if (unit == null)
+            {
+                continue;
+            }
+
+            unit.RecalculateStatus();
             _unitList.Add(unit);
         }
     }

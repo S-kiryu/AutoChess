@@ -112,52 +112,34 @@ public class BattleUnitSpawner : MonoBehaviour
     /// <returns></returns>
     public List<BattleUnitBase> RegisterPlayerUnits()
     {
-        List<BattleUnitBase> playerUnits =
-            new List<BattleUnitBase>();
+        List<BattleUnitBase> playerUnits = new List<BattleUnitBase>();
 
-        BattleGridManager gridManager =
-            BattleGridManager.Instance;
+        BattleGridManager gridManager = BattleGridManager.Instance;
 
         if (gridManager == null)
         {
-            Debug.LogWarning("BattleGridManager がありません。");
+            Debug.LogWarning("BattleGridManager がありません");
             return playerUnits;
         }
 
         foreach (BattleGrid grid in gridManager.GetPlayerBattleGrids())
         {
-            BenchSlotUI unitUI =
-                grid.GetComponentInChildren<BenchSlotUI>(true);
+            BenchSlotUI unitUI = grid.GetComponentInChildren<BenchSlotUI>(true);
 
             if (unitUI == null || unitUI.Unit == null)
             {
                 continue;
             }
 
-            BattleUnitBase battleUnit =
-                unitUI.GetComponent<BattleUnitBase>();
+            BattleUnitBase battleUnit = unitUI.GetComponent<BattleUnitBase>();
 
             if (battleUnit == null)
             {
-                Debug.LogWarning("BenchSlotUI に BattleUnitBase がありません。", unitUI);
+                Debug.LogWarning("BenchSlotUI に BattleUnitBase がありません", unitUI);
                 continue;
             }
 
-            RectTransform rectTransform =
-                unitUI.GetComponent<RectTransform>();
-
-            playerRestoreData.Add(new PlayerUnitRestoreData
-            {
-                BattleUnit = battleUnit,
-                UnitUI = unitUI,
-                Parent = unitUI.transform.parent,
-                AnchoredPosition = rectTransform != null
-                    ? rectTransform.anchoredPosition
-                    : Vector2.zero,
-                Grid = grid
-            });
-
-            battleUnit.transform.SetParent(battleUnitRoot, true);
+            unitUI.Unit.RecalculateStatus();
 
             SetupBattleUnit(
                 battleUnit,
@@ -168,10 +150,15 @@ public class BattleUnitSpawner : MonoBehaviour
 
             playerUnits.Add(battleUnit);
             playerUnitGrids.Add(grid);
+
+            Debug.Log(
+                $"{unitUI.Unit.Data.CharacterName} Lv:{unitUI.Unit.Level} Star:{unitUI.Unit.Star} " +
+                $"HP:{unitUI.Unit.Status.MaxHp} ATK:{unitUI.Unit.Status.Attack}");
         }
 
         return playerUnits;
     }
+
 
     /// <summary>
     /// バトル時にユニットをセットアップする
@@ -195,6 +182,8 @@ public class BattleUnitSpawner : MonoBehaviour
             unitInstance = new UnitInstance();
             unitInstance.Initialize(characterData);
         }
+
+        unitInstance.RecalculateStatus();
 
         unit.transform.position = grid.transform.position;
         unit.transform.localRotation = Quaternion.identity;

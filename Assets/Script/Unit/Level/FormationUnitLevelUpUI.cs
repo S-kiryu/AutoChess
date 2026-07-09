@@ -42,26 +42,31 @@ public class FormationUnitLevelUpUI : MonoBehaviour
             return;
         }
 
-        if (!CoinManager.Instanse.TryPay(cost))
+        if (!selectedUnit.CanLevelUp)
         {
-            Debug.Log($"コインが足りないためレベルアップできません。必要: {cost}");
+            Debug.Log("これ以上レベルを上げられません");
             return;
         }
 
-        selectedUnit.Status.LevelUp(1);
+        if (!CoinManager.Instanse.TryPay(cost))
+        {
+            return;
+        }
+
+        selectedUnit.LevelUp();
         Refresh();
     }
 
     private int GetLevelUpCost(UnitInstance unit)
     {
-        return unit.Status.Level switch
+        return unit.Level switch
         {
             1 => 1,
             2 => 2,
             3 => 4,
             4 => 6,
             5 => 8,
-            _ => unit.Status.Level * 2
+            _ => unit.Level * 2
         };
     }
 

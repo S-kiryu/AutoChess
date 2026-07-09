@@ -14,11 +14,7 @@ public class BenchSlotUI : MonoBehaviour,
     [SerializeField] private Image unitIcon;
     [SerializeField] private GameObject highlight;
     [SerializeField] private Canvas canvas;
-    [Header("星ごとの色")]
     [SerializeField] private Image starFrame;
-    [SerializeField] private Color star1Color = Color.white;
-    [SerializeField] private Color star2Color = new Color(0.4f, 0.8f, 1f);
-    [SerializeField] private Color star3Color = new Color(1f, 0.75f, 0.2f);
 
     private UnitInstance unit;
     private RectTransform rectTransform;
@@ -74,8 +70,15 @@ public class BenchSlotUI : MonoBehaviour,
         starFrame.color = unit.Star switch
         {
             1 => Color.white,
-            2 => new Color(0.4f, 0.8f, 1f),
-            3 => new Color(1f, 0.75f, 0.2f),
+            2 => new Color(1.00f, 0.35f, 0.35f), // 明るい赤
+            3 => new Color(1.00f, 0.55f, 0.25f), // オレンジ
+            4 => new Color(1.00f, 0.85f, 0.20f), // 黄色
+            5 => new Color(0.55f, 0.95f, 0.25f), // 黄緑
+            6 => new Color(0.25f, 0.85f, 0.35f), // 緑
+            7 => new Color(0.20f, 0.75f, 0.85f), // 水色
+            8 => new Color(0.20f, 0.45f, 0.85f), // 青
+            9 => new Color(0.35f, 0.25f, 0.75f), // 藍色
+            10 => new Color(0.25f, 0.10f, 0.35f), // 暗い紫
             _ => Color.white
         };
     }

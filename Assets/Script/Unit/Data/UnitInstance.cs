@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 /// <summary>
@@ -11,9 +12,28 @@ public class UnitInstance
     [SerializeField] private CharacterData data;
     [SerializeField] private UnitStatus status = new UnitStatus();
     [SerializeField] private int star = 1;
-    public const int MaxStar = 3;
-    public int Star => star;
+    [SerializeField] private int level = 1;
+    public int MaxStar
+    {
+        get
+        {
+            if (data == null || data.StarGrades == null || data.StarGrades.Length == 0)
+            {
+                return 1;
+            }
+
+            return data.StarGrades.Length;
+        }
+    }
+
     public bool CanUpgrade => star < MaxStar;
+    public int Star => star;
+
+    public int Level => level;
+    public bool CanLevelUp =>
+        data != null &&
+        data.LevelUpStatuses != null &&
+        level <= data.LevelUpStatuses.Length;
 
 
     public string UniqueId => uniqueId;
@@ -37,13 +57,62 @@ public class UnitInstance
     {
         if (!CanUpgrade)
         {
+            Debug.Log("これ以上星を上げられません");
             return false;
         }
 
-        star++;
-        status.Initialize(data.BaseStatus);
-        status.ApplyStar(star);
-
+        SetStar(star + 1);
         return true;
+    }
+
+    public void SetStar(int newStar)
+    {
+        if (data == null || data.StarGrades == null || data.StarGrades.Length == 0)
+        {
+            return;
+        }
+
+        star = Mathf.Clamp(newStar, 1, data.StarGrades.Length);
+        RecalculateStatus();
+    }
+
+    public void SetLevel(int newLevel)
+    {
+        level = Mathf.Max(1, newLevel);
+        RecalculateStatus();
+    }
+
+    public bool LevelUp()
+    {
+        if (!CanLevelUp)
+        {
+            return false;
+        }
+
+        level++;
+        RecalculateStatus();
+        return true;
+    }
+
+    public void RecalculateStatus()
+    {
+        status.Initialize(data.BaseStatus);
+
+        if (data.StarGrades != null && data.StarGrades.Length > 0)
+        {
+            int starIndex = Mathf.Clamp(star - 1, 0, data.StarGrades.Length - 1);
+            status.ApplyStar(data.StarGrades[starIndex]);
+        }
+
+        if (data.LevelUpStatuses != null && data.LevelUpStatuses.Length > 0)
+        {
+            int applyCount = Mathf.Min(level - 1, data.LevelUpStatuses.Length);
+
+            for (int i = 0; i < applyCount; i++)
+            {
+                status.ApplyLevelUp(data.LevelUpStatuses[i], i + 2);
+                Debug.Log($"{status.MaxHp}HP,{status.Attack}");
+            }
+        }
     }
 }

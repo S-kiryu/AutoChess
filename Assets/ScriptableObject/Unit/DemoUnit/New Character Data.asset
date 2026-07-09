@@ -17,3 +17,74 @@ MonoBehaviour:
   BaseStatus: {fileID: 11400000, guid: 2f4a8a70b7fd7ad41911e639afd9f9e0, type: 2}
   NormalAttack: {fileID: 11400000, guid: a89bd41d589b23d45b7c56dddff44305, type: 2}
   Skill: {fileID: 0}
+  StarGrades:
+  - Star: 0
+    RequiredUnitCount: 0
+    HpRate: 0
+    AttackRate: 0
+    MagicAttackRate: 0
+    DefenseRate: 0
+    MagicDefenseRate: 0
+  - Star: 0
+    RequiredUnitCount: 0
+    HpRate: 0
+    AttackRate: 0
+    MagicAttackRate: 0
+    DefenseRate: 0
+    MagicDefenseRate: 0
+  - Star: 0
+    RequiredUnitCount: 0
+    HpRate: 0
+    AttackRate: 0
+    MagicAttackRate: 0
+    DefenseRate: 0
+    MagicDefenseRate: 0
+  - Star: 0
+    RequiredUnitCount: 0
+    HpRate: 0
+    AttackRate: 0
+    MagicAttackRate: 0
+    DefenseRate: 0
+    MagicDefenseRate: 0
+  - Star: 0
+    RequiredUnitCount: 0
+    HpRate: 0
+    AttackRate: 0
+    MagicAttackRate: 0
+    DefenseRate: 0
+    MagicDefenseRate: 0
+  - Star: 0
+    RequiredUnitCount: 0
+    HpRate: 0
+    AttackRate: 0
+    MagicAttackRate: 0
+    DefenseRate: 0
+    MagicDefenseRate: 0
+  - Star: 0
+    RequiredUnitCount: 0
+    HpRate: 0
+    AttackRate: 0
+    MagicAttackRate: 0
+    DefenseRate: 0
+    MagicDefenseRate: 0
+  - Star: 0
+    RequiredUnitCount: 0
+    HpRate: 0
+    AttackRate: 0
+    MagicAttackRate: 0
+    DefenseRate: 0
+    MagicDefenseRate: 0
+  - Star: 0
+    RequiredUnitCount: 0
+    HpRate: 0
+    AttackRate: 0
+    MagicAttackRate: 0
+    DefenseRate: 0
+    MagicDefenseRate: 0
+  - Star: 0
+    RequiredUnitCount: 0
+    HpRate: 0
+    AttackRate: 0
+    MagicAttackRate: 0
+    DefenseRate: 0
+    MagicDefenseRate: 0

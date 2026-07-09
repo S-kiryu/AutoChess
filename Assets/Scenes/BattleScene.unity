@@ -721,6 +721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 101cf1829d6deab47a8e5c7add6502ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleUnitSpawner
+  playerPrefab: {fileID: -7670756052915776975, guid: d089a4b191987364ba51dccd1161e00f, type: 3}
   enemyPrefab: {fileID: 1126852099153274538, guid: e4a04498468dd7d4d8c1ff5cd6d29626, type: 3}
   battleUnitRoot: {fileID: 1347651000}
 --- !u!4 &652954610
@@ -813,7 +814,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 730116acceb6cd74e885bce585ca32d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopManager
-  unitPool: []
 --- !u!4 &773131029
 Transform:
   m_ObjectHideFlags: 0

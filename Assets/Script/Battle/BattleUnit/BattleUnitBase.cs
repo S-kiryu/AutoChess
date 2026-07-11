@@ -70,6 +70,7 @@ public class BattleUnitBase : MonoBehaviour
         }
     }
 
+
     public void Initialize(
         UnitInstance unitInstance,
         BattleTeam teamId,
@@ -126,11 +127,18 @@ public class BattleUnitBase : MonoBehaviour
             moveTargetGrid = null;
         }
 
+        foreach (ItemInstance item in UnitInstance.EquippedItems)
+        {
+            item?.Data?.OnBattleStart(Status);
+        }
+
         isBattling = true;
         isMoving = false;
         target = null;
         currentPath.Clear();
+        InvokeItemBattleStart();
     }
+
 
     public void StopBattle()
     {
@@ -438,6 +446,7 @@ public class BattleUnitBase : MonoBehaviour
                 $"MP: {Status.CurrentMp}/{Status.MaxMp}, Cost: {skill.ManaCost}");
 
             Status.ConsumeAllMana();
+            InvokeItemSkillUsed();
             ExecuteAction(skill);
             attackTimer = Status.AttackSpeed;
             return;
@@ -501,6 +510,7 @@ public class BattleUnitBase : MonoBehaviour
         isBattling = false;
         isMoving = false;
         currentPath.Clear();
+        InvokeItemOwnerDeath();
 
         if (moveTargetGrid != null)
         {
@@ -530,6 +540,59 @@ public class BattleUnitBase : MonoBehaviour
     {
         UnitHeal.HealUnit(Status, Heal);
     }
+
+    private void InvokeItemBattleStart()
+    {
+        if (UnitInstance == null || UnitInstance.EquippedItems == null)
+        {
+            return;
+        }
+
+        foreach (ItemInstance item in UnitInstance.EquippedItems)
+        {
+            item?.Data?.OnBattleStart(Status);
+        }
+    }
+
+    private void InvokeItemNormalAttack(UnitStatus targetStatus)
+    {
+        if (UnitInstance == null || UnitInstance.EquippedItems == null)
+        {
+            return;
+        }
+
+        foreach (ItemInstance item in UnitInstance.EquippedItems)
+        {
+            item?.Data?.OnNormalAttack(Status, targetStatus);
+        }
+    }
+
+    private void InvokeItemSkillUsed()
+    {
+        if (UnitInstance == null || UnitInstance.EquippedItems == null)
+        {
+            return;
+        }
+
+        foreach (ItemInstance item in UnitInstance.EquippedItems)
+        {
+            item?.Data?.OnSkillUsed(Status);
+        }
+    }
+
+    private void InvokeItemOwnerDeath()
+    {
+        if (UnitInstance == null || UnitInstance.EquippedItems == null)
+        {
+            return;
+        }
+
+        foreach (ItemInstance item in UnitInstance.EquippedItems)
+        {
+            item?.Data?.OnOwnerDeath(Status);
+        }
+    }
+
 
     private void FaceTarget()
     {
@@ -679,6 +742,7 @@ public class BattleUnitBase : MonoBehaviour
                 if (!result.IsDodged)
                 {
                     hitUnit.TakeDamage(result.Damage);
+                    InvokeItemNormalAttack(hitUnit.Status);
                 }
             }
         }

@@ -200,4 +200,22 @@ public class UnitStatus
         _moveSpeed += levelData.AddMoveSpeed;
         _dodgeRate += levelData.AddDodgeRate;
     }
+
+    public void ApplyItem(ItemData item)
+    {
+        if (item == null)
+        {
+            return;
+        }
+
+        _maxHp += item.AddMaxHp;
+        _currentHp = Mathf.Min(_currentHp + item.AddMaxHp, _maxHp);
+
+        _attack += item.AddAttack;
+        _magicAttack += item.AddMagicAttack;
+        _defense += item.AddDefense;
+        _magicDefense += item.AddMagicDefense;
+        _attackSpeed += item.AddAttackSpeed;
+        _criticalRate += item.AddCriticalRate;
+    }
 }

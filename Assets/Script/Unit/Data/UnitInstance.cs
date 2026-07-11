@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ public class UnitInstance
     [SerializeField] private UnitStatus status = new UnitStatus();
     [SerializeField] private int star = 1;
     [SerializeField] private int level = 1;
+    [SerializeField] private ItemInstance[] equippedItems = new ItemInstance[3];
+
     public int MaxStar
     {
         get
@@ -40,6 +43,7 @@ public class UnitInstance
     public CharacterData Data => data;
     public UnitStatus Status => status;
     public event Action<int> OnStarChanged;
+    public IReadOnlyList<ItemInstance> EquippedItems => equippedItems;
 
     public void Initialize(CharacterData characterData)
     {
@@ -151,5 +155,41 @@ public class UnitInstance
         status.SetLevel(level);
         status.RestoreCurrentHpRate(hpRate);
         status.SetCurrentMp(currentMp);
+
+        // 装備アイテムのステータスを適用
+        foreach (ItemInstance item in equippedItems)
+        {
+            if (item?.Data == null)
+            {
+                continue;
+            }
+
+            status.ApplyItem(item.Data);
+        }
+    }
+
+    /// <summary>
+    /// 装備アイテムを装備する
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    public bool EquipItem(ItemInstance item)
+    {
+        if (item == null || item.Data == null)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < equippedItems.Length; i++)
+        {
+            if (equippedItems[i] == null)
+            {
+                equippedItems[i] = item;
+                RecalculateStatus();
+                return true;
+            }
+        }
+
+        return false;
     }
 }

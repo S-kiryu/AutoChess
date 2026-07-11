@@ -5,8 +5,11 @@ public abstract class ItemData : ScriptableObject
     [Header("基本情報")]
     [SerializeField] private string itemName;
     [SerializeField] private Sprite icon;
+
     [TextArea]
     [SerializeField] private string description;
+
+    [SerializeField] private ItemCategory category;
 
     [Header("加算ステータス")]
     [SerializeField] private int addMaxHp;
@@ -109,6 +112,14 @@ public abstract class ItemData : ScriptableObject
     /// 所有者が死亡したときに呼ばれる
     /// </summary>
     public virtual void OnOwnerDeath(UnitStatus owner)
+    {
+    }
+
+    /// <summary>
+    /// 戦闘終了時に呼ばれる
+    /// </summary>
+    /// <param name="owner"></param>
+    public virtual void OnEndBattle(UnitStatus owner)
     {
     }
 }

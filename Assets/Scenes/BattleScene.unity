@@ -471,6 +471,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPrefab: {fileID: 1126852099153274538, guid: e4a04498468dd7d4d8c1ff5cd6d29626, type: 3}
   enemyParent: {fileID: 327924902}
+  damagePopupManager: {fileID: 587985779}
 --- !u!4 &415742211
 Transform:
   m_ObjectHideFlags: 0
@@ -829,6 +830,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 560119850}
   m_CullTransparentMesh: 1
+--- !u!1 &587985778
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 587985780}
+  - component: {fileID: 587985779}
+  m_Layer: 0
+  m_Name: DamagePopupManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &587985779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587985778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f982141a5ff42549a2fb21ccd1dddea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamagePopupManager
+  damagePopupPrefab: {fileID: 10808627403983799, guid: 5af2dea07d1f8224683d4a3401b4583b, type: 3}
+  damagePopupRoot: {fileID: 1873156987}
+  initialPoolCount: 20
+  baseOffset: {x: 0, y: 1, z: 0}
+  randomXRange: {x: -0.25, y: 0.25}
+  randomYRange: {x: 0, y: 0.25}
+--- !u!4 &587985780
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587985778}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 992.3077, y: 527.1212, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &652954608
 GameObject:
   m_ObjectHideFlags: 0
@@ -860,6 +911,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleUnitSpawner
   enemyPrefab: {fileID: 1126852099153274538, guid: e4a04498468dd7d4d8c1ff5cd6d29626, type: 3}
   battleUnitRoot: {fileID: 1347651000}
+  damagePopupManager: {fileID: 587985779}
 --- !u!4 &652954610
 Transform:
   m_ObjectHideFlags: 0
@@ -3213,3 +3265,4 @@ SceneRoots:
   - {fileID: 652954610}
   - {fileID: 889859443}
   - {fileID: 1873156987}
+  - {fileID: 587985780}

@@ -39,6 +39,7 @@ public class UnitInstance
     public string UniqueId => uniqueId;
     public CharacterData Data => data;
     public UnitStatus Status => status;
+    public event Action<int> OnStarChanged;
 
     public void Initialize(CharacterData characterData)
     {
@@ -72,8 +73,17 @@ public class UnitInstance
             return;
         }
 
-        star = Mathf.Clamp(newStar, 1, data.StarGrades.Length);
+        int clampedStar = Mathf.Clamp(newStar, 1, data.StarGrades.Length);
+
+        if (star == clampedStar)
+        {
+            return;
+        }
+
+        star = clampedStar;
         RecalculateStatus();
+
+        OnStarChanged?.Invoke(star);
     }
 
     public void SetLevel(int newLevel)
@@ -86,16 +96,29 @@ public class UnitInstance
     {
         if (!CanLevelUp)
         {
+            Debug.LogWarning($"[LevelUp] {Data.CharacterName} cannot level up. Lv:{level} LevelUpStatuses:{data?.LevelUpStatuses?.Length ?? 0}");
             return false;
         }
 
+        int beforeLevel = level;
+        int beforeMaxHp = status.MaxHp;
+        float beforeAttack = status.Attack;
+
         level++;
         RecalculateStatus();
+
+        Debug.Log($"[LevelUp] {Data.CharacterName} Lv {beforeLevel} -> {level} / HP {beforeMaxHp} -> {status.MaxHp} / ATK {beforeAttack} -> {status.Attack}");
         return true;
     }
 
     public void RecalculateStatus()
     {
+        float hpRate = status.MaxHp > 0
+            ? (float)status.CurrentHp / status.MaxHp
+            : 1f;
+
+        int currentMp = status.CurrentMp;
+
         status.Initialize(data.BaseStatus);
 
         if (data.StarGrades != null && data.StarGrades.Length > 0)
@@ -107,12 +130,26 @@ public class UnitInstance
         if (data.LevelUpStatuses != null && data.LevelUpStatuses.Length > 0)
         {
             int applyCount = Mathf.Min(level - 1, data.LevelUpStatuses.Length);
+            Debug.Log($"[RecalculateStatus] {data.CharacterName} Lv:{level} Star:{star} LevelUpStatuses:{data.LevelUpStatuses.Length} ApplyCount:{applyCount}");
 
             for (int i = 0; i < applyCount; i++)
             {
-                status.ApplyLevelUp(data.LevelUpStatuses[i], i + 2);
-                Debug.Log($"{status.MaxHp}HP,{status.Attack}");
+                LevelUpStatusData levelData = data.LevelUpStatuses[i];
+                int beforeMaxHp = status.MaxHp;
+                float beforeAttack = status.Attack;
+
+                status.ApplyLevelUp(levelData, i + 2);
+
+                Debug.Log($"[ApplyLevelUp] {data.CharacterName} Index:{i} TargetLv:{i + 2} AddHp:{levelData.AddHp} AddAtk:{levelData.AddAttack} / HP {beforeMaxHp} -> {status.MaxHp} / ATK {beforeAttack} -> {status.Attack}");
             }
         }
+        else
+        {
+            Debug.LogWarning($"[RecalculateStatus] {data.CharacterName} has no LevelUpStatuses.");
+        }
+
+        status.SetLevel(level);
+        status.RestoreCurrentHpRate(hpRate);
+        status.SetCurrentMp(currentMp);
     }
 }

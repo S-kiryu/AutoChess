@@ -16,6 +16,7 @@ public class BattleUnitView : MonoBehaviour
     private Color currentBaseColor = Color.white;
 
     private Coroutine damageFlashCoroutine;
+    private UnitInstance currentUnit;
     private Color defaultColor = Color.white;
 
     private void Awake()
@@ -28,6 +29,7 @@ public class BattleUnitView : MonoBehaviour
         if (unitImage != null)
         {
             defaultColor = unitImage.color;
+            currentBaseColor = defaultColor;
         }
     }
 
@@ -38,11 +40,32 @@ public class BattleUnitView : MonoBehaviour
             return;
         }
 
+        if (currentUnit != null)
+        {
+            currentUnit.OnStarChanged -= ApplyStarColor;
+        }
+
+        currentUnit = unit;
+        currentUnit.OnStarChanged += ApplyStarColor;
+
         unitImage.sprite = unit.Data.Icon;
         unitImage.enabled = true;
 
-        currentBaseColor = GetStarColor(unit.Star);
+        currentBaseColor = unitImage.color;
+    }
+
+    private void ApplyStarColor(int star)
+    {
+        currentBaseColor = GetStarColor(star);
         unitImage.color = currentBaseColor;
+    }
+
+    private void OnDestroy()
+    {
+        if (currentUnit != null)
+        {
+            currentUnit.OnStarChanged -= ApplyStarColor;
+        }
     }
 
     private Color GetStarColor(int star)
@@ -95,7 +118,12 @@ public class BattleUnitView : MonoBehaviour
 
     private void OnDisable()
     {
+        if (damageFlashCoroutine != null)
+        {
+            StopCoroutine(damageFlashCoroutine);
+            damageFlashCoroutine = null;
+        }
+
         ResetColor();
-        damageFlashCoroutine = null;
     }
 }

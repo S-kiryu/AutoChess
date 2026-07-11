@@ -18,9 +18,9 @@ MonoBehaviour:
   NormalAttack: {fileID: 11400000, guid: a89bd41d589b23d45b7c56dddff44305, type: 2}
   Skill: {fileID: 11400000, guid: df6d0189aecc6eb4989b7e58e00fa74e, type: 2}
   LevelUpStatuses:
-  - AddHp: 0
+  - AddHp: 50
     AddMp: 0
-    AddAttack: 0
+    AddAttack: 50
     AddMagicAttack: 0
     AddDefense: 0
     AddMagicDefense: 0
@@ -86,7 +86,7 @@ MonoBehaviour:
     AddDodgeRate: 0
   StarGrades:
   - Star: 0
-    HpRate: 0
+    HpRate: 2
     AttackRate: 0
     MagicAttackRate: 0
     DefenseRate: 0

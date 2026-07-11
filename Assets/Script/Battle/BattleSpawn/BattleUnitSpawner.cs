@@ -29,6 +29,7 @@ public class BattleUnitSpawner : MonoBehaviour
 
     [SerializeField] private BattleUnitBase enemyPrefab;
     [SerializeField] private Transform battleUnitRoot;
+    [SerializeField] private DamagePopupManager damagePopupManager;
 
     //驟咲ｽｮ縺励◆菴咲ｽｮ繧定ｦ壹∴縺ｦ縺翫￥繝ｪ繧ｹ繝・
     private List<BattleGrid> playerUnitGrids = new List<BattleGrid>();
@@ -206,7 +207,7 @@ public class BattleUnitSpawner : MonoBehaviour
         unit.transform.localScale = Vector3.one;
 
         unit.SetCurrentGrid(grid);
-        unit.Initialize(unitInstance, team);
+        unit.Initialize(unitInstance, team, damagePopupManager);
     }
 
     /// <summary>

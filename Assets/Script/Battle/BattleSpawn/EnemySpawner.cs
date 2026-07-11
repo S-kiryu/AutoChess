@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private BattleUnitBase enemyPrefab;
     [SerializeField] private Transform enemyParent;
+    [SerializeField] private DamagePopupManager damagePopupManager;
 
     /// <summary>
     /// ステージのデータを読み込み適したところにユニットを生成するクラス
@@ -46,7 +47,7 @@ public class EnemySpawner : MonoBehaviour
             enemyInstance.Initialize(spawnData.CharacterData);
             Debug.Log($"{enemyInstance.Data.name}を{spawnData.GridPosition.x}{spawnData.GridPosition.y}に生成");
 
-            enemy.Initialize(enemyInstance, teamId: BattleTeam.Enemy);
+            enemy.Initialize(enemyInstance, teamId: BattleTeam.Enemy, damagePopupManager: damagePopupManager);
 
             enemies.Add(enemy);
         }

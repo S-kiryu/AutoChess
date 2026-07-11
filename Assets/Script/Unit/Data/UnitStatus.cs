@@ -90,6 +90,25 @@ public class UnitStatus
         _currentMp = 0;
     }
 
+    public void SetLevel(int level)
+    {
+        _level = Mathf.Max(1, level);
+    }
+
+    public void RestoreCurrentHpRate(float hpRate)
+    {
+        _currentHp = Mathf.Clamp(
+            Mathf.RoundToInt(_maxHp * Mathf.Clamp01(hpRate)),
+            0,
+            _maxHp
+        );
+    }
+
+    public void SetCurrentMp(int currentMp)
+    {
+        _currentMp = Mathf.Clamp(currentMp, 0, _maxMp);
+    }
+
     public void AddMana(int amount)
     {
         if (amount <= 0 || _maxMp <= 0 || IsDead)

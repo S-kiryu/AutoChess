@@ -4,6 +4,7 @@ using UnityEngine;
 public class BattleUnitBase : MonoBehaviour
 {
     [SerializeField] private BattleUnitView unitView;
+    [SerializeField] private DamagePopupManager damagePopupManager;
     [SerializeField] private int chatterLimit = 2;
     [SerializeField] private float chatterStopTime = 0.5f;
 
@@ -69,11 +70,15 @@ public class BattleUnitBase : MonoBehaviour
         }
     }
 
-    public void Initialize(UnitInstance unitInstance, BattleTeam teamId)
+    public void Initialize(
+        UnitInstance unitInstance,
+        BattleTeam teamId,
+        DamagePopupManager damagePopupManager)
     {
         UnitInstance = unitInstance;
         Status = unitInstance.Status;
         Team = teamId;
+        this.damagePopupManager = damagePopupManager;
 
         attackTimer = 0f;
 
@@ -468,6 +473,11 @@ public class BattleUnitBase : MonoBehaviour
 
         Status.TakeDamage(damage);
         Status.AddMana(takeDamageManaGain);
+
+        if (damagePopupManager != null)
+        {
+            damagePopupManager.ShowDamage(Mathf.RoundToInt(damage), transform);
+        }
 
         Debug.Log(
             $"{UnitInstance.Data.CharacterName} took {damage} damage. " +

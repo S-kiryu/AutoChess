@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a38475ca5a955474eb353cf9abf782a7, type: 3}
-  m_Name: New Damage Skill Effect Data
+  m_Name: Damage Skill Effect Data
   m_EditorClassIdentifier: Assembly-CSharp::DamageSkillEffectData
   damageType: 0
   damageMultiplier: 1

@@ -12,77 +12,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b3cc27d7ff52b84990df679ec0319e2, type: 3}
   m_Name: New Character Data
   m_EditorClassIdentifier: Assembly-CSharp::CharacterData
-  CharacterName: aasa
-  Icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  BaseStatus: {fileID: 11400000, guid: 2f4a8a70b7fd7ad41911e639afd9f9e0, type: 2}
-  NormalAttack: {fileID: 11400000, guid: a89bd41d589b23d45b7c56dddff44305, type: 2}
-  Skill: {fileID: 0}
+  CharacterName: "\u52C7\u8005"
+  Icon: {fileID: -1711904639, guid: da199546d61e0264199252f9dd663a72, type: 3}
+  BaseStatus: {fileID: 11400000, guid: dd2ccecd1c37ef8418c0b0cf74ac5a0e, type: 2}
+  NormalAttack: {fileID: 11400000, guid: 0813d16dd48d1e9498b632abc1c56288, type: 2}
+  Skill: {fileID: 11400000, guid: 42ad0603f998f9844a70cd3328ef8cc5, type: 2}
+  LevelUpStatuses: []
   StarGrades:
   - Star: 0
-    RequiredUnitCount: 0
     HpRate: 0
     AttackRate: 0
     MagicAttackRate: 0
     DefenseRate: 0
     MagicDefenseRate: 0
   - Star: 0
-    RequiredUnitCount: 0
     HpRate: 0
     AttackRate: 0
     MagicAttackRate: 0
     DefenseRate: 0
     MagicDefenseRate: 0
   - Star: 0
-    RequiredUnitCount: 0
     HpRate: 0
     AttackRate: 0
     MagicAttackRate: 0
     DefenseRate: 0
     MagicDefenseRate: 0
   - Star: 0
-    RequiredUnitCount: 0
     HpRate: 0
     AttackRate: 0
     MagicAttackRate: 0
     DefenseRate: 0
     MagicDefenseRate: 0
   - Star: 0
-    RequiredUnitCount: 0
     HpRate: 0
     AttackRate: 0
     MagicAttackRate: 0
     DefenseRate: 0
     MagicDefenseRate: 0
   - Star: 0
-    RequiredUnitCount: 0
     HpRate: 0
     AttackRate: 0
     MagicAttackRate: 0
     DefenseRate: 0
     MagicDefenseRate: 0
   - Star: 0
-    RequiredUnitCount: 0
     HpRate: 0
     AttackRate: 0
     MagicAttackRate: 0
     DefenseRate: 0
     MagicDefenseRate: 0
   - Star: 0
-    RequiredUnitCount: 0
     HpRate: 0
     AttackRate: 0
     MagicAttackRate: 0
     DefenseRate: 0
     MagicDefenseRate: 0
   - Star: 0
-    RequiredUnitCount: 0
     HpRate: 0
     AttackRate: 0
     MagicAttackRate: 0
     DefenseRate: 0
     MagicDefenseRate: 0
   - Star: 0
-    RequiredUnitCount: 0
     HpRate: 0
     AttackRate: 0
     MagicAttackRate: 0

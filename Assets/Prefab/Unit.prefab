@@ -145,7 +145,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fe9218653ba1a5a4e980901c0607ae9b, type: 3}
+  m_Sprite: {fileID: -1711904639, guid: da199546d61e0264199252f9dd663a72, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -171,9 +171,6 @@ MonoBehaviour:
   highlight: {fileID: 0}
   canvas: {fileID: 0}
   starFrame: {fileID: 5831339746371801096}
-  star1Color: {r: 1, g: 1, b: 1, a: 1}
-  star2Color: {r: 0.4, g: 0.8, b: 1, a: 1}
-  star3Color: {r: 1, g: 0.75, b: 0.2, a: 1}
 --- !u!114 &-7670756052915776975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,11 +184,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleUnitBase
   unitView: {fileID: 4402936459083195521}
-  chatterLimit: 6
-  chatterStopTime: 0.5
+  damagePopupManager: {fileID: 0}
+  rangeVisualizer: {fileID: -7176750960875057739}
   normalAttackManaGain: 10
   takeDamageManaGain: 10
-  rangeVisualizer: {fileID: -7176750960875057739}
+  chatterLimit: 6
+  chatterStopTime: 0.5
 --- !u!114 &4402936459083195521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,6 +204,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleUnitView
   unitImage: {fileID: 5831339746371801096}
   damageFlashDuration: 0.15
+  star1Color: {r: 1, g: 1, b: 1, a: 1}
+  star2Color: {r: 0.4, g: 0.8, b: 1, a: 1}
+  star3Color: {r: 1, g: 0.75, b: 0.2, a: 1}
 --- !u!114 &-7176750960875057739
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,6 +12,9 @@ public class UnitAnimationTester : MonoBehaviour
     private static readonly int DirectionHash =
         Animator.StringToHash("Direction");
 
+    private static readonly int AttackHash =
+        Animator.StringToHash("Attack");
+
     private void Start()
     {
         StartCoroutine(TestAnimation());
@@ -21,24 +24,40 @@ public class UnitAnimationTester : MonoBehaviour
     {
         while (true)
         {
-            // 上
+            // 上へ移動
             SetMoveDirection(0);
             yield return new WaitForSeconds(_changeInterval);
 
-            // 下
+            // 下へ移動
             SetMoveDirection(1);
             yield return new WaitForSeconds(_changeInterval);
 
-            // 左
+            // 左へ移動
             SetMoveDirection(2);
             yield return new WaitForSeconds(_changeInterval);
 
-            // 右
+            // 右へ移動
             SetMoveDirection(3);
             yield return new WaitForSeconds(_changeInterval);
 
             // 停止
-            _animator.SetBool(IsMovingHash, false);
+            StopMove();
+            yield return new WaitForSeconds(_changeInterval);
+
+            // 上攻撃
+            PlayAttack(0);
+            yield return new WaitForSeconds(_changeInterval);
+
+            // 下攻撃
+            PlayAttack(1);
+            yield return new WaitForSeconds(_changeInterval);
+
+            // 左攻撃
+            PlayAttack(2);
+            yield return new WaitForSeconds(_changeInterval);
+
+            // 右攻撃
+            PlayAttack(3);
             yield return new WaitForSeconds(_changeInterval);
         }
     }
@@ -47,5 +66,22 @@ public class UnitAnimationTester : MonoBehaviour
     {
         _animator.SetInteger(DirectionHash, direction);
         _animator.SetBool(IsMovingHash, true);
+    }
+
+    private void StopMove()
+    {
+        _animator.SetBool(IsMovingHash, false);
+    }
+
+    private void PlayAttack(int direction)
+    {
+        // 攻撃は停止中だけ行う
+        _animator.SetBool(IsMovingHash, false);
+
+        // 攻撃する方向を指定
+        _animator.SetInteger(DirectionHash, direction);
+
+        // 攻撃Triggerを実行
+        _animator.SetTrigger(AttackHash);
     }
 }

@@ -558,9 +558,22 @@ MonoBehaviour:
   - {fileID: 2086320157, guid: da199546d61e0264199252f9dd663a72, type: 3}
   - {fileID: -1654450770, guid: da199546d61e0264199252f9dd663a72, type: 3}
   - {fileID: -714225557, guid: da199546d61e0264199252f9dd663a72, type: 3}
-  _attackSprites: []
+  _attackSprites:
+    _up:
+    - {fileID: -914731606, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    - {fileID: -2116890569, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    _down:
+    - {fileID: 1990117577, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    - {fileID: -1820956902, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    _left:
+    - {fileID: -770171801, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    - {fileID: 268213342, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    _right:
+    - {fileID: 1158334336, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    - {fileID: -726473948, guid: da199546d61e0264199252f9dd663a72, type: 3}
   _skillSprites: []
   _animationType: 0
+  _direction: 2
   _frameIndex: 0
 --- !u!114 &1921243526 stripped
 MonoBehaviour:

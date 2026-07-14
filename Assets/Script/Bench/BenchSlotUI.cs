@@ -12,6 +12,7 @@ public class BenchSlotUI : MonoBehaviour,
     IEndDragHandler
 {
     [SerializeField] private Image unitIcon;
+    [SerializeField] private Image[] itemIcons;
     [SerializeField] private GameObject highlight;
     [SerializeField] private Canvas canvas;
     [SerializeField] private Image starFrame;
@@ -47,6 +48,11 @@ public class BenchSlotUI : MonoBehaviour,
 
     public void SetUnit(UnitInstance newUnit)
     {
+        if (unit != null)
+        {
+            unit.OnItemsChanged -= RefreshItemIcons;
+        }
+
         unit = newUnit;
 
         if (unit == null)
@@ -58,6 +64,9 @@ public class BenchSlotUI : MonoBehaviour,
         unitIcon.sprite = unit.Data.Icon;
         unitIcon.enabled = true;
         ApplyStarColor();
+
+        unit.OnItemsChanged += RefreshItemIcons;
+        RefreshItemIcons();
     }
 
     private void ApplyStarColor()
@@ -85,9 +94,53 @@ public class BenchSlotUI : MonoBehaviour,
 
     public void Clear()
     {
+        if (unit != null)
+        {
+            unit.OnItemsChanged -= RefreshItemIcons;
+        }
+
         unit = null;
         unitIcon.sprite = null;
         unitIcon.enabled = false;
+
+        RefreshItemIcons();
+    }
+
+    public void RefreshItemIcons()
+    {
+        if (itemIcons == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < itemIcons.Length; i++)
+        {
+            Image icon = itemIcons[i];
+
+            if (icon == null)
+            {
+                continue;
+            }
+
+            ItemInstance item = null;
+
+            if (unit != null &&
+                unit.EquippedItems != null &&
+                i < unit.EquippedItems.Count)
+            {
+                item = unit.EquippedItems[i];
+            }
+
+            if (item?.Data == null)
+            {
+                icon.sprite = null;
+                icon.enabled = false;
+                continue;
+            }
+
+            icon.sprite = item.Data.Icon;
+            icon.enabled = true;
+        }
     }
 
     public void SetCanvas(Canvas newCanvas)
@@ -219,5 +272,13 @@ public class BenchSlotUI : MonoBehaviour,
     public void PlayRemoveEffect()
     {
         // ”„‹p‰‰o
+    }
+
+    private void OnDestroy()
+    {
+        if (unit != null)
+        {
+            unit.OnItemsChanged -= RefreshItemIcons;
+        }
     }
 }

@@ -13,11 +13,45 @@ MonoBehaviour:
   m_Name: New Character Data
   m_EditorClassIdentifier: Assembly-CSharp::CharacterData
   CharacterName: "\u52C7\u8005"
-  Icon: {fileID: -1711904639, guid: da199546d61e0264199252f9dd663a72, type: 3}
+  Icon: {fileID: 2086320157, guid: da199546d61e0264199252f9dd663a72, type: 3}
+  AnimationData: {fileID: 11400000, guid: 8e3458560b481004f9f2843bb27d4148, type: 2}
   BaseStatus: {fileID: 11400000, guid: dd2ccecd1c37ef8418c0b0cf74ac5a0e, type: 2}
   NormalAttack: {fileID: 11400000, guid: 0813d16dd48d1e9498b632abc1c56288, type: 2}
   Skill: {fileID: 11400000, guid: 42ad0603f998f9844a70cd3328ef8cc5, type: 2}
-  LevelUpStatuses: []
+  LevelUpStatuses:
+  - AddHp: 0
+    AddMp: 0
+    AddAttack: 0
+    AddMagicAttack: 0
+    AddDefense: 0
+    AddMagicDefense: 0
+    AddCriticalRate: 0
+    AddCriticalDamage: 0
+    AddCriticalDefense: 0
+    AddMoveSpeed: 0
+    AddDodgeRate: 0
+  - AddHp: 0
+    AddMp: 0
+    AddAttack: 0
+    AddMagicAttack: 0
+    AddDefense: 0
+    AddMagicDefense: 0
+    AddCriticalRate: 0
+    AddCriticalDamage: 0
+    AddCriticalDefense: 0
+    AddMoveSpeed: 0
+    AddDodgeRate: 0
+  - AddHp: 0
+    AddMp: 0
+    AddAttack: 0
+    AddMagicAttack: 0
+    AddDefense: 0
+    AddMagicDefense: 0
+    AddCriticalRate: 0
+    AddCriticalDamage: 0
+    AddCriticalDefense: 0
+    AddMoveSpeed: 0
+    AddDodgeRate: 0
   StarGrades:
   - Star: 0
     HpRate: 0

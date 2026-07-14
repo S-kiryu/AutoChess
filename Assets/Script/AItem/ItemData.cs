@@ -1,6 +1,8 @@
 using UnityEngine;
-
-public abstract class ItemData : ScriptableObject
+[CreateAssetMenu(
+    fileName = "NewItem",
+    menuName = "AutoChess/Item/ItemData")]
+public class ItemData : ScriptableObject
 {
     [Header("基本情報")]
     [SerializeField] private string itemName;
@@ -10,6 +12,7 @@ public abstract class ItemData : ScriptableObject
     [SerializeField] private string description;
 
     [SerializeField] private ItemCategory category;
+    public ItemCategory Category => category;
 
     [Header("加算ステータス")]
     [SerializeField] private int addMaxHp;

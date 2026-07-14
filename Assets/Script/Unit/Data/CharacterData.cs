@@ -6,6 +6,7 @@ public class CharacterData : ScriptableObject
 { 
     public string CharacterName;    //キャラの名前
     public Sprite Icon;             //キャラのアイコン
+    public UnitAnimationData AnimationData;//アニメーションデータ
     public BaseStatus BaseStatus;   //キャラのベースステータス
     public NormalAttackData NormalAttack;//キャラの通常攻撃データ
     public SkillData Skill;      //キャラのスキルデータ

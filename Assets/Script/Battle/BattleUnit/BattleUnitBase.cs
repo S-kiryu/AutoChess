@@ -104,6 +104,30 @@ public class BattleUnitBase : MonoBehaviour
             BattleManager.Instance.RegisterUnit(this);
         }
     }
+    public void PlayMoveAnimation(Vector2Int direction)
+    {
+        if (unitView != null)
+        {
+            unitView.PlayMove(direction);
+        }
+    }
+
+    public void StopMoveAnimation()
+    {
+        if (unitView != null)
+        {
+            unitView.StopMove();
+        }
+    }
+
+    public void PlayAttackAnimation()
+    {
+        if (unitView != null)
+        {
+            unitView.PlayAttack(ForwardDirection);
+        }
+    }
+
 
     public void SetCurrentGrid(BattleGrid grid)
     {

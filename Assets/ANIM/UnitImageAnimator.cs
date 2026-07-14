@@ -40,30 +40,52 @@ public class DirectionalSprites
 
 public class UnitImageAnimator : MonoBehaviour
 {
-    [Header("画像を表示するUI")]
     [SerializeField] private Image _unitImage;
 
-    [Header("待機画像")]
-    [SerializeField] private Sprite[] _idleSprites;
-
-    [Header("移動画像")]
-    [SerializeField] private Sprite[] _moveSprites;
-
-    [Header("攻撃画像")]
-    [SerializeField] private DirectionalSprites _attackSprites;
-
-    [Header("スキル画像")]
-    [SerializeField] private Sprite[] _skillSprites;
-
-    [Header("Animation Clipから操作")]
+    [Header("Animation Clip から操作")]
     [SerializeField] private UnitAnimationType _animationType;
     [SerializeField] private UnitDirection _direction;
     [SerializeField] private int _frameIndex;
 
+    private UnitAnimationData _animationData;
     private UnitAnimationType _previousAnimationType;
     private UnitDirection _previousDirection;
     private int _previousFrameIndex = -1;
     private bool _isInitialized;
+
+    private void Awake()
+    {
+        if (_unitImage == null)
+        {
+            _unitImage = GetComponentInChildren<Image>();
+        }
+    }
+
+    public void SetAnimationData(UnitAnimationData animationData)
+    {
+        _animationData = animationData;
+        UpdateSprite();
+    }
+
+    private void UpdateSprite()
+    {
+        if (_unitImage == null || _animationData == null)
+        {
+            return;
+        }
+
+        Sprite[] sprites = _animationData.GetSprites(
+            _animationType,
+            _direction);
+
+        if (sprites == null || sprites.Length == 0)
+        {
+            return;
+        }
+
+        int index = Mathf.Clamp(_frameIndex, 0, sprites.Length - 1);
+        _unitImage.sprite = sprites[index];
+    }
 
     private void LateUpdate()
     {
@@ -82,46 +104,4 @@ public class UnitImageAnimator : MonoBehaviour
 
         UpdateSprite();
     }
-
-    private void UpdateSprite()
-    {
-        if (_unitImage == null)
-        {
-            return;
-        }
-
-        Sprite[] sprites = GetCurrentSprites();
-
-        if (sprites == null || sprites.Length == 0)
-        {
-            return;
-        }
-
-        int index = Mathf.Clamp(
-            _frameIndex,
-            0,
-            sprites.Length - 1);
-
-        _unitImage.sprite = sprites[index];
-    }
-
-    private Sprite[] GetCurrentSprites()
-    {
-        return _animationType switch
-        {
-            UnitAnimationType.Idle => _idleSprites,
-            UnitAnimationType.Move => _moveSprites,
-            UnitAnimationType.Attack =>
-                _attackSprites.GetSprites(_direction),
-            UnitAnimationType.Skill => _skillSprites,
-            _ => _idleSprites
-        };
-    }
-
-#if UNITY_EDITOR
-    private void OnValidate()
-    {
-        UpdateSprite();
-    }
-#endif
 }

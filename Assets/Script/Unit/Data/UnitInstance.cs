@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 /// <summary>
@@ -15,6 +14,7 @@ public class UnitInstance
     [SerializeField] private int star = 1;
     [SerializeField] private int level = 1;
     [SerializeField] private ItemInstance[] equippedItems = new ItemInstance[3];
+    public event Action OnItemsChanged;
 
     public int MaxStar
     {
@@ -182,14 +182,93 @@ public class UnitInstance
 
         for (int i = 0; i < equippedItems.Length; i++)
         {
-            if (equippedItems[i] == null)
+            if (equippedItems[i] != null)
             {
-                equippedItems[i] = item;
+                continue;
+            }
+
+            equippedItems[i] = item;
+            RecalculateStatus();
+
+            item.Data.OnEquip(status);
+            OnItemsChanged?.Invoke();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool TryEquipOrRefineItem(ItemInstance item)
+    {
+        return TryEquipOrRefineItem(item, ItemRecipeManager.Instance);
+    }
+
+    public bool TryEquipOrRefineItem(
+        ItemInstance item,
+        ItemRecipeManager recipeManager)
+    {
+        if (item == null || item.Data == null)
+        {
+            return false;
+        }
+
+        if (recipeManager != null && item.Data.Category == ItemCategory.Component)
+        {
+            for (int i = 0; i < equippedItems.Length; i++)
+            {
+                ItemInstance equippedItem = equippedItems[i];
+
+                if (equippedItem?.Data == null ||
+                    equippedItem.Data.Category != ItemCategory.Component)
+                {
+                    continue;
+                }
+
+                if (!recipeManager.TryGetCompletedItem(
+                        equippedItem.Data,
+                        item.Data,
+                        out ItemData completedItem))
+                {
+                    continue;
+                }
+
+                equippedItems[i].Data.OnUnequip(status);
+                equippedItems[i] = new ItemInstance(completedItem);
+
                 RecalculateStatus();
+                completedItem.OnEquip(status);
+                OnItemsChanged?.Invoke();
+
                 return true;
             }
         }
 
-        return false;
+        return EquipItem(item);
+    }
+
+    public bool UnequipItem(int index, out ItemInstance removedItem)
+    {
+        removedItem = null;
+
+        if (index < 0 || index >= equippedItems.Length)
+        {
+            return false;
+        }
+
+        removedItem = equippedItems[index];
+
+        if (removedItem == null)
+        {
+            return false;
+        }
+
+        removedItem.Data?.OnUnequip(status);
+        equippedItems[index] = null;
+
+        RecalculateStatus();
+        OnItemsChanged?.Invoke();
+
+        return true;
     }
 }

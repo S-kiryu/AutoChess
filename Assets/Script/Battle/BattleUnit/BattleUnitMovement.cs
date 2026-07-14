@@ -181,6 +181,7 @@ public class BattleUnitMovement
         }
 
         FaceGrid(nextGrid);
+        owner.PlayMoveAnimation(forwardDirection);
 
         moveTargetGrid = nextGrid;
         moveDestination = moveTargetGrid.transform.position;
@@ -202,6 +203,7 @@ public class BattleUnitMovement
         if (moveTargetGrid == null)
         {
             isMoving = false;
+            owner.StopMoveAnimation();
             return;
         }
 

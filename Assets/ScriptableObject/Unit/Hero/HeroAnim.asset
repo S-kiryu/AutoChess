@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42f599fc2b8999541ac49fdfefac01cb, type: 3}
+  m_Name: HeroAnim
+  m_EditorClassIdentifier: Assembly-CSharp::UnitAnimationData
+  idleSprites: []
+  moveSprites:
+  - {fileID: -1711904639, guid: da199546d61e0264199252f9dd663a72, type: 3}
+  - {fileID: 2086320157, guid: da199546d61e0264199252f9dd663a72, type: 3}
+  - {fileID: -1654450770, guid: da199546d61e0264199252f9dd663a72, type: 3}
+  - {fileID: -714225557, guid: da199546d61e0264199252f9dd663a72, type: 3}
+  attackSprites:
+    _up:
+    - {fileID: -914731606, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    - {fileID: -2116890569, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    _down:
+    - {fileID: 1990117577, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    - {fileID: -1820956902, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    _left:
+    - {fileID: -770171801, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    - {fileID: 268213342, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    _right:
+    - {fileID: 1158334336, guid: da199546d61e0264199252f9dd663a72, type: 3}
+    - {fileID: -726473948, guid: da199546d61e0264199252f9dd663a72, type: 3}
+  skillSprites: []

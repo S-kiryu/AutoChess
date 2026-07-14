@@ -65,6 +65,7 @@ public class BattleUnitAttack
 
     private void ExecuteAction(AttackActionData actionData)
     {
+        owner.PlayAttackAnimation();
         List<BattleGrid> targetGrids = rangeResolver.GetTargetGrids(actionData);
 
         if (rangeVisualizer != null)

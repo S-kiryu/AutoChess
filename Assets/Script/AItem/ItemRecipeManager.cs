@@ -2,7 +2,20 @@ using UnityEngine;
 
 public class ItemRecipeManager : MonoBehaviour
 {
+    public static ItemRecipeManager Instance { get; private set; }
+
     [SerializeField] private ItemRecipe[] recipes;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
 
     public bool TryGetCompletedItem(
         ItemData itemA,
@@ -18,18 +31,13 @@ public class ItemRecipeManager : MonoBehaviour
 
         foreach (ItemRecipe recipe in recipes)
         {
-            if (recipe == null)
-            {
-                continue;
-            }
-
-            if (!recipe.IsMatch(itemA, itemB))
+            if (recipe == null || !recipe.IsMatch(itemA, itemB))
             {
                 continue;
             }
 
             completedItem = recipe.CompletedItem;
-            return true;
+            return completedItem != null;
         }
 
         return false;

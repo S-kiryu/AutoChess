@@ -12,18 +12,28 @@ public class BattleUnitView : MonoBehaviour
     [SerializeField] private Color star1Color = Color.white;
     [SerializeField] private Color star2Color = new Color(0.4f, 0.8f, 1f);
     [SerializeField] private Color star3Color = new Color(1f, 0.75f, 0.2f);
+    [SerializeField] private Animator animator;
+    [SerializeField] private UnitImageAnimator unitImageAnimator;
 
     private Color currentBaseColor = Color.white;
 
     private Coroutine damageFlashCoroutine;
     private UnitInstance currentUnit;
     private Color defaultColor = Color.white;
+    private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
+    private static readonly int DirectionHash = Animator.StringToHash("Direction");
+    private static readonly int AttackHash = Animator.StringToHash("Attack");
 
     private void Awake()
     {
         if (unitImage == null)
         {
             unitImage = GetComponentInChildren<Image>();
+        }
+
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
         }
 
         if (unitImage != null)
@@ -40,19 +50,48 @@ public class BattleUnitView : MonoBehaviour
             return;
         }
 
-        if (currentUnit != null)
+        unitImage.sprite = unit.Data.Icon;
+        unitImage.enabled = true;
+
+        if (unitImageAnimator != null)
         {
-            currentUnit.OnStarChanged -= ApplyStarColor;
+            unitImageAnimator.SetAnimationData(unit.Data.AnimationData);
         }
 
         currentUnit = unit;
         currentUnit.OnStarChanged += ApplyStarColor;
 
-        unitImage.sprite = unit.Data.Icon;
-        unitImage.enabled = true;
-
         currentBaseColor = unitImage.color;
     }
+    public void PlayMove(Vector2Int direction)
+    {
+        SetDirection(direction);
+
+        if (animator != null)
+        {
+            animator.SetBool(IsMovingHash, true);
+        }
+    }
+
+    public void StopMove()
+    {
+        if (animator != null)
+        {
+            animator.SetBool(IsMovingHash, false);
+        }
+    }
+
+    public void PlayAttack(Vector2Int direction)
+    {
+        SetDirection(direction);
+
+        if (animator != null)
+        {
+            animator.SetBool(IsMovingHash, false);
+            animator.SetTrigger(AttackHash);
+        }
+    }
+
 
     private void ApplyStarColor(int star)
     {
@@ -125,5 +164,25 @@ public class BattleUnitView : MonoBehaviour
         }
 
         ResetColor();
+    }
+
+    private void SetDirection(Vector2Int direction)
+    {
+        if (animator == null)
+        {
+            return;
+        }
+
+        animator.SetInteger(DirectionHash, DirectionToIndex(direction));
+    }
+
+    private int DirectionToIndex(Vector2Int direction)
+    {
+        if (direction == Vector2Int.up) return 1;
+        if (direction == Vector2Int.down) return 0;
+        if (direction == Vector2Int.left) return 2;
+        if (direction == Vector2Int.right) return 3;
+
+        return 1;
     }
 }

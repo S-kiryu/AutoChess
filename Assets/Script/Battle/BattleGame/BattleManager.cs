@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BattleManager : MonoBehaviour
 {
@@ -7,6 +8,9 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] private BattleUnitSpawner battleUnitSpawner;
     [SerializeField] private BattleMovementResolver movementResolver;
+    [SerializeField] private StageProgressManager stageProgressManager;
+    [SerializeField] private PlayerLifeManager playerLifeManager;
+    [SerializeField] private string homeSceneName = "Home";
 
     // 戦闘にいるユニットを管理するリスト
     private List<BattleUnitBase> playerUnits = new List<BattleUnitBase>();
@@ -34,7 +38,10 @@ public class BattleManager : MonoBehaviour
         return allUnits;
     }
 
-    // 戦闘ユニットの追加
+    /// <summary>
+    /// ユニットを追加する関数
+    /// </summary>
+    /// <param name="unit">追加するユニット</param>
     public void RegisterUnit(BattleUnitBase unit)
     {
         if (unit == null)
@@ -53,7 +60,10 @@ public class BattleManager : MonoBehaviour
         targetList.Add(unit);
     }
 
-    // 戦闘ユニットの削除
+    /// <summary>
+    /// 戦闘ユニットを削除する関数
+    /// </summary>
+    /// <param name="unit">削除するユニット</param>
     public void UnregisterUnit(BattleUnitBase unit)
     {
         if (unit == null)
@@ -65,13 +75,19 @@ public class BattleManager : MonoBehaviour
         enemyUnits.Remove(unit);
     }
 
-    // 敵を探す
+    /// <summary>
+    /// 敵を探す関数
+    /// </summary>
+    /// <param name="team">探索するチーム</param>
+    /// <returns>敵のリスト</returns>
     public IReadOnlyList<BattleUnitBase> GetEnemies(BattleTeam team)
     {
         return team == BattleTeam.Player ? enemyUnits : playerUnits;
     }
 
-    // 戦闘開始
+    /// <summary>
+    /// 戦闘開始関数
+    /// </summary>
     public void StartBattle()
     {
         Debug.Log("BattleManager.StartBattle");
@@ -115,13 +131,18 @@ public class BattleManager : MonoBehaviour
 
     }
 
-    // ユニットが死んだときに呼ばれる
+    /// <summary>
+    /// ユニットが死んだときに呼ばれる関数
+    /// </summary>
+    /// <param name="deadUnit">死亡したユニット</param>
     public void NotifyUnitDead(BattleUnitBase deadUnit)
     {
         CheckBattleResult();
     }
 
-    // 勝敗判定
+    /// <summary>
+    /// 勝敗判定
+    /// </summary>
     private void CheckBattleResult()
     {
         if (isBattleFinished)
@@ -135,24 +156,81 @@ public class BattleManager : MonoBehaviour
         if (enemyAllDead)
         {
             isBattleFinished = true;
+
+            BattleStageData clearedStage =
+                stageProgressManager != null
+                    ? stageProgressManager.CurrentBattleStage
+                    : null;
+
             StopAllUnits();
 
-            Debug.Log("勝利");
+            if (battleUnitSpawner != null)
+            {
+                battleUnitSpawner.RestorePlayerUnitsAfterBattle();
+                battleUnitSpawner.ClearEnemyUnits();
+            }
+
+            if (clearedStage != null &&
+                clearedStage.IsBossStage &&
+                stageProgressManager != null)
+            {
+                stageProgressManager.MarkChapterClear();
+
+                PlayerProgress.MarkChapterCleared(stageProgressManager.CurrentChapter);
+            }
 
             if (GameLoopManager.Instance != null)
             {
                 GameLoopManager.Instance.ChangeState(GameState.Reward);
             }
+
+            Debug.Log("勝利");
         }
         else if (playerAllDead)
         {
             isBattleFinished = true;
+
             StopAllUnits();
 
-            Debug.Log("敗北");
+            if (battleUnitSpawner != null)
+            {
+                battleUnitSpawner.RestorePlayerUnitsAfterBattle();
+                battleUnitSpawner.ClearEnemyUnits();
+            }
+
+            if (playerLifeManager != null)
+            {
+                playerLifeManager.LoseLife();
+
+                if (playerLifeManager.IsGameOver)
+                {
+                    Debug.Log("ゲームオーバー");
+
+                    // あとでGameOver画面やHomeに遷移
+                    if (GameLoopManager.Instance != null)
+                    {
+                        GameLoopManager.Instance.ChangeState(GameState.GameOver);
+                    }
+
+                    return;
+                }
+            }
+
+            if (GameLoopManager.Instance != null)
+            {
+                GameLoopManager.Instance.ChangeState(GameState.Preparation);
+            }
+
+            Debug.Log("敗北。残機があるので再挑戦します。");
         }
     }
 
+    
+    /// <summary>
+    /// すべてのユニットが死亡しているか判定する関数
+    /// </summary>
+    /// <param name="units">判定するユニットのリスト</param>
+    /// <returns>すべて死亡している場合はtrue、そうでない場合はfalse</returns>
     private bool IsAllDead(List<BattleUnitBase> units)
     {
         if (units.Count == 0)
@@ -171,6 +249,9 @@ public class BattleManager : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// すべてのユニットを停止する関数
+    /// </summary>
     private void StopAllUnits()
     {
         if (movementResolver != null)
@@ -193,5 +274,8 @@ public class BattleManager : MonoBehaviour
                 unit.StopBattle();
             }
         }
+
+        playerUnits.Clear();
+        enemyUnits.Clear();
     }
 }

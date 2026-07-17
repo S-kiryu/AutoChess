@@ -10,6 +10,7 @@ public class BattleStageData : ScriptableObject
     [SerializeField] private string stageId;
     [SerializeField] private EnemySpawnData[] enemies;
     [SerializeField] private bool isBossStage;
+    [SerializeField] private int RewardGold;
 
     public string StageId => stageId;
     public EnemySpawnData[] Enemies => enemies;

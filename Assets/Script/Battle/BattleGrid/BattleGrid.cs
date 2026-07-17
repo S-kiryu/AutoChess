@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections;
 
 /// <summary>
 /// 戦闘グリッドの1マス。
@@ -20,6 +21,9 @@ public class BattleGrid : MonoBehaviour, IDropHandler
 
     private bool isPlayerGrid;
     private bool isEnemyGrid;
+    private Coroutine flashCoroutine;
+    private Color baseColor;
+    private bool hasBaseColor;
     public bool HasMovingUnit => movingUnit != null;
     public bool IsEnterBlocked => currentBattleUnit != null || movingUnit != null;
 
@@ -59,8 +63,19 @@ public class BattleGrid : MonoBehaviour, IDropHandler
         {
             backgroundImage = GetComponent<Image>();
         }
+
+        if (backgroundImage != null)
+        {
+            baseColor = backgroundImage.color;
+            hasBaseColor = true;
+        }
     }
 
+    /// <summary>
+    /// ユニットが移動中かどうかをロックする。
+    /// </summary>
+    /// <param name="unit"></param>
+    /// <returns></returns>
     public bool TryLockForMove(BattleUnitBase unit)
     {
         if (unit == null)
@@ -77,6 +92,10 @@ public class BattleGrid : MonoBehaviour, IDropHandler
         return true;
     }
 
+    /// <summary>
+    /// ユニットの移動ロックを解除する。
+    /// </summary>
+    /// <param name="unit"></param>
     public void ClearMoveLock(BattleUnitBase unit)
     {
         if (movingUnit == unit)
@@ -117,6 +136,9 @@ public class BattleGrid : MonoBehaviour, IDropHandler
     /// <param name="color"></param>
     public void SetColor(Color color)
     {
+        baseColor = color;
+        hasBaseColor = true;
+
         if (backgroundImage != null)
         {
             backgroundImage.color = color;
@@ -134,6 +156,12 @@ public class BattleGrid : MonoBehaviour, IDropHandler
     /// <param name="eventData"></param>
     public void OnDrop(PointerEventData eventData)
     {
+        if (GameLoopManager.Instance != null &&
+            GameLoopManager.Instance.CurrentState == GameState.Battle)
+        {
+            return;
+        }
+
         // プレイヤー配置エリア以外には置けない
         if (!isPlayerGrid)
         {
@@ -316,5 +344,36 @@ public class BattleGrid : MonoBehaviour, IDropHandler
         draggedUI.SetLocation(UnitArea.Battle, x, y);
 
         return true;
+    }
+
+    public void FlashColor(Color flashColor, float duration)
+    {
+        if (backgroundImage == null)
+        {
+            return;
+        }
+
+        if (flashCoroutine != null)
+        {
+            StopCoroutine(flashCoroutine);
+        }
+
+        flashCoroutine = StartCoroutine(FlashColorRoutine(flashColor, duration));
+    }
+
+    private IEnumerator FlashColorRoutine(Color flashColor, float duration)
+    {
+        if (!hasBaseColor && backgroundImage != null)
+        {
+            baseColor = backgroundImage.color;
+            hasBaseColor = true;
+        }
+
+        backgroundImage.color = flashColor;
+
+        yield return new WaitForSeconds(duration);
+
+        backgroundImage.color = baseColor;
+        flashCoroutine = null;
     }
 }

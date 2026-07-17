@@ -3,5 +3,6 @@ public enum GameState
 {
     Preparation,  // 準備
     Battle,       // 戦闘
-    Reward        // 報酬
+    Reward,       // 報酬
+    GameOver      // ゲームオーバー 
 }

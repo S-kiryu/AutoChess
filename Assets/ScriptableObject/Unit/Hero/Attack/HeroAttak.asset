@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e11c2965b7411df4bad57658c6f0daac, type: 3}
+  m_Name: HeroAttak
+  m_EditorClassIdentifier: Assembly-CSharp::NormalAttackData
+  damageType: 0
+  damageMultiplier: 1
+  castRange: 1
+  rangeData: {fileID: 11400000, guid: 6ce6867a1408cb3419e53d62d16078ac, type: 2}
+  hitCount: 1

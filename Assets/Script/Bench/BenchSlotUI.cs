@@ -12,8 +12,10 @@ public class BenchSlotUI : MonoBehaviour,
     IEndDragHandler
 {
     [SerializeField] private Image unitIcon;
+    [SerializeField] private Image[] itemIcons;
     [SerializeField] private GameObject highlight;
     [SerializeField] private Canvas canvas;
+    [SerializeField] private Image starFrame;
 
     private UnitInstance unit;
     private RectTransform rectTransform;
@@ -25,6 +27,7 @@ public class BenchSlotUI : MonoBehaviour,
     private int x;
     private int y;
     private bool droppedOnSlot;
+    private bool isDragging;
 
     public UnitInstance Unit => unit;
     public int X => x;
@@ -45,6 +48,11 @@ public class BenchSlotUI : MonoBehaviour,
 
     public void SetUnit(UnitInstance newUnit)
     {
+        if (unit != null)
+        {
+            unit.OnItemsChanged -= RefreshItemIcons;
+        }
+
         unit = newUnit;
 
         if (unit == null)
@@ -55,13 +63,84 @@ public class BenchSlotUI : MonoBehaviour,
 
         unitIcon.sprite = unit.Data.Icon;
         unitIcon.enabled = true;
+        ApplyStarColor();
+
+        unit.OnItemsChanged += RefreshItemIcons;
+        RefreshItemIcons();
+    }
+
+    private void ApplyStarColor()
+    {
+        if (starFrame == null || unit == null)
+        {
+            return;
+        }
+
+        starFrame.color = unit.Star switch
+        {
+            1 => Color.white,
+            2 => new Color(1.00f, 0.35f, 0.35f), // 明るい赤
+            3 => new Color(1.00f, 0.55f, 0.25f), // オレンジ
+            4 => new Color(1.00f, 0.85f, 0.20f), // 黄色
+            5 => new Color(0.55f, 0.95f, 0.25f), // 黄緑
+            6 => new Color(0.25f, 0.85f, 0.35f), // 緑
+            7 => new Color(0.20f, 0.75f, 0.85f), // 水色
+            8 => new Color(0.20f, 0.45f, 0.85f), // 青
+            9 => new Color(0.35f, 0.25f, 0.75f), // 藍色
+            10 => new Color(0.25f, 0.10f, 0.35f), // 暗い紫
+            _ => Color.white
+        };
     }
 
     public void Clear()
     {
+        if (unit != null)
+        {
+            unit.OnItemsChanged -= RefreshItemIcons;
+        }
+
         unit = null;
         unitIcon.sprite = null;
         unitIcon.enabled = false;
+
+        RefreshItemIcons();
+    }
+
+    public void RefreshItemIcons()
+    {
+        if (itemIcons == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < itemIcons.Length; i++)
+        {
+            Image icon = itemIcons[i];
+
+            if (icon == null)
+            {
+                continue;
+            }
+
+            ItemInstance item = null;
+
+            if (unit != null &&
+                unit.EquippedItems != null &&
+                i < unit.EquippedItems.Count)
+            {
+                item = unit.EquippedItems[i];
+            }
+
+            if (item?.Data == null)
+            {
+                icon.sprite = null;
+                icon.enabled = false;
+                continue;
+            }
+
+            icon.sprite = item.Data.Icon;
+            icon.enabled = true;
+        }
     }
 
     public void SetCanvas(Canvas newCanvas)
@@ -119,11 +198,20 @@ public class BenchSlotUI : MonoBehaviour,
     /// </summary>
     public void OnBeginDrag(PointerEventData eventData)
     {
+        isDragging = false;
+
+        if (GameLoopManager.Instance == null ||
+            GameLoopManager.Instance.CurrentState != GameState.Preparation)
+        {
+            return;
+        }
+
         if (unit == null || canvas == null)
         {
             return;
         }
 
+        isDragging = true;
         droppedOnSlot = false;
 
         originalParent = transform.parent;
@@ -140,7 +228,7 @@ public class BenchSlotUI : MonoBehaviour,
     /// </summary>
     public void OnDrag(PointerEventData eventData)
     {
-        if (unit == null)
+        if (!isDragging)
         {
             return;
         }
@@ -153,6 +241,13 @@ public class BenchSlotUI : MonoBehaviour,
     /// </summary>
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!isDragging)
+        {
+            return;
+        }
+
+        isDragging = false;
+
         if (unit == null)
         {
             return;
@@ -177,5 +272,13 @@ public class BenchSlotUI : MonoBehaviour,
     public void PlayRemoveEffect()
     {
         // 売却演出
+    }
+
+    private void OnDestroy()
+    {
+        if (unit != null)
+        {
+            unit.OnItemsChanged -= RefreshItemIcons;
+        }
     }
 }

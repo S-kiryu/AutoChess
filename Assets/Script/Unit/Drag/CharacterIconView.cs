@@ -5,7 +5,7 @@ using UnityEngine.UI;
 /// <summary>
 /// ドラッグ可能なキャラクターアイコンのUIクラス
 /// </summary>
-public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler,IPointerClickHandler
 {
     [SerializeField] private Image iconImage;
     [SerializeField] private Canvas canvas;
@@ -53,6 +53,11 @@ public class CharacterIconView : MonoBehaviour, IBeginDragHandler, IDragHandler,
         iconImage.color = assigned
             ? new Color(0.4f, 0.4f, 0.4f, 1f)
             : Color.white;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        FormationUnitLevelUpUI.Instance?.Show(Unit);
     }
 
     public void OnBeginDrag(PointerEventData eventData)

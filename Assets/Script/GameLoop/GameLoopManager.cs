@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameLoopManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class GameLoopManager : MonoBehaviour
     [SerializeField] private BattleUnitSpawner battleUnitSpawner;
     [SerializeField] private StageProgressManager stageProgressManager;
     [SerializeField] private GameObject nextButton;
+    [SerializeField] private GameObject gameOverButton;
+    [SerializeField] private string homeSceneName = "Home";
 
     private void Awake()
     {
@@ -48,6 +51,9 @@ public class GameLoopManager : MonoBehaviour
             case GameState.Reward:
                 OnReward();
                 break;
+            case GameState.GameOver:
+                OnGameOver();
+                break;
         }
     }
 
@@ -77,5 +83,29 @@ public class GameLoopManager : MonoBehaviour
     {
         nextButton.SetActive(true);
         Debug.Log("報酬フェーズに入りました。");
+    }
+
+    private void OnGameOver()
+    {
+        gameOverButton.SetActive(true);
+        Debug.Log("ゲームオーバーフェーズに入りました。");
+    }
+
+    public void OnRewardNextButton()
+    {
+        if (stageProgressManager != null &&
+            stageProgressManager.ChapterClearPending)
+        {
+            stageProgressManager.ClearChapterClearPending();
+            SceneManager.LoadScene(homeSceneName);
+            return;
+        }
+
+        if (stageProgressManager != null)
+        {
+            stageProgressManager.NextBattleStage();
+        }
+
+        ChangeState(GameState.Preparation);
     }
 }

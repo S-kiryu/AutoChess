@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NormalAttackData
   damageType: 0
   damageMultiplier: 1
-  width: 1
-  depth: 1
+  castRange: 1
+  rangeData: {fileID: 11400000, guid: 968f873fb803ef14080f3bf850f613f9, type: 2}
+  hitCount: 1

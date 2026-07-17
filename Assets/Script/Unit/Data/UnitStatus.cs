@@ -56,6 +56,7 @@ public class UnitStatus
 
 
     public bool IsDead => _currentHp <= 0;
+    public bool IsManaFull => _maxMp > 0 && _currentMp >= _maxMp;
 
     public void Initialize(BaseStatus baseStatus)
     {
@@ -79,6 +80,64 @@ public class UnitStatus
         _type = baseStatus.Type;
     }
 
+    public void HPReset()
+    {
+        _currentHp = _maxHp;
+    }
+
+    public void MPReset()
+    {
+        _currentMp = 0;
+    }
+
+    public void SetLevel(int level)
+    {
+        _level = Mathf.Max(1, level);
+    }
+
+    public void RestoreCurrentHpRate(float hpRate)
+    {
+        _currentHp = Mathf.Clamp(
+            Mathf.RoundToInt(_maxHp * Mathf.Clamp01(hpRate)),
+            0,
+            _maxHp
+        );
+    }
+
+    public void SetCurrentMp(int currentMp)
+    {
+        _currentMp = Mathf.Clamp(currentMp, 0, _maxMp);
+    }
+
+    public void AddMana(int amount)
+    {
+        if (amount <= 0 || _maxMp <= 0 || IsDead)
+        {
+            return;
+        }
+
+        _currentMp += amount;
+
+        if (_currentMp > _maxMp)
+        {
+            _currentMp = _maxMp;
+        }
+    }
+
+    public void ConsumeAllMana()
+    {
+        _currentMp = 0;
+    }
+
+    public void Heal(float healAmount)
+    {
+        _currentHp += (int)healAmount;
+        if (_currentHp > _maxHp)
+        {
+            _currentHp = _maxHp;
+        }
+    }
+
     public void TakeDamage(float damage)
     {
         _currentHp -= (int)damage;
@@ -87,5 +146,76 @@ public class UnitStatus
         {
             _currentHp = 0;
         }
+    }
+
+    /// <summary>
+    /// ユニットの星の数に応じてステータスを変化させる
+    /// </summary>
+    /// <param name="star"></param>
+    public void ApplyStar(StarGradeData grade)
+    {
+        if (grade == null)
+        {
+            return;
+        }
+
+        float hpRate = Mathf.Max(grade.HpRate, 1f);
+        float attackRate = Mathf.Max(grade.AttackRate, 1f);
+        float magicAttackRate = Mathf.Max(grade.MagicAttackRate, 1f);
+        float defenseRate = Mathf.Max(grade.DefenseRate, 1f);
+        float magicDefenseRate = Mathf.Max(grade.MagicDefenseRate, 1f);
+
+        _maxHp = Mathf.RoundToInt(_maxHp * hpRate);
+        _currentHp = _maxHp;
+
+        _attack *= attackRate;
+        _magicAttack *= magicAttackRate;
+        _defense *= defenseRate;
+        _magicDefense *= magicDefenseRate;
+    }
+
+    public void ApplyLevelUp(LevelUpStatusData levelData, int level)
+    {
+        if (levelData == null)
+        {
+            return;
+        }
+
+        _level = level;
+
+        _maxHp += levelData.AddHp;
+        _currentHp = _maxHp;
+
+        _maxMp += levelData.AddMp;
+
+        _attack += levelData.AddAttack;
+        _magicAttack += levelData.AddMagicAttack;
+        _defense += levelData.AddDefense;
+        _magicDefense += levelData.AddMagicDefense;
+
+        _criticalRate += levelData.AddCriticalRate;
+        _criticalDamage += levelData.AddCriticalDamage;
+        _criticalDefense += levelData.AddCriticalDefense;
+
+        _moveSpeed += levelData.AddMoveSpeed;
+        _dodgeRate += levelData.AddDodgeRate;
+    }
+
+    public void ApplyItem(ItemData item)
+    {
+        if (item == null)
+        {
+            return;
+        }
+
+        _maxHp += item.AddMaxHp;
+        _currentHp = Mathf.Min(_currentHp + item.AddMaxHp, _maxHp);
+
+        _attack += item.AddAttack;
+        _magicAttack += item.AddMagicAttack;
+        _defense += item.AddDefense;
+        _magicDefense += item.AddMagicDefense;
+        _attackSpeed += item.AddAttackSpeed;
+        _criticalRate += item.AddCriticalRate;
     }
 }

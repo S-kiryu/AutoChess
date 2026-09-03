@@ -3,7 +3,7 @@ using UnityEngine;
 public class AddItemButton : MonoBehaviour
 {
     [SerializeField] private ItemInventoryManager inventoryManager;
-    [SerializeField] private ItemData itemData;
+    [SerializeField] private ItemData[] itemDatas;
 
     private void Awake()
     {
@@ -21,6 +21,7 @@ public class AddItemButton : MonoBehaviour
             return;
         }
 
-        inventoryManager.AddItem(itemData);
+        var ItemData = itemDatas[Random.Range(0, itemDatas.Length)];
+        inventoryManager.AddItem(ItemData);
     }
 }

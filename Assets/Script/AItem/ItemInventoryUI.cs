@@ -51,6 +51,7 @@ public class ItemInventoryUI : MonoBehaviour
         {
             ItemSlotUI slot = Instantiate(itemSlotPrefab, slotRoot);
             slot.SetItem(item);
+            slot.SetCanvas(canvas);
         }
     }
 }
